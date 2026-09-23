@@ -1,6 +1,6 @@
 "use server";
 
-import celestine from "celestine";
+import * as celestine from "celestine";
 import { GoogleGenAI } from "@google/genai";
 
 export async function fetchAIKundliData(name: string, dob: string, tob: string, pob: string) {
@@ -26,8 +26,7 @@ export async function fetchAIKundliData(name: string, dob: string, tob: string, 
 
   const birth = { year, month, day, hour, minute, latitude: lat || 22.5726, longitude: lon || 88.3639, timezone }; // Default Kolkata
 
-  // Force celestine options for traditional calculation (True Nodes)
-  const chartOptions = { includeNodes: "true" };
+  const chartOptions = { includeNodes: "true" as const };
   const chart = celestine.calculateChart(birth, chartOptions);
 
   // Exact Lahiri Ayanamsa calculation approximation for the epoch
@@ -42,8 +41,10 @@ export async function fetchAIKundliData(name: string, dob: string, tob: string, 
   const signs = ["Mesha (Aries)", "Vrishabha (Taurus)", "Mithuna (Gemini)", "Karka (Cancer)", "Simha (Leo)", "Kanya (Virgo)", "Tula (Libra)", "Vrishchika (Scorpio)", "Dhanu (Sagittarius)", "Makara (Capricorn)", "Kumbha (Aquarius)", "Meena (Pisces)"];
   
   // Panchang Elements Calculations
-  const siderealSun = getSidereal(chart.planets.find((p: any) => p.name === "Sun").longitude);
-  const siderealMoon = getSidereal(chart.planets.find((p: any) => p.name === "Moon").longitude);
+  const sunData = chart.planets.find((p: any) => p.name === "Sun");
+  const moonData = chart.planets.find((p: any) => p.name === "Moon");
+  const siderealSun = sunData ? getSidereal(sunData.longitude) : 0;
+  const siderealMoon = moonData ? getSidereal(moonData.longitude) : 0;
   
   // Tithi: (Moon - Sun) / 12
   let tithiDeg = siderealMoon - siderealSun;
@@ -76,7 +77,7 @@ export async function fetchAIKundliData(name: string, dob: string, tob: string, 
   const ascNavamsaSign = Math.floor(ascSidereal / (30/9)) % 12;
 
   // Combine standard planets and True Nodes (Rahu/Ketu)
-  const planetaryBodies = [...chart.planets];
+  const planetaryBodies: any[] = [...chart.planets];
   if (chart.nodes && chart.nodes.length >= 2) {
     planetaryBodies.push({ name: "Rahu", longitude: chart.nodes[0].longitude });
     planetaryBodies.push({ name: "Ketu", longitude: chart.nodes[1].longitude });
@@ -118,32 +119,61 @@ export async function fetchAIKundliData(name: string, dob: string, tob: string, 
     nakshatra,
     tithi: `${paksha} Paksha, Tithi ${tithiNumber}`,
     yoga,
-    reading: `Welcome ${name}. This Kundli strictly follows the traditional Bengali/Vedic method. Your Lagna is ${ascendantName}. Your birth occurred during ${paksha} Paksha, Tithi ${tithiNumber}, under ${nakshatra} Nakshatra and ${yoga} Yoga.`,
-    career: `Your Dasamsa (D-10) and Lagna's 10th house indicate your karmic path. The placement of your 10th lord will define your worldly success.`,
-    relationships: `Your Navamsa (D-9) chart reveals your destiny and marriage. The 7th house in the Navamsa dictates the spiritual bond of your partnerships.`
+    reading: `[AI NOT CONFIGURED] Welcome ${name}. This Kundli strictly follows the traditional Bengali/Vedic method. Your Lagna is ${ascendantName}. Your birth occurred during ${paksha} Paksha, Tithi ${tithiNumber}, under ${nakshatra} Nakshatra and ${yoga} Yoga.`,
+    career: `[AI NOT CONFIGURED] Please add your GEMINI_API_KEY to .env.local and restart the server to generate a deep-dive career prediction based on your planetary placements.`,
+    relationships: `[AI NOT CONFIGURED] Please add your GEMINI_API_KEY to generate a detailed marriage and destiny prediction using your Navamsa (D-9) chart.`,
+    health: `[AI NOT CONFIGURED] Please add your GEMINI_API_KEY to unlock health predictions.`,
+    wealth: `[AI NOT CONFIGURED] Please add your GEMINI_API_KEY to unlock wealth and finance predictions.`,
+    fullLife: `[AI NOT CONFIGURED] To unlock the massive, fully personalized life prediction based on your exact D-1 and D-9 charts, a valid Gemini API key is required.`
   };
 
   // AI Augmentation (if API key provided)
   if (process.env.GEMINI_API_KEY && process.env.GEMINI_API_KEY !== "your_gemini_api_key_here") {
     try {
       const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
-      const prompt = `Act as an expert Bengali Vedic Astrologer. A user named ${name} has Lagna: ${ascendantName}, Moon: ${signs[Math.floor(siderealMoon / 30)]} (${nakshatra} Nakshatra), Sun: ${signs[Math.floor(siderealSun / 30)]}. D-1 Houses: ${JSON.stringify(d1Houses)}. D-9 Navamsa Houses: ${JSON.stringify(d9Houses)}. 
-      Provide a highly detailed astrological reading focusing on their core personality, career potential, and marital life. Return ONLY a JSON object with: {"reading": "...", "career": "...", "relationships": "..."}`;
+      const prompt = `Act as an expert Bengali Vedic Astrologer. (IMPORTANT: Write the entire response in English). A user named ${name} has Lagna: ${ascendantName}, Moon: ${signs[Math.floor(siderealMoon / 30)]} (${nakshatra} Nakshatra), Sun: ${signs[Math.floor(siderealSun / 30)]}. D-1 Houses: ${JSON.stringify(d1Houses)}. D-9 Navamsa Houses: ${JSON.stringify(d9Houses)}. 
+      Provide a MASSIVE, highly detailed astrological reading. Do not hold back; give specific predictions based on the exact planets in their houses. 
+      Return ONLY a JSON object with these exact keys:
+      {
+        "reading": "A deeply personalized opening paragraph analyzing their core personality and soul urge.",
+        "career": "A massive deep-dive into their career, business, and worldly success based on the 10th house and D-10 indications.",
+        "relationships": "A deep analysis of their romantic life, marriage timing, and spouse characteristics based on the 7th house and D-9 Navamsa.",
+        "health": "Detailed health predictions and physical vitality based on the 6th house and Ascendant.",
+        "wealth": "Financial prospects, hidden wealth, and income sources based on the 2nd and 11th houses.",
+        "fullLife": "A grand, sweeping summary of their life's ultimate purpose, karmic lessons, and major life periods (Dashas)."
+      }`;
       
-      const response = await ai.models.generateContent({
-        model: "gemini-2.5-pro",
-        contents: prompt,
-        config: { responseMimeType: "application/json" }
-      });
+      let aiJson = null;
+      let retries = 3;
+      while (retries > 0 && !aiJson) {
+        try {
+          const response = await ai.models.generateContent({
+            model: "gemini-3.5-flash-lite",
+            contents: prompt,
+            config: { responseMimeType: "application/json" }
+          });
+          if (response.text) {
+            aiJson = JSON.parse(response.text);
+          }
+        } catch (err: any) {
+          console.warn(`AI generation failed (Retries left: ${retries - 1}). Error:`, err.message);
+          retries--;
+          if (retries === 0) throw err;
+          // Wait 1.5 seconds before retrying
+          await new Promise(resolve => setTimeout(resolve, 1500));
+        }
+      }
 
-      if (response.text) {
-        const aiJson = JSON.parse(response.text);
+      if (aiJson) {
         chartData.reading = aiJson.reading;
         chartData.career = aiJson.career;
         chartData.relationships = aiJson.relationships;
+        chartData.health = aiJson.health || "";
+        chartData.wealth = aiJson.wealth || "";
+        chartData.fullLife = aiJson.fullLife || "Full life overview is not available.";
       }
     } catch (err) {
-      console.warn("AI generation failed, using standard Bengali ephemeris response.");
+      console.error("All AI retries failed, using standard Bengali ephemeris response.");
     }
   }
 
