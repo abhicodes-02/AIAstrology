@@ -77,7 +77,7 @@ export const KundliPDF = ({ chartData, name, dob, tob, pob, d1Image, d9Image }: 
         <Text style={styles.subtitle}>Name: {name}</Text>
         <Text style={styles.subtitle}>DOB: {dob} | Time: {tob}</Text>
         <Text style={styles.subtitle}>Location: {pob}</Text>
-        <Text style={styles.subtitle}>Ascendant: {chartData.ascendant} | Moon Sign: {chartData.moon_sign}</Text>
+        <Text style={styles.subtitle}>Ascendant: {chartData.ascendant} | Moon Sign: {chartData.moonSign}</Text>
       </View>
 
       <View style={styles.chartContainer}>
@@ -93,32 +93,32 @@ export const KundliPDF = ({ chartData, name, dob, tob, pob, d1Image, d9Image }: 
 
       <View style={styles.section}>
         <Text style={styles.heading}>Core Soul Urge</Text>
-        <Text style={styles.text}>{chartData.core_soul_urge}</Text>
+        <Text style={styles.text}>{chartData.reading}</Text>
       </View>
       
       <View style={styles.section}>
         <Text style={styles.heading}>Career & Power</Text>
-        <Text style={styles.text}>{chartData.career_and_power}</Text>
+        <Text style={styles.text}>{chartData.career}</Text>
       </View>
       
       <View style={styles.section}>
         <Text style={styles.heading}>Wealth & Finance</Text>
-        <Text style={styles.text}>{chartData.wealth_and_finance}</Text>
+        <Text style={styles.text}>{chartData.wealth || "No wealth data available."}</Text>
       </View>
       
       <View style={styles.section}>
         <Text style={styles.heading}>Love & Destiny</Text>
-        <Text style={styles.text}>{chartData.love_and_destiny}</Text>
+        <Text style={styles.text}>{chartData.relationships}</Text>
       </View>
       
       <View style={styles.section}>
         <Text style={styles.heading}>Health & Vitality</Text>
-        <Text style={styles.text}>{chartData.health_and_vitality}</Text>
+        <Text style={styles.text}>{chartData.health || "No health data available."}</Text>
       </View>
       
       <View style={styles.section}>
         <Text style={styles.heading}>Ultimate Life Path</Text>
-        <Text style={styles.text}>{chartData.ultimate_life_path}</Text>
+        <Text style={styles.text}>{chartData.fullLife || "Full life overview is not available."}</Text>
       </View>
     </Page>
   </Document>
