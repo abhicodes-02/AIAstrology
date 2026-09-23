@@ -2,6 +2,7 @@ import { fetchAIKundliData } from "@/app/actions/generateKundli";
 import KundliDashboardView from "@/components/KundliDashboardView";
 
 export const dynamic = "force-dynamic";
+export const maxDuration = 60;
 
 export default async function KundliPage({
   searchParams,

@@ -5,6 +5,7 @@ import { fetchAIVarshaphalData } from "@/app/actions/generateVarshaphal";
 import VarshaphalDashboardView from "@/components/VarshaphalDashboardView";
 
 export const dynamic = "force-dynamic";
+export const maxDuration = 60;
 
 export default async function VarshaphalPage({
   searchParams,

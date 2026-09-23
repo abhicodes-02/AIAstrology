@@ -84,7 +84,8 @@ export async function fetchAIVarshaphalData(name: string, dob: string, tob: stri
             config: { responseMimeType: "application/json" }
           });
           if (response.text) {
-            aiJson = JSON.parse(response.text);
+            const cleanedText = response.text.replace(/```json\n?|```/g, '').trim();
+            aiJson = JSON.parse(cleanedText);
           }
         } catch (err: any) {
           console.warn(`Varshaphal AI generation failed (Retries left: ${retries - 1}). Error:`, err.message);

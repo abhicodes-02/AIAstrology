@@ -153,7 +153,8 @@ export async function fetchAIKundliData(name: string, dob: string, tob: string, 
             config: { responseMimeType: "application/json" }
           });
           if (response.text) {
-            aiJson = JSON.parse(response.text);
+            const cleanedText = response.text.replace(/```json\n?|```/g, '').trim();
+            aiJson = JSON.parse(cleanedText);
           }
         } catch (err: any) {
           console.warn(`AI generation failed (Retries left: ${retries - 1}). Error:`, err.message);
