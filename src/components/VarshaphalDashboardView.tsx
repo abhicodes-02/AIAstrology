@@ -25,25 +25,31 @@ export default function VarshaphalDashboardView({
   const [isDownloading, setIsDownloading] = useState(false);
 
   const handleDownloadPDF = async () => {
-    if (!printRef.current) return;
     setIsDownloading(true);
     
     try {
-      const dataUrl = await toJpeg(printRef.current, { 
-        quality: 0.95,
-        backgroundColor: '#0B0C10',
-        pixelRatio: 2
-      });
+      // Dynamically import react-pdf to avoid SSR issues
+      const { pdf } = await import('@react-pdf/renderer');
+      const { VarshaphalPDF } = await import('@/components/VarshaphalPDF');
+
+      const blob = await pdf(
+        <VarshaphalPDF 
+          data={data} 
+          name={name} 
+          dob={dob} 
+          tob={tob} 
+          pob={pob} 
+        />
+      ).toBlob();
       
-      const pdf = new jsPDF("p", "mm", "a4");
-      
-      // Calculate proper aspect ratio
-      const imgProps = pdf.getImageProperties(dataUrl);
-      const pdfWidth = pdf.internal.pageSize.getWidth();
-      const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
-      
-      pdf.addImage(dataUrl, "JPEG", 0, 0, pdfWidth, pdfHeight);
-      pdf.save(`Varshaphal_${name.replace(/\s+/g, '_')}.pdf`);
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `Varshaphal_${name.replace(/\s+/g, '_')}.pdf`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
     } catch (error) {
       console.error("Error generating PDF", error);
     } finally {

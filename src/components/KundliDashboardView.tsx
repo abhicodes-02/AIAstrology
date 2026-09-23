@@ -26,25 +26,42 @@ export default function KundliDashboardView({
   const [isDownloading, setIsDownloading] = useState(false);
 
   const handleDownloadPDF = async () => {
-    if (!printRef.current) return;
     setIsDownloading(true);
     
     try {
-      const dataUrl = await toJpeg(printRef.current, { 
-        quality: 0.95,
-        backgroundColor: '#0B0C10',
-        pixelRatio: 2
-      });
+      // Capture charts as images
+      const d1El = document.getElementById("d1-chart");
+      const d9El = document.getElementById("d9-chart");
+      let d1Image = null;
+      let d9Image = null;
+
+      if (d1El) d1Image = await toJpeg(d1El, { quality: 1, backgroundColor: '#0F1123' });
+      if (d9El) d9Image = await toJpeg(d9El, { quality: 1, backgroundColor: '#0F1123' });
+
+      // Dynamically import react-pdf to avoid SSR issues
+      const { pdf } = await import('@react-pdf/renderer');
+      const { KundliPDF } = await import('@/components/KundliPDF');
+
+      const blob = await pdf(
+        <KundliPDF 
+          chartData={chartData} 
+          name={name} 
+          dob={dob} 
+          tob={tob} 
+          pob={pob} 
+          d1Image={d1Image} 
+          d9Image={d9Image} 
+        />
+      ).toBlob();
       
-      const pdf = new jsPDF("p", "mm", "a4");
-      
-      // Calculate proper aspect ratio
-      const imgProps = pdf.getImageProperties(dataUrl);
-      const pdfWidth = pdf.internal.pageSize.getWidth();
-      const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
-      
-      pdf.addImage(dataUrl, "JPEG", 0, 0, pdfWidth, pdfHeight);
-      pdf.save(`Kundli_${name.replace(/\s+/g, '_')}.pdf`);
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `Kundli_${name.replace(/\s+/g, '_')}.pdf`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
     } catch (error) {
       console.error("Error generating PDF", error);
     } finally {
@@ -175,7 +192,7 @@ export default function KundliDashboardView({
                   <p className="text-xs text-indigo-300/50 mt-1 uppercase tracking-widest">Physical Reality</p>
                 </div>
               </div>
-              <div className="aspect-square w-full opacity-90">
+              <div id="d1-chart" className="aspect-square w-full opacity-90">
                 <KundliChart planets={chartData.houses} />
               </div>
             </motion.div>
@@ -188,7 +205,7 @@ export default function KundliDashboardView({
                   <p className="text-xs text-indigo-300/50 mt-1 uppercase tracking-widest">Soul & Destiny</p>
                 </div>
               </div>
-              <div className="aspect-square w-full opacity-90">
+              <div id="d9-chart" className="aspect-square w-full opacity-90">
                 <KundliChart planets={chartData.d9Houses || chartData.houses} />
               </div>
             </motion.div>
