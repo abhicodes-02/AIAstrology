@@ -18,7 +18,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`dark ${inter.variable} ${space.variable} antialiased h-full`}>
-      <body className="min-h-full flex flex-col bg-background text-foreground overflow-x-hidden font-sans">
+      <body className="min-h-full flex flex-col bg-transparent text-foreground overflow-x-hidden font-sans">
         <CosmicBackground />
         {children}
       </body>

@@ -26,10 +26,10 @@ export const CosmicBackground = () => {
     setElements(newElements);
   }, []);
 
-  if (!mounted) return <div className="fixed inset-0 -z-10 bg-[#060412]" />;
+  if (!mounted) return <div className="fixed inset-0 z-0 bg-[#060412]" />;
 
   return (
-    <div className="fixed inset-0 -z-10 pointer-events-none overflow-hidden bg-[#060412] bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-indigo-950/50 via-[#060412] to-purple-950/30">
+    <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden bg-[#060412] bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-indigo-950/50 via-[#060412] to-purple-950/30">
       <div className="absolute inset-0 opacity-100">
         {elements.map((el) => {
           if (el.type === "star") {
