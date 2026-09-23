@@ -4,8 +4,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { useRouter } from "next/navigation";
-import { Sparkles, MoonStar, MapPin, Calendar, Clock } from "lucide-react";
-import { useState } from "react";
+import { Sparkles, MoonStar, MapPin, Calendar, Clock, Loader2 } from "lucide-react";
+import { useState, useEffect, useRef } from "react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -29,6 +29,12 @@ const formSchema = z.object({
 export default function BirthDetailsForm() {
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  
+  // Autocomplete state
+  const [suggestions, setSuggestions] = useState<any[]>([]);
+  const [isSearching, setIsSearching] = useState(false);
+  const [showDropdown, setShowDropdown] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -39,6 +45,51 @@ export default function BirthDetailsForm() {
       pob: "",
     },
   });
+
+  const pobValue = form.watch("pob");
+
+  // Debounced Search for POB
+  useEffect(() => {
+    const fetchPlaces = async () => {
+      if (pobValue.length < 3) {
+        setSuggestions([]);
+        return;
+      }
+      setIsSearching(true);
+      try {
+        const res = await fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(pobValue)}&format=json&limit=5`, {
+          headers: { "User-Agent": "AIAstrology/1.0" }
+        });
+        const data = await res.json();
+        setSuggestions(data);
+      } catch (err) {
+        console.error("Geocoding failed", err);
+      } finally {
+        setIsSearching(false);
+      }
+    };
+
+    const debounce = setTimeout(() => {
+      // Don't search if the value perfectly matches one of our suggestions (meaning they just selected it)
+      const exactMatch = suggestions.some(s => s.display_name === pobValue);
+      if (!exactMatch) {
+        fetchPlaces();
+      }
+    }, 500);
+
+    return () => clearTimeout(debounce);
+  }, [pobValue]);
+
+  // Click outside to close dropdown
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setShowDropdown(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   function onSubmit(values: z.infer<typeof formSchema>) {
     setIsSubmitting(true);
@@ -126,14 +177,46 @@ export default function BirthDetailsForm() {
               control={form.control}
               name="pob"
               render={({ field }) => (
-                <FormItem>
+                <FormItem className="relative" ref={dropdownRef}>
                   <FormLabel className="text-indigo-200">Place of Birth</FormLabel>
                   <FormControl>
                     <div className="relative">
-                      <Input placeholder="City, Country" className="pl-10 bg-black/20 border-indigo-500/30 text-indigo-100 focus-visible:ring-indigo-500" {...field} />
+                      <Input 
+                        placeholder="Type to search city..." 
+                        autoComplete="off"
+                        className="pl-10 bg-black/20 border-indigo-500/30 text-indigo-100 focus-visible:ring-indigo-500" 
+                        {...field} 
+                        onChange={(e) => {
+                          field.onChange(e);
+                          setShowDropdown(true);
+                        }}
+                        onFocus={() => setShowDropdown(true)}
+                      />
                       <MapPin className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-indigo-400" />
+                      {isSearching && (
+                        <Loader2 className="w-4 h-4 absolute right-3 top-1/2 -translate-y-1/2 text-indigo-400 animate-spin" />
+                      )}
                     </div>
                   </FormControl>
+                  
+                  {/* Autocomplete Dropdown */}
+                  {showDropdown && suggestions.length > 0 && (
+                    <div className="absolute top-full left-0 right-0 mt-1 bg-indigo-950/90 backdrop-blur-xl border border-indigo-500/30 rounded-lg shadow-2xl z-50 max-h-60 overflow-y-auto">
+                      {suggestions.map((place: any, index: number) => (
+                        <div 
+                          key={index} 
+                          className="px-4 py-3 hover:bg-indigo-600/30 cursor-pointer text-indigo-100 text-sm border-b border-indigo-500/10 last:border-0 transition-colors"
+                          onClick={() => {
+                            form.setValue("pob", place.display_name);
+                            setShowDropdown(false);
+                          }}
+                        >
+                          {place.display_name}
+                        </div>
+                      ))}
+                    </div>
+                  )}
+
                   <FormMessage className="text-red-400" />
                 </FormItem>
               )}
