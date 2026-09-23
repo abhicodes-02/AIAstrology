@@ -173,9 +173,16 @@ export async function fetchAIKundliData(name: string, dob: string, tob: string, 
         chartData.wealth = aiJson.wealth || "";
         chartData.fullLife = aiJson.fullLife || "Full life overview is not available.";
       }
-    } catch (err) {
-      console.error("All AI retries failed, using standard Bengali ephemeris response.");
+    } catch (err: any) {
+      console.error("All AI retries failed, using standard Bengali ephemeris response. Error:", err);
+      chartData.reading = `[AI ERROR] The AI generation failed during API call: ${err?.message || 'Unknown error'}. Please try again later.`;
+      chartData.career = `[AI ERROR] Failed during API call.`;
+      chartData.relationships = `[AI ERROR] Failed during API call.`;
     }
+  } else {
+    chartData.reading = `[KEY MISSING] GEMINI_API_KEY is not configured or missing in Vercel. Please check Vercel Environment Variables.`;
+    chartData.career = `[KEY MISSING] GEMINI_API_KEY missing.`;
+    chartData.relationships = `[KEY MISSING] GEMINI_API_KEY missing.`;
   }
 
   return chartData;
