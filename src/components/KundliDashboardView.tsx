@@ -6,7 +6,7 @@ import Link from "next/link";
 import KundliChart from "@/components/KundliChart";
 import { Button } from "@/components/ui/button";
 import { useRef, useState } from "react";
-import html2canvas from "html2canvas";
+import { toJpeg } from "html-to-image";
 import { jsPDF } from "jspdf";
 
 export default function KundliDashboardView({ 
@@ -30,19 +30,20 @@ export default function KundliDashboardView({
     setIsDownloading(true);
     
     try {
-      const canvas = await html2canvas(printRef.current, {
-        scale: 2,
-        useCORS: true,
-        backgroundColor: "#0B0C10" // Dark space background
+      const dataUrl = await toJpeg(printRef.current, { 
+        quality: 0.95,
+        backgroundColor: '#0B0C10',
+        pixelRatio: 2
       });
       
-      const imgData = canvas.toDataURL("image/jpeg", 1.0);
       const pdf = new jsPDF("p", "mm", "a4");
       
+      // Calculate proper aspect ratio
+      const imgProps = pdf.getImageProperties(dataUrl);
       const pdfWidth = pdf.internal.pageSize.getWidth();
-      const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+      const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
       
-      pdf.addImage(imgData, "JPEG", 0, 0, pdfWidth, pdfHeight);
+      pdf.addImage(dataUrl, "JPEG", 0, 0, pdfWidth, pdfHeight);
       pdf.save(`Kundli_${name.replace(/\s+/g, '_')}.pdf`);
     } catch (error) {
       console.error("Error generating PDF", error);
