@@ -87,7 +87,7 @@ export default function VarshaphalDashboardView({
           transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
           className="absolute bottom-[-10%] left-[-10%] w-[50vw] h-[50vw] bg-orange-900/10 rounded-full blur-[120px]" 
         />
-        <div className="absolute inset-0 bg-[url('/noise.svg')] opacity-20 mix-blend-overlay"></div>
+
       </div>
 
       <div className="relative z-10 max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12" ref={printRef}>

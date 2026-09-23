@@ -95,7 +95,7 @@ export default function KundliDashboardView({
           transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
           className="absolute bottom-[-10%] right-[-10%] w-[50vw] h-[50vw] bg-blue-900/10 rounded-full blur-[120px]" 
         />
-        <div className="absolute inset-0 bg-[url('/noise.svg')] opacity-20 mix-blend-overlay"></div>
+        
       </div>
 
       <div className="relative z-10 max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12" ref={printRef}>
@@ -292,7 +292,7 @@ export default function KundliDashboardView({
 
             {/* Varshaphal CTA */}
             <motion.div variants={itemVariants} className="mt-8 bg-gradient-to-r from-yellow-900/40 to-orange-900/40 border border-yellow-500/30 rounded-3xl p-8 md:p-12 backdrop-blur-2xl shadow-[0_0_50px_rgba(234,179,8,0.15)] flex flex-col md:flex-row items-center justify-between gap-8 text-center md:text-left relative overflow-hidden group">
-              <div className="absolute inset-0 bg-[url('/noise.svg')] opacity-20 mix-blend-overlay"></div>
+
               <div className="absolute -right-20 -top-20 w-64 h-64 bg-yellow-500/20 rounded-full blur-[80px] group-hover:scale-150 transition-transform duration-1000" />
               
               <div className="relative z-10 max-w-xl">
