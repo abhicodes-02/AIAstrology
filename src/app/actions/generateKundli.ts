@@ -148,7 +148,7 @@ export async function fetchAIKundliData(name: string, dob: string, tob: string, 
       while (retries > 0 && !aiJson) {
         try {
           const response = await ai.models.generateContent({
-            model: "gemini-1.5-flash",
+            model: "gemini-3.6-flash",
             contents: prompt,
             config: { responseMimeType: "application/json" }
           });
