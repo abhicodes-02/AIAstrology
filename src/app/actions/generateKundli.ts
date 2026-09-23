@@ -144,23 +144,25 @@ export async function fetchAIKundliData(name: string, dob: string, tob: string, 
       }`;
       
       let aiJson = null;
-      let retries = 3;
-      while (retries > 0 && !aiJson) {
+      const fallbackModels = ["gemini-3.6-flash", "gemini-3.5-flash", "gemini-3.5-flash-lite"];
+      
+      for (const modelName of fallbackModels) {
+        if (aiJson) break; // Stop if we already got successful data
+        
         try {
           const response = await ai.models.generateContent({
-            model: "gemini-3.6-flash",
+            model: modelName,
             contents: prompt,
             config: { responseMimeType: "application/json" }
           });
           if (response.text) {
             const cleanedText = response.text.replace(/```json\n?|```/g, '').trim();
             aiJson = JSON.parse(cleanedText);
+            break; // Success, break the loop
           }
         } catch (err: any) {
-          console.warn(`AI generation failed (Retries left: ${retries - 1}). Error:`, err.message);
-          retries--;
-          if (retries === 0) throw err;
-          // Wait 1.5 seconds before retrying
+          console.warn(`[Model: ${modelName}] AI generation failed. Error:`, err.message);
+          // Wait 1.5 seconds before trying the next model to avoid spamming the API
           await new Promise(resolve => setTimeout(resolve, 1500));
         }
       }
@@ -172,6 +174,8 @@ export async function fetchAIKundliData(name: string, dob: string, tob: string, 
         chartData.health = aiJson.health || "";
         chartData.wealth = aiJson.wealth || "";
         chartData.fullLife = aiJson.fullLife || "Full life overview is not available.";
+      } else {
+        throw new Error("All fallback models failed due to rate limits or API errors.");
       }
     } catch (err: any) {
       console.error("All AI retries failed, using standard Bengali ephemeris response. Error:", err);

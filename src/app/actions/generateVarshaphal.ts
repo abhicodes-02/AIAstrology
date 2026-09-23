@@ -75,22 +75,24 @@ export async function fetchAIVarshaphalData(name: string, dob: string, tob: stri
       }`;
       
       let aiJson: any = null;
-      let retries = 3;
-      while (retries > 0 && !aiJson) {
+      const fallbackModels = ["gemini-3.6-flash", "gemini-3.5-flash", "gemini-3.5-flash-lite"];
+      
+      for (const modelName of fallbackModels) {
+        if (aiJson) break;
+        
         try {
           const response = await ai.models.generateContent({
-            model: "gemini-3.6-flash",
+            model: modelName,
             contents: prompt,
             config: { responseMimeType: "application/json" }
           });
           if (response.text) {
             const cleanedText = response.text.replace(/```json\n?|```/g, '').trim();
             aiJson = JSON.parse(cleanedText);
+            break;
           }
         } catch (err: any) {
-          console.warn(`Varshaphal AI generation failed (Retries left: ${retries - 1}). Error:`, err.message);
-          retries--;
-          if (retries === 0) throw err;
+          console.warn(`[Model: ${modelName}] Varshaphal AI generation failed. Error:`, err.message);
           await new Promise(resolve => setTimeout(resolve, 1500));
         }
       }
@@ -105,11 +107,14 @@ export async function fetchAIVarshaphalData(name: string, dob: string, tob: stri
         } else {
           varshaphalData.monthlyPredictions = [{ month: "Overview", prediction: aiJson.monthlyPredictions || "[AI ERROR] The AI model stopped generating before reaching your monthly breakdown.", theme: "General", career: "", relationships: "" }];
         }
+      } else {
+        throw new Error("All fallback models failed due to rate limits or API errors.");
       }
-    } catch (err) {
+    } catch (err: any) {
       console.error("All AI retries failed for Varshaphal.", err);
+      varshaphalData.varshaphal = `[AI ERROR] The AI generation failed: ${err?.message || 'Unknown error'}. Please try again later.`;
     }
-  }
+  } else {
 
   return varshaphalData;
 }
