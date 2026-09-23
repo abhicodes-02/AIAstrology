@@ -1,10 +1,13 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Sparkles, ArrowLeft, Star, Sun, Moon, MapPin, Clock, Calendar, Heart, Shield, Coins, Briefcase } from "lucide-react";
+import { Sparkles, ArrowLeft, Star, Sun, Moon, MapPin, Clock, Calendar, Heart, Shield, Coins, Briefcase, Download, Loader2 } from "lucide-react";
 import Link from "next/link";
 import KundliChart from "@/components/KundliChart";
 import { Button } from "@/components/ui/button";
+import { useRef, useState } from "react";
+import html2canvas from "html2canvas";
+import { jsPDF } from "jspdf";
 
 export default function KundliDashboardView({ 
   chartData, 
@@ -19,6 +22,34 @@ export default function KundliDashboardView({
   tob: string; 
   pob: string; 
 }) {
+  const printRef = useRef<HTMLDivElement>(null);
+  const [isDownloading, setIsDownloading] = useState(false);
+
+  const handleDownloadPDF = async () => {
+    if (!printRef.current) return;
+    setIsDownloading(true);
+    
+    try {
+      const canvas = await html2canvas(printRef.current, {
+        scale: 2,
+        useCORS: true,
+        backgroundColor: "#0B0C10" // Dark space background
+      });
+      
+      const imgData = canvas.toDataURL("image/jpeg", 1.0);
+      const pdf = new jsPDF("p", "mm", "a4");
+      
+      const pdfWidth = pdf.internal.pageSize.getWidth();
+      const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+      
+      pdf.addImage(imgData, "JPEG", 0, 0, pdfWidth, pdfHeight);
+      pdf.save(`Kundli_${name.replace(/\s+/g, '_')}.pdf`);
+    } catch (error) {
+      console.error("Error generating PDF", error);
+    } finally {
+      setIsDownloading(false);
+    }
+  };
   const containerVariants: any = {
     hidden: { opacity: 0 },
     show: {
@@ -49,7 +80,7 @@ export default function KundliDashboardView({
         <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 mix-blend-overlay"></div>
       </div>
 
-      <div className="relative z-10 max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
+      <div className="relative z-10 max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12" ref={printRef}>
         {/* Navigation & Header */}
         <motion.div 
           initial={{ opacity: 0, y: -20 }}
@@ -65,8 +96,21 @@ export default function KundliDashboardView({
               Cosmic Blueprint
             </h1>
           </div>
-          <Button variant="outline" className="bg-white/5 border-white/10 hover:bg-white/10 text-indigo-100 rounded-full px-6 backdrop-blur-md">
-            <Sparkles className="w-4 h-4 mr-2 text-purple-400" /> Download PDF
+          <Button 
+            variant="outline" 
+            className="bg-white/5 border-white/10 hover:bg-white/10 text-indigo-100 rounded-full px-6 backdrop-blur-md transition-all"
+            onClick={handleDownloadPDF}
+            disabled={isDownloading}
+          >
+            {isDownloading ? (
+              <>
+                <Loader2 className="w-4 h-4 mr-2 animate-spin text-purple-400" /> Generating...
+              </>
+            ) : (
+              <>
+                <Download className="w-4 h-4 mr-2 text-purple-400" /> Download PDF
+              </>
+            )}
           </Button>
         </motion.div>
 

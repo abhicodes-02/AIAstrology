@@ -1,9 +1,12 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Sparkles, ArrowLeft, Sun, Moon, CalendarDays, Briefcase, Heart, Star } from "lucide-react";
+import { Sparkles, ArrowLeft, Sun, Moon, CalendarDays, Briefcase, Heart, Star, Download, Loader2 } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { useRef, useState } from "react";
+import html2canvas from "html2canvas";
+import { jsPDF } from "jspdf";
 
 export default function VarshaphalDashboardView({ 
   data, 
@@ -18,6 +21,34 @@ export default function VarshaphalDashboardView({
   tob: string; 
   pob: string; 
 }) {
+  const printRef = useRef<HTMLDivElement>(null);
+  const [isDownloading, setIsDownloading] = useState(false);
+
+  const handleDownloadPDF = async () => {
+    if (!printRef.current) return;
+    setIsDownloading(true);
+    
+    try {
+      const canvas = await html2canvas(printRef.current, {
+        scale: 2,
+        useCORS: true,
+        backgroundColor: "#0B0C10" // Dark space background
+      });
+      
+      const imgData = canvas.toDataURL("image/jpeg", 1.0);
+      const pdf = new jsPDF("p", "mm", "a4");
+      
+      const pdfWidth = pdf.internal.pageSize.getWidth();
+      const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+      
+      pdf.addImage(imgData, "JPEG", 0, 0, pdfWidth, pdfHeight);
+      pdf.save(`Varshaphal_${name.replace(/\s+/g, '_')}.pdf`);
+    } catch (error) {
+      console.error("Error generating PDF", error);
+    } finally {
+      setIsDownloading(false);
+    }
+  };
   const containerVariants: any = {
     hidden: { opacity: 0 },
     show: {
@@ -52,7 +83,7 @@ export default function VarshaphalDashboardView({
         <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 mix-blend-overlay"></div>
       </div>
 
-      <div className="relative z-10 max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
+      <div className="relative z-10 max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12" ref={printRef}>
         {/* Navigation & Header */}
         <motion.div 
           initial={{ opacity: 0, y: -20 }}
@@ -71,8 +102,21 @@ export default function VarshaphalDashboardView({
               {name} • Varshaphal Annual Forecast
             </p>
           </div>
-          <Button variant="outline" className="bg-white/5 border-yellow-500/20 hover:bg-yellow-500/10 text-yellow-100 rounded-full px-6 backdrop-blur-md">
-            <Sparkles className="w-4 h-4 mr-2 text-yellow-400" /> Save Reading
+          <Button 
+            variant="outline" 
+            className="bg-white/5 border-yellow-500/20 hover:bg-yellow-500/10 text-yellow-100 rounded-full px-6 backdrop-blur-md transition-all"
+            onClick={handleDownloadPDF}
+            disabled={isDownloading}
+          >
+            {isDownloading ? (
+              <>
+                <Loader2 className="w-4 h-4 mr-2 animate-spin text-yellow-400" /> Generating...
+              </>
+            ) : (
+              <>
+                <Download className="w-4 h-4 mr-2 text-yellow-400" /> Download PDF
+              </>
+            )}
           </Button>
         </motion.div>
 
