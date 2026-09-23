@@ -57,9 +57,7 @@ export default function BirthDetailsForm() {
       }
       setIsSearching(true);
       try {
-        const res = await fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(pobValue)}&format=json&limit=5`, {
-          headers: { "User-Agent": "AIAstrology/1.0" }
-        });
+        const res = await fetch(`/api/places?q=${encodeURIComponent(pobValue)}`);
         const data = await res.json();
         setSuggestions(data);
       } catch (err) {
