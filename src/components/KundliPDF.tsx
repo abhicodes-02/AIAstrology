@@ -123,3 +123,4 @@ export const KundliPDF = ({ chartData, name, dob, tob, pob, d1Image, d9Image }: 
     </Page>
   </Document>
 );
+

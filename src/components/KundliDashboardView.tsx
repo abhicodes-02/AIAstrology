@@ -7,7 +7,7 @@ import KundliChart from "@/components/KundliChart";
 import { Button } from "@/components/ui/button";
 import { useRef, useState } from "react";
 import { toJpeg } from "html-to-image";
-import { jsPDF } from "jspdf";
+
 
 export default function KundliDashboardView({ 
   chartData, 

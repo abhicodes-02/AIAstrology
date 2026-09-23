@@ -120,3 +120,4 @@ export const VarshaphalPDF = ({ data, name, dob, tob, pob }: any) => {
     </Document>
   );
 };
+
