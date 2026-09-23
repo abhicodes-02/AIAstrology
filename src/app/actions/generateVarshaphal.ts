@@ -37,7 +37,7 @@ export async function fetchAIVarshaphalData(name: string, dob: string, tob: stri
     return sidereal;
   };
 
-  const sunData = chart.planetaryBodies?.find((b: any) => b.name === "Sun");
+  const sunData = (chart as any).planets?.find((b: any) => b.name === "Sun");
   const siderealSun = sunData ? getSidereal(sunData.longitude) : 0;
   
   const signs = ["Aries", "Taurus", "Gemini", "Cancer", "Leo", "Virgo", "Libra", "Scorpio", "Sagittarius", "Capricorn", "Aquarius", "Pisces"];
