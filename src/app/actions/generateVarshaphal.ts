@@ -79,7 +79,7 @@ export async function fetchAIVarshaphalData(name: string, dob: string, tob: stri
       while (retries > 0 && !aiJson) {
         try {
           const response = await ai.models.generateContent({
-            model: "gemini-3.5-flash-lite",
+            model: "gemini-1.5-flash",
             contents: prompt,
             config: { responseMimeType: "application/json" }
           });

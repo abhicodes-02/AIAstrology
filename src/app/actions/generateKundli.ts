@@ -119,12 +119,12 @@ export async function fetchAIKundliData(name: string, dob: string, tob: string, 
     nakshatra,
     tithi: `${paksha} Paksha, Tithi ${tithiNumber}`,
     yoga,
-    reading: `[AI NOT CONFIGURED] Welcome ${name}. This Kundli strictly follows the traditional Bengali/Vedic method. Your Lagna is ${ascendantName}. Your birth occurred during ${paksha} Paksha, Tithi ${tithiNumber}, under ${nakshatra} Nakshatra and ${yoga} Yoga.`,
-    career: `[AI NOT CONFIGURED] Please add your GEMINI_API_KEY to .env.local and restart the server to generate a deep-dive career prediction based on your planetary placements.`,
-    relationships: `[AI NOT CONFIGURED] Please add your GEMINI_API_KEY to generate a detailed marriage and destiny prediction using your Navamsa (D-9) chart.`,
-    health: `[AI NOT CONFIGURED] Please add your GEMINI_API_KEY to unlock health predictions.`,
-    wealth: `[AI NOT CONFIGURED] Please add your GEMINI_API_KEY to unlock wealth and finance predictions.`,
-    fullLife: `[AI NOT CONFIGURED] To unlock the massive, fully personalized life prediction based on your exact D-1 and D-9 charts, a valid Gemini API key is required.`
+    reading: `[AI BUSY] Welcome ${name}. The AI is currently experiencing high demand. Please wait a moment and try again.`,
+    career: `[AI BUSY] The AI is currently experiencing high demand. Please try again.`,
+    relationships: `[AI BUSY] The AI is currently experiencing high demand. Please try again.`,
+    health: `[AI BUSY] The AI is currently experiencing high demand. Please try again.`,
+    wealth: `[AI BUSY] The AI is currently experiencing high demand. Please try again.`,
+    fullLife: `[AI BUSY] The AI is currently experiencing high demand. Please try again.`
   };
 
   // AI Augmentation (if API key provided)
@@ -148,7 +148,7 @@ export async function fetchAIKundliData(name: string, dob: string, tob: string, 
       while (retries > 0 && !aiJson) {
         try {
           const response = await ai.models.generateContent({
-            model: "gemini-3.5-flash-lite",
+            model: "gemini-1.5-flash",
             contents: prompt,
             config: { responseMimeType: "application/json" }
           });
