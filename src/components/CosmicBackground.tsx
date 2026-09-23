@@ -26,17 +26,17 @@ export const CosmicBackground = () => {
     setElements(newElements);
   }, []);
 
-  if (!mounted) return <div className="fixed inset-0 -z-20 bg-[#060412]" />;
+  if (!mounted) return <div className="fixed inset-0 -z-10 bg-[#060412]" />;
 
   return (
-    <div className="fixed inset-0 -z-20 overflow-hidden bg-[#060412] bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-indigo-950/40 via-[#060412] to-purple-950/20">
-      <div className="absolute inset-0 opacity-40">
+    <div className="fixed inset-0 -z-10 pointer-events-none overflow-hidden bg-[#060412] bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-indigo-950/50 via-[#060412] to-purple-950/30">
+      <div className="absolute inset-0 opacity-100">
         {elements.map((el) => {
           if (el.type === "star") {
             return (
               <motion.div
                 key={el.id}
-                initial={{ x: `${el.x}vw`, y: -50, opacity: 0 }}
+                initial={{ x: `${el.x}vw`, y: "-10vh", opacity: 0 }}
                 animate={{
                   y: ["-10vh", "110vh"],
                   opacity: [0, 1, 1, 0],
@@ -48,7 +48,7 @@ export const CosmicBackground = () => {
                   ease: "linear",
                   delay: el.delay,
                 }}
-                className="absolute top-0 left-0 bg-white rounded-full shadow-[0_0_8px_2px_rgba(255,255,255,0.8)]"
+                className="absolute top-0 left-0 bg-white rounded-full shadow-[0_0_10px_3px_rgba(255,255,255,0.9)]"
                 style={{ width: el.size, height: el.size }}
               />
             );
@@ -58,11 +58,11 @@ export const CosmicBackground = () => {
             return (
               <motion.svg
                 key={el.id}
-                initial={{ x: `${el.x}vw`, y: -100, rotate: el.rotation }}
+                initial={{ x: `${el.x}vw`, y: "-10vh", rotate: el.rotation }}
                 animate={{
                   y: ["-10vh", "110vh"],
                   rotate: el.rotation + 360,
-                  opacity: [0, 0.4, 0.4, 0],
+                  opacity: [0, 0.8, 0.8, 0],
                 }}
                 transition={{
                   duration: el.duration * 1.5,
@@ -70,7 +70,7 @@ export const CosmicBackground = () => {
                   ease: "linear",
                   delay: el.delay,
                 }}
-                className="absolute top-0 left-0 text-blue-200 opacity-30"
+                className="absolute top-0 left-0 text-blue-200 opacity-60"
                 style={{ width: el.size, height: el.size }}
                 viewBox="0 0 24 24"
                 fill="currentColor"
@@ -84,11 +84,11 @@ export const CosmicBackground = () => {
             return (
               <motion.svg
                 key={el.id}
-                initial={{ x: `${el.x}vw`, y: -100, rotate: el.rotation }}
+                initial={{ x: `${el.x}vw`, y: "-10vh", rotate: el.rotation }}
                 animate={{
                   y: ["-10vh", "110vh"],
                   rotate: el.rotation - 360,
-                  opacity: [0, 0.3, 0.3, 0],
+                  opacity: [0, 0.7, 0.7, 0],
                 }}
                 transition={{
                   duration: el.duration * 1.8,
@@ -96,7 +96,7 @@ export const CosmicBackground = () => {
                   ease: "linear",
                   delay: el.delay,
                 }}
-                className="absolute top-0 left-0 text-amber-500 opacity-20"
+                className="absolute top-0 left-0 text-amber-500 opacity-60"
                 style={{ width: el.size, height: el.size }}
                 viewBox="0 0 24 24"
                 fill="none"
@@ -124,3 +124,4 @@ export const CosmicBackground = () => {
     </div>
   );
 };
+
