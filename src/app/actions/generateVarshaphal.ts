@@ -114,7 +114,7 @@ export async function fetchAIVarshaphalData(name: string, dob: string, tob: stri
       console.error("All AI retries failed for Varshaphal.", err);
       varshaphalData.varshaphal = `[AI ERROR] The AI generation failed: ${err?.message || 'Unknown error'}. Please try again later.`;
     }
-  } else {
+  }
 
   return varshaphalData;
 }
