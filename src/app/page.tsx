@@ -6,7 +6,7 @@ import { motion } from "framer-motion";
 
 export default function Home() {
   return (
-    <main className="flex-1 flex flex-col items-center justify-center p-4 md:p-8 min-h-screen relative overflow-hidden bg-[#050510]">
+    <main className="flex-1 flex flex-col items-center justify-center p-4 md:p-8 min-h-screen relative overflow-hidden bg-transparent">
       {/* Mystical decorative elements */}
       <motion.div 
         animate={{ scale: [1, 1.2, 1], opacity: [0.3, 0.5, 0.3] }}
@@ -83,7 +83,7 @@ export default function Home() {
           className="flex-1 w-full relative"
         >
           <div className="absolute -inset-1 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-2xl blur-lg opacity-30 animate-pulse" />
-          <div className="relative z-10 bg-[#050510]/80 backdrop-blur-xl border border-indigo-500/30 p-1 rounded-2xl shadow-2xl">
+          <div className="relative z-10 bg-transparent/80 backdrop-blur-xl border border-indigo-500/30 p-1 rounded-2xl shadow-2xl">
             <BirthDetailsForm />
           </div>
         </motion.div>

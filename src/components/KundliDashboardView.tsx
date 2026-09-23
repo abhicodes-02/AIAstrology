@@ -82,7 +82,7 @@ export default function KundliDashboardView({
   };
 
   return (
-    <div className="min-h-screen bg-[#020205] text-indigo-100 font-sans relative overflow-x-hidden selection:bg-indigo-500/30">
+    <div className="min-h-screen bg-transparent text-indigo-100 font-sans relative overflow-x-hidden selection:bg-indigo-500/30">
       {/* Animated Cosmic Background */}
       <div className="fixed inset-0 z-0 pointer-events-none">
         <motion.div 
