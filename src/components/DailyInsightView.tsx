@@ -18,6 +18,7 @@ import {
   Star,
   CheckCircle2,
   ChevronRight,
+  ChevronLeft,
 } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
@@ -80,6 +81,18 @@ export default function DailyInsightView({
     show: { opacity: 1, y: 0, transition: { type: "spring" as const, stiffness: 100 } },
   };
 
+  const queryParams = new URLSearchParams({ name, dob, tob, pob }).toString();
+
+  // Date navigation helpers
+  const currentIso = dailyData.targetDate || new Date().toISOString().slice(0, 10);
+  const getShiftedDate = (baseIso: string, days: number) => {
+    const [y, m, d] = baseIso.split("-").map(Number);
+    const dateObj = new Date(Date.UTC(y, m - 1, d + days));
+    return dateObj.toISOString().slice(0, 10);
+  };
+  const prevDateIso = getShiftedDate(currentIso, -1);
+  const nextDateIso = getShiftedDate(currentIso, 1);
+
   return (
     <div className="min-h-screen bg-transparent text-indigo-100 font-sans relative overflow-x-hidden selection:bg-indigo-500/30">
       {/* Background ambient glowing orbs */}
@@ -106,15 +119,40 @@ export default function DailyInsightView({
           <div>
             <div className="flex flex-wrap items-center gap-3 mb-4">
               <Link
-                href={`/kundli?name=${encodeURIComponent(name)}&dob=${dob}&tob=${encodeURIComponent(tob)}&pob=${encodeURIComponent(pob)}`}
+                href={`/kundli?${queryParams}`}
                 className="group inline-flex items-center gap-2 text-indigo-400 hover:text-indigo-300 transition-all text-sm font-medium bg-indigo-500/10 px-4 py-2 rounded-full border border-indigo-500/20 hover:border-indigo-500/40"
               >
                 <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
                 Back to Kundli
               </Link>
-              <div className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-cyan-300 bg-cyan-500/10 px-3 py-1.5 rounded-full border border-cyan-500/20">
-                <Calendar className="w-3.5 h-3.5" />
-                {dailyData.dateFormatted}
+              
+              {/* Interactive Day Navigation Bar */}
+              <div className="flex items-center gap-1.5 bg-indigo-950/40 p-1 rounded-full border border-indigo-500/20 backdrop-blur-md">
+                <Link
+                  href={`/daily-insight?${queryParams}&date=${prevDateIso}`}
+                  className="p-1.5 rounded-full hover:bg-indigo-500/20 text-indigo-300 transition-colors"
+                  title="Previous Day"
+                >
+                  <ChevronLeft className="w-3.5 h-3.5" />
+                </Link>
+                <div className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-indigo-200 px-2.5 py-1">
+                  <Calendar className="w-3.5 h-3.5 text-indigo-400" />
+                  {dailyData.dateFormatted}
+                </div>
+                <Link
+                  href={`/daily-insight?${queryParams}&date=${nextDateIso}`}
+                  className="p-1.5 rounded-full hover:bg-indigo-500/20 text-indigo-300 transition-colors"
+                  title="Next Day"
+                >
+                  <ChevronRight className="w-3.5 h-3.5" />
+                </Link>
+                <Link
+                  href={`/daily-insight?${queryParams}`}
+                  className="text-[11px] font-bold uppercase tracking-wider bg-indigo-500/20 hover:bg-indigo-500/30 text-indigo-300 px-2.5 py-1 rounded-full border border-indigo-500/30 transition-all ml-1"
+                  title="Jump to Present Date"
+                >
+                  Today
+                </Link>
               </div>
             </div>
             <h1 className="text-4xl md:text-6xl font-bold font-space text-transparent bg-clip-text bg-gradient-to-r from-cyan-100 via-indigo-200 to-purple-200 tracking-tight">

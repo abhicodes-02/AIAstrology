@@ -142,14 +142,6 @@ export default function KpKundliDashboardView({
           </div>
 
           <div className="flex flex-wrap items-center gap-3">
-            <Link href={`/kundli?${queryParams}`}>
-              <Button
-                variant="outline"
-                className="bg-indigo-500/10 border-indigo-500/30 hover:bg-indigo-500/20 text-indigo-200 rounded-full px-5 backdrop-blur-md transition-all font-semibold"
-              >
-                <Sparkles className="w-4 h-4 mr-2 text-indigo-400" /> Switch to Vedic Mode
-              </Button>
-            </Link>
             <Link href={`/kp-daily-insight?${queryParams}`}>
               <Button
                 variant="outline"

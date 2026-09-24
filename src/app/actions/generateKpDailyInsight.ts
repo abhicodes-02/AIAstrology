@@ -61,12 +61,49 @@ export async function fetchAIKpDailyInsightData(
   const natalSunKp = getKpDetailsForLongitude(siderealNatalSunLon);
 
   // 2. Target Day Transit Chart (KP)
-  const now = targetDateStr ? new Date(targetDateStr) : new Date();
-  const currentYear = now.getFullYear();
-  const currentMonth = now.getMonth() + 1;
-  const currentDay = now.getDate();
-  const currentHour = now.getHours();
-  const currentMinute = now.getMinutes();
+  let currentYear: number;
+  let currentMonth: number;
+  let currentDay: number;
+  let currentHour: number;
+  let currentMinute: number;
+
+  if (targetDateStr) {
+    const parts = targetDateStr.split("-").map(Number);
+    if (parts.length >= 3 && !isNaN(parts[0]) && !isNaN(parts[1]) && !isNaN(parts[2])) {
+      currentYear = parts[0];
+      currentMonth = parts[1];
+      currentDay = parts[2];
+      currentHour = 12; // Noon snapshot for target day
+      currentMinute = 0;
+    } else {
+      const parsed = new Date(targetDateStr);
+      currentYear = parsed.getUTCFullYear();
+      currentMonth = parsed.getUTCMonth() + 1;
+      currentDay = parsed.getUTCDate();
+      currentHour = 12;
+      currentMinute = 0;
+    }
+  } else {
+    // Current live time converted to native's local timezone (offset in hours)
+    const utcNow = Date.now();
+    const localTimestamp = utcNow + timezone * 3600 * 1000;
+    const localDate = new Date(localTimestamp);
+    currentYear = localDate.getUTCFullYear();
+    currentMonth = localDate.getUTCMonth() + 1;
+    currentDay = localDate.getUTCDate();
+    currentHour = localDate.getUTCHours();
+    currentMinute = localDate.getUTCMinutes();
+  }
+
+  const targetDateISO = `${currentYear}-${String(currentMonth).padStart(2, "0")}-${String(currentDay).padStart(2, "0")}`;
+  const displayDateObj = new Date(Date.UTC(currentYear, currentMonth - 1, currentDay, 12, 0, 0));
+  const dateFormatted = new Intl.DateTimeFormat("en-US", {
+    weekday: "long",
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+    timeZone: "UTC",
+  }).format(displayDateObj);
 
   const transitAyanamsa = getKpAyanamsa(currentYear, currentMonth, currentDay);
   const transitChart = celestine.calculateChart(
@@ -94,13 +131,6 @@ export async function fetchAIKpDailyInsightData(
   }));
   const transitHouseOccupied = getHouseForLongitude(siderealTransitMoonLon, natalCusps);
 
-  const dateFormatted = now.toLocaleDateString("en-US", {
-    weekday: "long",
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  });
-
   type FavorabilityLevel = "WORST" | "BAD" | "GOOD" | "FAVOURABLE" | "HIGHLY FAVOURABLE";
 
   function normalizeFavorability(val: any, defaultVal = "GOOD"): FavorabilityLevel {
@@ -117,6 +147,7 @@ export async function fetchAIKpDailyInsightData(
   // Fallback data with all matching fields as Vedic Daily Insight
   let kpDailyData = {
     dateFormatted,
+    targetDate: targetDateISO,
     natalMoonSign: natalMoonKp.signName,
     natalAscendant: natalAscKp.signName,
     natalSunSign: natalSunKp.signName,

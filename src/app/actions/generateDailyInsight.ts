@@ -2,6 +2,7 @@
 
 import * as celestine from "celestine";
 import { GoogleGenAI } from "@google/genai";
+import { getAccurateTimezone } from "@/lib/geoUtils";
 
 export async function fetchAIDailyInsightData(
   name: string,
@@ -13,15 +14,17 @@ export async function fetchAIDailyInsightData(
   // 1. Geocode location
   let lat = 22.5726;
   let lon = 88.3639;
+  let countryCode = "in";
   try {
     const geoRes = await fetch(
-      `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(pob)}&format=json&limit=1`,
+      `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(pob)}&format=json&limit=1&addressdetails=1`,
       { headers: { "User-Agent": "AIAstrology/1.0" } }
     );
     const geoData = await geoRes.json();
     if (geoData && geoData.length > 0) {
       lat = parseFloat(geoData[0].lat);
       lon = parseFloat(geoData[0].lon);
+      countryCode = geoData[0].address?.country_code || "";
     }
   } catch (err) {
     console.error("Geocoding failed in daily insight", err);
@@ -30,7 +33,7 @@ export async function fetchAIDailyInsightData(
   // 2. Birth Chart Calculation
   const [birthYear, birthMonth, birthDay] = dob.split("-").map(Number);
   const [birthHour, birthMinute] = tob.split(":").map(Number);
-  const timezone = Math.round(lon / 15);
+  const timezone = await getAccurateTimezone(lat, lon, countryCode, pob);
 
   const birthChart = celestine.calculateChart(
     {
@@ -93,12 +96,49 @@ export async function fetchAIDailyInsightData(
   const birthNakshatra = nakshatras[nakshatraIndex];
 
   // 3. Current Transit Chart Calculation
-  const now = targetDateStr ? new Date(targetDateStr) : new Date();
-  const currentYear = now.getFullYear();
-  const currentMonth = now.getMonth() + 1;
-  const currentDay = now.getDate();
-  const currentHour = now.getHours();
-  const currentMinute = now.getMinutes();
+  let currentYear: number;
+  let currentMonth: number;
+  let currentDay: number;
+  let currentHour: number;
+  let currentMinute: number;
+
+  if (targetDateStr) {
+    const parts = targetDateStr.split("-").map(Number);
+    if (parts.length >= 3 && !isNaN(parts[0]) && !isNaN(parts[1]) && !isNaN(parts[2])) {
+      currentYear = parts[0];
+      currentMonth = parts[1];
+      currentDay = parts[2];
+      currentHour = 12; // Noon snapshot for requested date
+      currentMinute = 0;
+    } else {
+      const parsed = new Date(targetDateStr);
+      currentYear = parsed.getUTCFullYear();
+      currentMonth = parsed.getUTCMonth() + 1;
+      currentDay = parsed.getUTCDate();
+      currentHour = 12;
+      currentMinute = 0;
+    }
+  } else {
+    // Current live time converted to native's local timezone (offset in hours)
+    const utcNow = Date.now();
+    const localTimestamp = utcNow + timezone * 3600 * 1000;
+    const localDate = new Date(localTimestamp);
+    currentYear = localDate.getUTCFullYear();
+    currentMonth = localDate.getUTCMonth() + 1;
+    currentDay = localDate.getUTCDate();
+    currentHour = localDate.getUTCHours();
+    currentMinute = localDate.getUTCMinutes();
+  }
+
+  const targetDateISO = `${currentYear}-${String(currentMonth).padStart(2, "0")}-${String(currentDay).padStart(2, "0")}`;
+  const displayDateObj = new Date(Date.UTC(currentYear, currentMonth - 1, currentDay, 12, 0, 0));
+  const dateFormatted = new Intl.DateTimeFormat("en-US", {
+    weekday: "long",
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+    timeZone: "UTC",
+  }).format(displayDateObj);
 
   const transitChart = celestine.calculateChart(
     {
@@ -129,16 +169,23 @@ export async function fetchAIDailyInsightData(
   // House of Transit Moon relative to Natal Moon
   const transitHouseFromMoon = ((transitMoonSignIndex - moonSignIndex + 12) % 12) + 1;
 
-  const dateFormatted = now.toLocaleDateString("en-US", {
-    weekday: "long",
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  });
+  type FavorabilityLevel = "WORST" | "BAD" | "GOOD" | "FAVOURABLE" | "HIGHLY FAVOURABLE";
+
+  function normalizeFavorability(val: any, defaultVal = "GOOD"): FavorabilityLevel {
+    if (!val || typeof val !== "string") return defaultVal as FavorabilityLevel;
+    const upper = val.toUpperCase().trim();
+    if (upper.includes("HIGHLY") || upper.includes("EXCELLENT")) return "HIGHLY FAVOURABLE";
+    if (upper.includes("FAVOURABLE") || upper.includes("FAVORABLE")) return "FAVOURABLE";
+    if (upper.includes("WORST") || upper.includes("TERRIBLE")) return "WORST";
+    if (upper.includes("BAD") || upper.includes("POOR") || upper.includes("CHALLENGING")) return "BAD";
+    if (upper.includes("GOOD") || upper.includes("AVERAGE") || upper.includes("MODERATE")) return "GOOD";
+    return defaultVal as FavorabilityLevel;
+  }
 
   // Default fallback data
   let dailyData = {
     dateFormatted,
+    targetDate: targetDateISO,
     natalMoonSign: moonSign,
     natalAscendant: ascendantSign,
     natalSunSign: sunSign,
@@ -147,6 +194,11 @@ export async function fetchAIDailyInsightData(
     transitNakshatra,
     transitHouseFromMoon,
     cosmicScore: 82,
+    overallFavorability: "FAVOURABLE" as FavorabilityLevel,
+    careerFavorability: "GOOD" as FavorabilityLevel,
+    financeFavorability: "FAVOURABLE" as FavorabilityLevel,
+    loveFavorability: "GOOD" as FavorabilityLevel,
+    healthFavorability: "FAVOURABLE" as FavorabilityLevel,
     cosmicMood: "Intuitive, Balanced & Auspicious",
     luckyColor: "Royal Indigo & Pearl White",
     luckyNumber: "7",
@@ -182,10 +234,16 @@ Current Celestial Transit Date:
 Task:
 Generate a deeply detailed, personalized, and eloquent Daily Cosmic Reading for ${name} for today.
 Explain specifically how the transit Moon's journey through ${transitMoonSign} and the ${transitHouseFromMoon}th house from their Janma Rashi impacts their day in general and across all 4 key life spheres: Career/Work, Wealth/Finance, Love/Relationships, and Health/Vitality.
+Include unambiguous favorability tags ("WORST", "BAD", "GOOD", "FAVOURABLE", "HIGHLY FAVOURABLE") for the day overall and each sphere.
 
 Return ONLY a valid JSON object with these exact keys:
 {
   "cosmicScore": <number between 65 and 96 representing today's auspiciousness>,
+  "overallFavorability": "<One of: 'WORST', 'BAD', 'GOOD', 'FAVOURABLE', 'HIGHLY FAVOURABLE'>",
+  "careerFavorability": "<One of: 'WORST', 'BAD', 'GOOD', 'FAVOURABLE', 'HIGHLY FAVOURABLE'>",
+  "financeFavorability": "<One of: 'WORST', 'BAD', 'GOOD', 'FAVOURABLE', 'HIGHLY FAVOURABLE'>",
+  "loveFavorability": "<One of: 'WORST', 'BAD', 'GOOD', 'FAVOURABLE', 'HIGHLY FAVOURABLE'>",
+  "healthFavorability": "<One of: 'WORST', 'BAD', 'GOOD', 'FAVOURABLE', 'HIGHLY FAVOURABLE'>",
   "cosmicMood": "<A 3-5 word evocative phrase describing today's overarching psychological and spiritual mood>",
   "luckyColor": "<1-2 auspicious colors for today based on transits>",
   "luckyNumber": "<lucky single or double digit number>",
@@ -225,6 +283,11 @@ Return ONLY a valid JSON object with these exact keys:
         dailyData = {
           ...dailyData,
           cosmicScore: typeof aiJson.cosmicScore === "number" ? aiJson.cosmicScore : 85,
+          overallFavorability: normalizeFavorability(aiJson.overallFavorability, "FAVOURABLE"),
+          careerFavorability: normalizeFavorability(aiJson.careerFavorability, "GOOD"),
+          financeFavorability: normalizeFavorability(aiJson.financeFavorability, "FAVOURABLE"),
+          loveFavorability: normalizeFavorability(aiJson.loveFavorability, "GOOD"),
+          healthFavorability: normalizeFavorability(aiJson.healthFavorability, "FAVOURABLE"),
           cosmicMood: aiJson.cosmicMood || dailyData.cosmicMood,
           luckyColor: aiJson.luckyColor || dailyData.luckyColor,
           luckyNumber: String(aiJson.luckyNumber || dailyData.luckyNumber),
