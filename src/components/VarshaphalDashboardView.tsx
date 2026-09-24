@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Sparkles, ArrowLeft, Sun, Moon, CalendarDays, Briefcase, Heart, Star, Download, Loader2 } from "lucide-react";
+import { Sparkles, ArrowLeft, Sun, Moon, CalendarDays, Briefcase, Heart, Star, Download, Loader2, Compass } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { useRef, useState } from "react";
@@ -109,22 +109,32 @@ export default function VarshaphalDashboardView({
               {name} • Varshaphal Annual Forecast
             </p>
           </div>
-          <Button 
-            variant="outline" 
-            className="bg-white/5 border-yellow-500/20 hover:bg-yellow-500/10 text-yellow-100 rounded-full px-6 backdrop-blur-md transition-all"
-            onClick={handleDownloadPDF}
-            disabled={isDownloading}
-          >
-            {isDownloading ? (
-              <>
-                <Loader2 className="w-4 h-4 mr-2 animate-spin text-yellow-400" /> Generating...
-              </>
-            ) : (
-              <>
-                <Download className="w-4 h-4 mr-2 text-yellow-400" /> Download PDF
-              </>
-            )}
-          </Button>
+          <div className="flex flex-wrap items-center gap-3">
+            <Link href={`/daily-insight?name=${encodeURIComponent(name)}&dob=${dob}&tob=${encodeURIComponent(tob)}&pob=${encodeURIComponent(pob)}`}>
+              <Button 
+                variant="outline" 
+                className="bg-cyan-500/10 border-cyan-500/30 hover:bg-cyan-500/20 text-cyan-200 rounded-full px-5 backdrop-blur-md transition-all font-medium"
+              >
+                <Compass className="w-4 h-4 mr-2 text-cyan-400" /> Daily Insight
+              </Button>
+            </Link>
+            <Button 
+              variant="outline" 
+              className="bg-white/5 border-yellow-500/20 hover:bg-yellow-500/10 text-yellow-100 rounded-full px-6 backdrop-blur-md transition-all"
+              onClick={handleDownloadPDF}
+              disabled={isDownloading}
+            >
+              {isDownloading ? (
+                <>
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin text-yellow-400" /> Generating...
+                </>
+              ) : (
+                <>
+                  <Download className="w-4 h-4 mr-2 text-yellow-400" /> Download PDF
+                </>
+              )}
+            </Button>
+          </div>
         </motion.div>
 
         <motion.div 

@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Sparkles, ArrowLeft, Star, Sun, Moon, MapPin, Clock, Calendar, Heart, Shield, Coins, Briefcase, Download, Loader2 } from "lucide-react";
+import { Sparkles, ArrowLeft, Star, Sun, Moon, MapPin, Clock, Calendar, Heart, Shield, Coins, Briefcase, Download, Loader2, Compass } from "lucide-react";
 import Link from "next/link";
 import KundliChart from "@/components/KundliChart";
 import { Button } from "@/components/ui/button";
@@ -114,22 +114,32 @@ export default function KundliDashboardView({
               Cosmic Blueprint
             </h1>
           </div>
-          <Button 
-            variant="outline" 
-            className="bg-white/5 border-white/10 hover:bg-white/10 text-indigo-100 rounded-full px-6 backdrop-blur-md transition-all"
-            onClick={handleDownloadPDF}
-            disabled={isDownloading}
-          >
-            {isDownloading ? (
-              <>
-                <Loader2 className="w-4 h-4 mr-2 animate-spin text-purple-400" /> Generating...
-              </>
-            ) : (
-              <>
-                <Download className="w-4 h-4 mr-2 text-purple-400" /> Download PDF
-              </>
-            )}
-          </Button>
+          <div className="flex flex-wrap items-center gap-3">
+            <Link href={`/daily-insight?name=${encodeURIComponent(name)}&dob=${dob}&tob=${encodeURIComponent(tob)}&pob=${encodeURIComponent(pob)}`}>
+              <Button 
+                variant="outline" 
+                className="bg-cyan-500/10 border-cyan-500/30 hover:bg-cyan-500/20 text-cyan-200 rounded-full px-5 backdrop-blur-md transition-all font-medium"
+              >
+                <Compass className="w-4 h-4 mr-2 text-cyan-400" /> Daily Insight
+              </Button>
+            </Link>
+            <Button 
+              variant="outline" 
+              className="bg-white/5 border-white/10 hover:bg-white/10 text-indigo-100 rounded-full px-6 backdrop-blur-md transition-all"
+              onClick={handleDownloadPDF}
+              disabled={isDownloading}
+            >
+              {isDownloading ? (
+                <>
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin text-purple-400" /> Generating...
+                </>
+              ) : (
+                <>
+                  <Download className="w-4 h-4 mr-2 text-purple-400" /> Download PDF
+                </>
+              )}
+            </Button>
+          </div>
         </motion.div>
 
         <motion.div 
@@ -288,6 +298,27 @@ export default function KundliDashboardView({
               <p className="text-base md:text-lg text-indigo-100/80 leading-relaxed whitespace-pre-wrap">
                 {chartData.fullLife || "Full life overview is not available."}
               </p>
+            </motion.div>
+
+            {/* Daily Insight CTA */}
+            <motion.div variants={itemVariants} className="mt-8 bg-gradient-to-r from-cyan-950/40 via-indigo-950/40 to-purple-950/40 border border-cyan-500/30 rounded-3xl p-8 md:p-12 backdrop-blur-2xl shadow-[0_0_50px_rgba(6,182,212,0.12)] flex flex-col md:flex-row items-center justify-between gap-8 text-center md:text-left relative overflow-hidden group">
+              <div className="absolute -right-20 -top-20 w-64 h-64 bg-cyan-500/15 rounded-full blur-[80px] group-hover:scale-150 transition-transform duration-1000" />
+              
+              <div className="relative z-10 max-w-xl">
+                <h3 className="text-3xl font-space font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-200 to-indigo-300 flex items-center justify-center md:justify-start gap-3 mb-4">
+                  <Compass className="w-8 h-8 text-cyan-400" />
+                  Today's Daily Insight
+                </h3>
+                <p className="text-cyan-100/70 text-lg">
+                  Explore how today's planetary transits affect your health, career & work, love life, and finances with full personalized Vedic guidance.
+                </p>
+              </div>
+              
+              <Link href={`/daily-insight?name=${encodeURIComponent(name)}&dob=${dob}&tob=${encodeURIComponent(tob)}&pob=${encodeURIComponent(pob)}`} className="relative z-10 w-full md:w-auto">
+                <Button size="lg" className="w-full md:w-auto bg-gradient-to-r from-cyan-500 to-indigo-600 hover:from-cyan-400 hover:to-indigo-500 text-white font-bold text-lg px-8 py-6 rounded-2xl shadow-[0_0_30px_rgba(6,182,212,0.35)] hover:shadow-[0_0_50px_rgba(6,182,212,0.55)] transition-all hover:scale-105">
+                  <Sparkles className="w-5 h-5 mr-2" /> View Today's Insight
+                </Button>
+              </Link>
             </motion.div>
 
             {/* Varshaphal CTA */}
