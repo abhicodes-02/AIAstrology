@@ -277,6 +277,48 @@ export default function KundliDashboardView({
                 <KundliChart planets={chartData.d9Houses || chartData.houses} />
               </div>
             </motion.div>
+
+            {/* Daily Insight CTA (Side Card) */}
+            <motion.div variants={itemVariants} className="bg-gradient-to-br from-cyan-950/40 via-indigo-950/40 to-purple-950/40 border border-cyan-500/30 rounded-3xl p-6 md:p-8 backdrop-blur-2xl shadow-[0_0_35px_rgba(6,182,212,0.12)] relative overflow-hidden group flex flex-col justify-between gap-5">
+              <div className="absolute -right-16 -top-16 w-48 h-48 bg-cyan-500/15 rounded-full blur-[70px] group-hover:scale-150 transition-transform duration-1000" />
+              
+              <div className="relative z-10">
+                <h3 className="text-xl font-space font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-200 to-indigo-300 flex items-center gap-2.5 mb-2">
+                  <Compass className="w-5 h-5 text-cyan-400" />
+                  Today's Daily Insight
+                </h3>
+                <p className="text-cyan-100/70 text-xs md:text-sm leading-relaxed">
+                  Personalized daily guidance on health, career, love & money based on current planetary transits.
+                </p>
+              </div>
+              
+              <Link href={`/daily-insight?name=${encodeURIComponent(name)}&dob=${dob}&tob=${encodeURIComponent(tob)}&pob=${encodeURIComponent(pob)}`} className="relative z-10 w-full">
+                <Button size="lg" className="w-full bg-gradient-to-r from-cyan-500 to-indigo-600 hover:from-cyan-400 hover:to-indigo-500 text-white font-bold text-sm md:text-base py-5 rounded-2xl shadow-[0_0_20px_rgba(6,182,212,0.3)] hover:shadow-[0_0_35px_rgba(6,182,212,0.5)] transition-all hover:scale-[1.02]">
+                  <Sparkles className="w-4 h-4 mr-2" /> View Today's Insight
+                </Button>
+              </Link>
+            </motion.div>
+
+            {/* Varshaphal CTA (Side Card) */}
+            <motion.div variants={itemVariants} className="bg-gradient-to-br from-yellow-950/40 via-orange-950/30 to-amber-950/20 border border-yellow-500/30 rounded-3xl p-6 md:p-8 backdrop-blur-2xl shadow-[0_0_35px_rgba(234,179,8,0.15)] relative overflow-hidden group flex flex-col justify-between gap-5">
+              <div className="absolute -right-16 -top-16 w-48 h-48 bg-yellow-500/20 rounded-full blur-[70px] group-hover:scale-150 transition-transform duration-1000" />
+              
+              <div className="relative z-10">
+                <h3 className="text-xl font-space font-bold text-transparent bg-clip-text bg-gradient-to-r from-yellow-200 to-orange-400 flex items-center gap-2.5 mb-2">
+                  <Sun className="w-5 h-5 text-yellow-400" />
+                  Your Year Ahead
+                </h3>
+                <p className="text-yellow-100/70 text-xs md:text-sm leading-relaxed">
+                  Generate an in-depth Annual Forecast (Varshaphal) with a month-by-month solar return breakdown.
+                </p>
+              </div>
+              
+              <Link href={`/varshaphal?name=${encodeURIComponent(name)}&dob=${dob}&tob=${encodeURIComponent(tob)}&pob=${encodeURIComponent(pob)}`} className="relative z-10 w-full">
+                <Button size="lg" className="w-full bg-yellow-500 hover:bg-yellow-400 text-yellow-950 font-bold text-sm md:text-base py-5 rounded-2xl shadow-[0_0_20px_rgba(234,179,8,0.35)] hover:shadow-[0_0_40px_rgba(234,179,8,0.55)] transition-all hover:scale-[1.02]">
+                  <Sparkles className="w-4 h-4 mr-2" /> Generate Varshaphal
+                </Button>
+              </Link>
+            </motion.div>
           </div>
 
           {/* RIGHT CONTENT (AI Predictions Bento Grid) */}
@@ -357,50 +399,6 @@ export default function KundliDashboardView({
                 {chartData.fullLife || "Full life overview is not available."}
               </p>
             </motion.div>
-
-            {/* Daily Insight CTA */}
-            <motion.div variants={itemVariants} className="mt-8 bg-gradient-to-r from-cyan-950/40 via-indigo-950/40 to-purple-950/40 border border-cyan-500/30 rounded-3xl p-8 md:p-12 backdrop-blur-2xl shadow-[0_0_50px_rgba(6,182,212,0.12)] flex flex-col md:flex-row items-center justify-between gap-8 text-center md:text-left relative overflow-hidden group">
-              <div className="absolute -right-20 -top-20 w-64 h-64 bg-cyan-500/15 rounded-full blur-[80px] group-hover:scale-150 transition-transform duration-1000" />
-              
-              <div className="relative z-10 max-w-xl">
-                <h3 className="text-3xl font-space font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-200 to-indigo-300 flex items-center justify-center md:justify-start gap-3 mb-4">
-                  <Compass className="w-8 h-8 text-cyan-400" />
-                  Today's Daily Insight
-                </h3>
-                <p className="text-cyan-100/70 text-lg">
-                  Explore how today's planetary transits affect your health, career & work, love life, and finances with full personalized Vedic guidance.
-                </p>
-              </div>
-              
-              <Link href={`/daily-insight?name=${encodeURIComponent(name)}&dob=${dob}&tob=${encodeURIComponent(tob)}&pob=${encodeURIComponent(pob)}`} className="relative z-10 w-full md:w-auto">
-                <Button size="lg" className="w-full md:w-auto bg-gradient-to-r from-cyan-500 to-indigo-600 hover:from-cyan-400 hover:to-indigo-500 text-white font-bold text-lg px-8 py-6 rounded-2xl shadow-[0_0_30px_rgba(6,182,212,0.35)] hover:shadow-[0_0_50px_rgba(6,182,212,0.55)] transition-all hover:scale-105">
-                  <Sparkles className="w-5 h-5 mr-2" /> View Today's Insight
-                </Button>
-              </Link>
-            </motion.div>
-
-            {/* Varshaphal CTA */}
-            <motion.div variants={itemVariants} className="mt-8 bg-gradient-to-r from-yellow-900/40 to-orange-900/40 border border-yellow-500/30 rounded-3xl p-8 md:p-12 backdrop-blur-2xl shadow-[0_0_50px_rgba(234,179,8,0.15)] flex flex-col md:flex-row items-center justify-between gap-8 text-center md:text-left relative overflow-hidden group">
-
-              <div className="absolute -right-20 -top-20 w-64 h-64 bg-yellow-500/20 rounded-full blur-[80px] group-hover:scale-150 transition-transform duration-1000" />
-              
-              <div className="relative z-10 max-w-xl">
-                <h3 className="text-3xl font-space font-bold text-transparent bg-clip-text bg-gradient-to-r from-yellow-200 to-orange-400 flex items-center justify-center md:justify-start gap-3 mb-4">
-                  <Sun className="w-8 h-8 text-yellow-400" />
-                  Your Year Ahead
-                </h3>
-                <p className="text-yellow-100/70 text-lg">
-                  Generate a massive, deep-dive Annual Forecast (Varshaphal) and a detailed 12-month breakdown for your current solar year.
-                </p>
-              </div>
-              
-              <Link href={`/varshaphal?name=${encodeURIComponent(name)}&dob=${dob}&tob=${encodeURIComponent(tob)}&pob=${encodeURIComponent(pob)}`} className="relative z-10 w-full md:w-auto">
-                <Button size="lg" className="w-full md:w-auto bg-yellow-500 hover:bg-yellow-400 text-yellow-950 font-bold text-lg px-8 py-6 rounded-2xl shadow-[0_0_30px_rgba(234,179,8,0.4)] hover:shadow-[0_0_50px_rgba(234,179,8,0.6)] transition-all hover:scale-105">
-                  <Sparkles className="w-5 h-5 mr-2" /> Generate Varshaphal
-                </Button>
-              </Link>
-            </motion.div>
-
           </div>
         </motion.div>
       </div>
