@@ -1,31 +1,55 @@
 "use client";
 
-import React, { useState } from "react";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { motion } from "framer-motion";
 import {
-  Calendar,
-  Clock,
   Sparkles,
   ArrowLeft,
-  ChevronLeft,
-  ChevronRight,
-  TrendingUp,
+  Sun,
+  Moon,
   Heart,
+  Shield,
+  Coins,
   Briefcase,
-  ShieldCheck,
-  Zap,
-  Info
+  Compass,
+  Calendar,
+  Clock,
+  Palette,
+  Flame,
+  Star,
+  CheckCircle2,
+  ChevronRight,
 } from "lucide-react";
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 
-interface KpDailyInsightViewProps {
-  dailyData: any;
-  name: string;
-  dob: string;
-  tob: string;
-  pob: string;
+function FavorabilityBadge({ status }: { status: string }) {
+  const norm = (status || "GOOD").toUpperCase().trim();
+  let badgeStyle = "bg-cyan-500/15 text-cyan-300 border-cyan-500/30";
+  let dotColor = "bg-cyan-400";
+
+  if (norm.includes("HIGHLY")) {
+    badgeStyle = "bg-emerald-500/20 text-emerald-300 border-emerald-500/40 shadow-[0_0_15px_rgba(16,185,129,0.25)]";
+    dotColor = "bg-emerald-400 animate-pulse";
+  } else if (norm.includes("FAVOURABLE") || norm.includes("FAVORABLE")) {
+    badgeStyle = "bg-cyan-500/20 text-cyan-300 border-cyan-500/40 shadow-[0_0_15px_rgba(6,182,212,0.2)]";
+    dotColor = "bg-cyan-400";
+  } else if (norm === "GOOD") {
+    badgeStyle = "bg-blue-500/20 text-blue-300 border-blue-500/40";
+    dotColor = "bg-blue-400";
+  } else if (norm === "BAD") {
+    badgeStyle = "bg-amber-500/20 text-amber-300 border-amber-500/40 shadow-[0_0_15px_rgba(245,158,11,0.2)]";
+    dotColor = "bg-amber-400";
+  } else if (norm === "WORST") {
+    badgeStyle = "bg-rose-500/20 text-rose-300 border-rose-500/40 shadow-[0_0_15px_rgba(244,63,94,0.3)]";
+    dotColor = "bg-rose-400 animate-pulse";
+  }
+
+  return (
+    <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold tracking-wider uppercase border backdrop-blur-md ${badgeStyle}`}>
+      <span className={`w-2 h-2 rounded-full ${dotColor}`} />
+      {norm}
+    </span>
+  );
 }
 
 export default function KpDailyInsightView({
@@ -34,243 +58,333 @@ export default function KpDailyInsightView({
   dob,
   tob,
   pob,
-}: KpDailyInsightViewProps) {
-  const router = useRouter();
-  const [targetDate, setTargetDate] = useState(() => {
-    const today = new Date();
-    return today.toISOString().split("T")[0];
-  });
+}: {
+  dailyData: any;
+  name: string;
+  dob: string;
+  tob: string;
+  pob: string;
+}) {
+  const containerVariants: any = {
+    hidden: { opacity: 0 },
+    show: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1,
+      },
+    },
+  };
+
+  const itemVariants: any = {
+    hidden: { opacity: 0, y: 20 },
+    show: { opacity: 1, y: 0, transition: { type: "spring" as const, stiffness: 100 } },
+  };
 
   const queryParams = new URLSearchParams({ name, dob, tob, pob }).toString();
 
-  const handleDateChange = (daysOffset: number) => {
-    const current = new Date(targetDate);
-    current.setDate(current.getDate() + daysOffset);
-    const newDateStr = current.toISOString().split("T")[0];
-    setTargetDate(newDateStr);
-
-    const params = new URLSearchParams({
-      name,
-      dob,
-      tob,
-      pob,
-      date: newDateStr,
-    });
-    router.push(`/kp-daily-insight?${params.toString()}`);
-  };
-
-  const FavorabilityBadge = ({
-    level,
-    size = "sm",
-  }: {
-    level: "WORST" | "BAD" | "GOOD" | "FAVOURABLE" | "HIGHLY FAVOURABLE";
-    size?: "sm" | "md";
-  }) => {
-    const getBadgeStyle = (lvl: string) => {
-      switch (lvl) {
-        case "HIGHLY FAVOURABLE":
-          return "bg-emerald-500/20 text-emerald-300 border-emerald-400/50 shadow-[0_0_12px_rgba(16,185,129,0.35)]";
-        case "FAVOURABLE":
-          return "bg-cyan-500/20 text-cyan-300 border-cyan-400/50 shadow-[0_0_12px_rgba(6,182,212,0.35)]";
-        case "GOOD":
-          return "bg-blue-500/20 text-blue-300 border-blue-400/40 shadow-[0_0_8px_rgba(59,130,246,0.25)]";
-        case "BAD":
-          return "bg-amber-500/20 text-amber-300 border-amber-400/40 shadow-[0_0_8px_rgba(245,158,11,0.25)]";
-        case "WORST":
-          return "bg-rose-500/20 text-rose-300 border-rose-400/50 shadow-[0_0_12px_rgba(244,63,94,0.35)]";
-        default:
-          return "bg-slate-700/50 text-slate-300 border-slate-600";
-      }
-    };
-
-    const isLarge = size === "md";
-    return (
-      <span
-        className={`inline-flex items-center gap-1 font-bold rounded-full border transition-all ${getBadgeStyle(
-          level
-        )} ${isLarge ? "px-3.5 py-1 text-sm tracking-wider" : "px-2.5 py-0.5 text-xs tracking-wide"}`}
-      >
-        <span className="w-1.5 h-1.5 rounded-full bg-current animate-pulse" />
-        {level}
-      </span>
-    );
-  };
-
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 p-4 md:p-8 font-sans selection:bg-cyan-500 selection:text-black">
-      {/* Header Bar */}
-      <div className="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8 border-b border-cyan-500/20 pb-6">
-        <div>
-          <Link
-            href={`/kp-kundli?${queryParams}`}
-            className="inline-flex items-center gap-2 text-cyan-400 hover:text-cyan-300 transition-colors text-sm mb-2"
-          >
-            <ArrowLeft className="w-4 h-4" /> Back to KP Master Kundli
-          </Link>
-          <div className="flex items-center gap-3">
-            <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight bg-gradient-to-r from-cyan-300 via-teal-200 to-indigo-300 bg-clip-text text-transparent">
-              KP Daily Cosmic Rhythm
-            </h1>
-            <span className="px-2.5 py-1 text-xs font-bold rounded-full bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 tracking-wider">
-              SUB-LORD TRANSITS
-            </span>
-          </div>
-          <p className="text-slate-400 text-sm mt-1">
-            Real-time KP Transit Moon, Active Star Lord & Sub-Lord Trigger Analysis
-          </p>
-        </div>
-
-        {/* Date Selector Navigation */}
-        <div className="flex items-center gap-3 bg-slate-900/80 p-2 rounded-xl border border-cyan-500/30 backdrop-blur-md">
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => handleDateChange(-1)}
-            className="text-cyan-300 hover:text-cyan-100 hover:bg-cyan-900/40 h-8 px-2"
-          >
-            <ChevronLeft className="w-4 h-4" /> Prev Day
-          </Button>
-          <span className="text-xs font-semibold text-slate-200 px-2 flex items-center gap-1.5">
-            <Calendar className="w-3.5 h-3.5 text-cyan-400" />
-            {dailyData.dateFormatted}
-          </span>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => handleDateChange(1)}
-            className="text-cyan-300 hover:text-cyan-100 hover:bg-cyan-900/40 h-8 px-2"
-          >
-            Next Day <ChevronRight className="w-4 h-4" />
-          </Button>
-        </div>
+    <div className="min-h-screen bg-transparent text-indigo-100 font-sans relative overflow-x-hidden selection:bg-cyan-500/30">
+      {/* Background ambient glowing orbs */}
+      <div className="fixed inset-0 z-0 pointer-events-none">
+        <motion.div
+          animate={{ scale: [1, 1.2, 1], opacity: [0.3, 0.5, 0.3] }}
+          transition={{ duration: 20, repeat: Infinity, ease: "easeInOut" }}
+          className="absolute top-[-10%] left-[-10%] w-[50vw] h-[50vw] bg-cyan-900/15 rounded-full blur-[120px]"
+        />
+        <motion.div
+          animate={{ x: [0, -40, 0], y: [0, -30, 0] }}
+          transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
+          className="absolute bottom-[-10%] right-[-10%] w-[50vw] h-[50vw] bg-teal-900/15 rounded-full blur-[120px]"
+        />
       </div>
 
-      <div className="max-w-6xl mx-auto space-y-6">
-        
-        {/* Core Daily Highlight Banner */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <Card className="md:col-span-2 bg-gradient-to-br from-slate-900/90 via-slate-900/60 to-cyan-950/40 border-cyan-500/30 shadow-xl backdrop-blur-md">
-            <CardHeader className="pb-3">
-              <div className="flex items-center justify-between">
-                <CardTitle className="text-xl text-cyan-200 flex items-center gap-2">
-                  <Sparkles className="w-5 h-5 text-cyan-400" /> Today&apos;s Active KP Sub-Lord
-                </CardTitle>
-                <FavorabilityBadge level={dailyData.overallFavorability || "FAVOURABLE"} size="md" />
-              </div>
-              <CardDescription className="text-slate-400 text-xs">
-                {dailyData.kpSubLordTrigger}
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <p className="text-sm text-slate-200 leading-relaxed">
-                {dailyData.dailySummary}
-              </p>
-              
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2 text-xs">
-                <div className="bg-slate-950/50 p-2.5 rounded-lg border border-slate-800">
-                  <span className="text-slate-400 block">Transit Moon:</span>
-                  <span className="font-semibold text-cyan-300">{dailyData.transitMoonSign}</span>
-                </div>
-                <div className="bg-slate-950/50 p-2.5 rounded-lg border border-slate-800">
-                  <span className="text-slate-400 block">Transit Star Lord:</span>
-                  <span className="font-semibold text-teal-300">{dailyData.transitStarLord}</span>
-                </div>
-                <div className="bg-slate-950/50 p-2.5 rounded-lg border border-slate-800">
-                  <span className="text-slate-400 block">Transit Sub-Lord:</span>
-                  <span className="font-bold text-amber-300">{dailyData.transitSubLord}</span>
-                </div>
-                <div className="bg-slate-950/50 p-2.5 rounded-lg border border-slate-800">
-                  <span className="text-slate-400 block">Activated House:</span>
-                  <span className="font-bold text-indigo-300">House {dailyData.transitHouseOccupied}</span>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Quick Timing & KP Remedial Advice */}
-          <Card className="bg-slate-900/60 border-teal-500/20 shadow-xl backdrop-blur-md flex flex-col justify-between">
-            <CardHeader className="pb-2">
-              <CardTitle className="text-base text-teal-200 flex items-center gap-2">
-                <Clock className="w-4 h-4 text-teal-400" /> Auspicious KP Timing
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4 text-xs">
-              <div className="bg-teal-950/30 p-3 rounded-lg border border-teal-500/30">
-                <span className="text-slate-400 block text-[11px]">Sub-Lord Auspicious Window:</span>
-                <span className="font-bold text-teal-300 text-sm">{dailyData.auspiciousKpTime}</span>
-              </div>
-              <div>
-                <span className="text-slate-400 block font-semibold mb-1">Harmonic Remedy:</span>
-                <p className="text-slate-300 leading-normal text-xs">{dailyData.remedy}</p>
-              </div>
-            </CardContent>
-            <div className="p-4 pt-0">
-              <Link href={`/daily-insight?${queryParams}`}>
-                <Button variant="outline" size="sm" className="w-full border-slate-700 hover:bg-slate-800 text-slate-300 text-xs">
-                  View Vedic Daily Insight
-                </Button>
+      <div className="relative z-10 max-w-[1300px] mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
+        {/* Navigation & Header */}
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 mb-10 border-b border-white/5 pb-8"
+        >
+          <div>
+            <div className="flex flex-wrap items-center gap-3 mb-4">
+              <Link
+                href={`/kp-kundli?${queryParams}`}
+                className="group inline-flex items-center gap-2 text-cyan-400 hover:text-cyan-300 transition-all text-sm font-medium bg-cyan-500/10 px-4 py-2 rounded-full border border-cyan-500/20 hover:border-cyan-500/40"
+              >
+                <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
+                Back to KP Kundli
               </Link>
+              <div className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-cyan-300 bg-cyan-500/10 px-3 py-1.5 rounded-full border border-cyan-500/20">
+                <Calendar className="w-3.5 h-3.5" />
+                {dailyData.dateFormatted}
+              </div>
             </div>
-          </Card>
-        </div>
+            <div className="flex items-center gap-3">
+              <h1 className="text-4xl md:text-6xl font-bold font-space text-transparent bg-clip-text bg-gradient-to-r from-cyan-100 via-teal-200 to-indigo-200 tracking-tight">
+                KP Daily Cosmic Insight
+              </h1>
+              <span className="hidden sm:inline-block px-3 py-1 text-xs font-bold rounded-full bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 tracking-wider">
+                SUB-LORD TRANSITS
+              </span>
+            </div>
+            <p className="text-cyan-200/70 text-base md:text-lg mt-2">
+              Placidus planetary transit alignment for{" "}
+              <span className="text-cyan-100 font-semibold">{name}</span>
+            </p>
+          </div>
 
-        {/* 4 Pillars with KP Sub-Lord Evaluation */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          
-          {/* Career & Duty */}
-          <Card className="bg-slate-900/60 border-indigo-500/20 shadow-xl backdrop-blur-md">
-            <CardHeader className="pb-2 flex flex-row items-center justify-between">
-              <CardTitle className="text-base text-indigo-200 flex items-center gap-2">
-                <Briefcase className="w-4 h-4 text-indigo-400" /> Career & Professional Execution
-              </CardTitle>
-              <FavorabilityBadge level={dailyData.careerFavorability || "GOOD"} />
-            </CardHeader>
-            <CardContent className="text-sm text-slate-300 leading-relaxed">
-              {dailyData.career}
-            </CardContent>
-          </Card>
+          <div className="flex flex-wrap items-center gap-3">
+            <Link
+              href={`/daily-insight?${queryParams}`}
+            >
+              <Button
+                variant="outline"
+                className="bg-indigo-500/10 border-indigo-500/30 hover:bg-indigo-500/20 text-indigo-200 rounded-full px-5 backdrop-blur-md transition-all font-semibold"
+              >
+                <Sparkles className="w-4 h-4 mr-2 text-indigo-400" /> Switch to Vedic Daily
+              </Button>
+            </Link>
+            <Link
+              href={`/kp-varshaphal?${queryParams}`}
+            >
+              <Button
+                variant="outline"
+                className="bg-white/5 border-yellow-500/30 hover:bg-yellow-500/10 text-yellow-200 rounded-full px-5 backdrop-blur-md transition-all font-medium"
+              >
+                <Sun className="w-4 h-4 mr-2 text-yellow-400" /> View KP Varshaphal
+              </Button>
+            </Link>
+          </div>
+        </motion.div>
 
-          {/* Wealth & Finance */}
-          <Card className="bg-slate-900/60 border-emerald-500/20 shadow-xl backdrop-blur-md">
-            <CardHeader className="pb-2 flex flex-row items-center justify-between">
-              <CardTitle className="text-base text-emerald-200 flex items-center gap-2">
-                <TrendingUp className="w-4 h-4 text-emerald-400" /> Wealth, Assets & Expenditures
-              </CardTitle>
-              <FavorabilityBadge level={dailyData.financeFavorability || "FAVOURABLE"} />
-            </CardHeader>
-            <CardContent className="text-sm text-slate-300 leading-relaxed">
-              {dailyData.finance}
-            </CardContent>
-          </Card>
+        <motion.div variants={containerVariants} initial="hidden" animate="show" className="flex flex-col gap-8">
+          {/* Quick Metrics & Cosmic Pulse Bar (Identical 6-item layout) */}
+          <motion.div variants={itemVariants} className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
+            {/* Cosmic Score */}
+            <div className="bg-white/[0.03] border border-white/5 hover:border-cyan-500/30 rounded-2xl p-4 backdrop-blur-xl transition-all flex flex-col justify-between">
+              <span className="text-xs uppercase tracking-wider text-cyan-300/70 font-medium flex items-center gap-1.5">
+                <Sparkles className="w-3.5 h-3.5 text-cyan-400" /> Auspicious Score
+              </span>
+              <div className="mt-2 flex items-baseline gap-1.5">
+                <span className="text-3xl font-space font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 to-emerald-300">
+                  {dailyData.cosmicScore}%
+                </span>
+              </div>
+              <div className="w-full bg-white/5 h-1.5 rounded-full overflow-hidden mt-2">
+                <div
+                  className="h-full bg-gradient-to-r from-cyan-400 to-emerald-400 rounded-full"
+                  style={{ width: `${dailyData.cosmicScore}%` }}
+                />
+              </div>
+            </div>
 
-          {/* Relationships & Love */}
-          <Card className="bg-slate-900/60 border-rose-500/20 shadow-xl backdrop-blur-md">
-            <CardHeader className="pb-2 flex flex-row items-center justify-between">
-              <CardTitle className="text-base text-rose-200 flex items-center gap-2">
-                <Heart className="w-4 h-4 text-rose-400" /> Emotional Ties & Partnerships
-              </CardTitle>
-              <FavorabilityBadge level={dailyData.loveFavorability || "GOOD"} />
-            </CardHeader>
-            <CardContent className="text-sm text-slate-300 leading-relaxed">
-              {dailyData.love}
-            </CardContent>
-          </Card>
+            {/* Natal Moon Sign */}
+            <div className="bg-white/[0.03] border border-white/5 rounded-2xl p-4 backdrop-blur-xl flex flex-col justify-between">
+              <span className="text-xs uppercase tracking-wider text-cyan-300/70 font-medium flex items-center gap-1.5">
+                <Moon className="w-3.5 h-3.5 text-blue-400" /> Janma Rashi
+              </span>
+              <div className="mt-2 text-base font-semibold text-cyan-100 truncate">
+                {dailyData.natalMoonSign?.split(" ")[0]}
+              </div>
+              <span className="text-xs text-cyan-300/60 truncate">{dailyData.birthNakshatra}</span>
+            </div>
 
-          {/* Health & Vitality */}
-          <Card className="bg-slate-900/60 border-teal-500/20 shadow-xl backdrop-blur-md">
-            <CardHeader className="pb-2 flex flex-row items-center justify-between">
-              <CardTitle className="text-base text-teal-200 flex items-center gap-2">
-                <ShieldCheck className="w-4 h-4 text-teal-400" /> Physical Vitality & Mind
-              </CardTitle>
-              <FavorabilityBadge level={dailyData.healthFavorability || "FAVOURABLE"} />
-            </CardHeader>
-            <CardContent className="text-sm text-slate-300 leading-relaxed">
-              {dailyData.health}
-            </CardContent>
-          </Card>
+            {/* Transit Moon Sign */}
+            <div className="bg-white/[0.03] border border-white/5 rounded-2xl p-4 backdrop-blur-xl flex flex-col justify-between">
+              <span className="text-xs uppercase tracking-wider text-cyan-300/70 font-medium flex items-center gap-1.5">
+                <Compass className="w-3.5 h-3.5 text-teal-400" /> Transit Moon
+              </span>
+              <div className="mt-2 text-base font-semibold text-teal-100 truncate">
+                {dailyData.transitMoonSign?.split(" ")[0]}
+              </div>
+              <span className="text-xs text-teal-300/60">House {dailyData.transitHouseFromMoon} (Placidus)</span>
+            </div>
 
-        </div>
+            {/* Lucky Color */}
+            <div className="bg-white/[0.03] border border-white/5 rounded-2xl p-4 backdrop-blur-xl flex flex-col justify-between">
+              <span className="text-xs uppercase tracking-wider text-cyan-300/70 font-medium flex items-center gap-1.5">
+                <Palette className="w-3.5 h-3.5 text-amber-400" /> Lucky Color
+              </span>
+              <div className="mt-2 text-base font-semibold text-amber-100 truncate">
+                {dailyData.luckyColor}
+              </div>
+              <span className="text-xs text-amber-300/60">Sub-Lord Harmonic</span>
+            </div>
 
+            {/* Lucky Number */}
+            <div className="bg-white/[0.03] border border-white/5 rounded-2xl p-4 backdrop-blur-xl flex flex-col justify-between">
+              <span className="text-xs uppercase tracking-wider text-cyan-300/70 font-medium flex items-center gap-1.5">
+                <Star className="w-3.5 h-3.5 text-pink-400" /> Lucky Number
+              </span>
+              <div className="mt-2 text-2xl font-space font-bold text-pink-200">
+                {dailyData.luckyNumber}
+              </div>
+              <span className="text-xs text-pink-300/60">Vibrational Key</span>
+            </div>
+
+            {/* Auspicious Time */}
+            <div className="bg-white/[0.03] border border-white/5 rounded-2xl p-4 backdrop-blur-xl flex flex-col justify-between">
+              <span className="text-xs uppercase tracking-wider text-cyan-300/70 font-medium flex items-center gap-1.5">
+                <Clock className="w-3.5 h-3.5 text-emerald-400" /> Auspicious KP Time
+              </span>
+              <div className="mt-2 text-sm font-semibold text-emerald-100 line-clamp-2">
+                {dailyData.auspiciousTime}
+              </div>
+              <span className="text-xs text-emerald-300/60">Sub-Lord Window</span>
+            </div>
+          </motion.div>
+
+          {/* Overarching Daily Synthesis Hero Card */}
+          <motion.div
+            variants={itemVariants}
+            className="bg-gradient-to-br from-cyan-950/40 via-teal-950/30 to-indigo-950/20 border border-cyan-500/25 rounded-3xl p-6 md:p-10 backdrop-blur-2xl shadow-[0_0_50px_rgba(6,182,212,0.12)] relative overflow-hidden group"
+          >
+            <div className="absolute top-0 right-0 w-80 h-80 bg-cyan-500/10 rounded-full blur-[90px] group-hover:bg-cyan-500/15 transition-all duration-700" />
+            <div className="relative z-10">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+                <div className="flex items-center gap-3">
+                  <div className="w-12 h-12 bg-cyan-500/20 rounded-2xl flex items-center justify-center border border-cyan-500/30 text-cyan-300 shadow-inner">
+                    <Flame className="w-6 h-6 text-cyan-300" />
+                  </div>
+                  <div>
+                    <h3 className="text-2xl font-space font-bold text-cyan-100">
+                      Overall KP Cosmic Rhythm
+                    </h3>
+                    <p className="text-sm text-cyan-300/70">
+                      Sub-Lord mood: <span className="text-cyan-200 font-medium">{dailyData.cosmicMood}</span>
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-2.5 bg-white/[0.03] px-3.5 py-1.5 rounded-full border border-white/10 self-start sm:self-auto">
+                  <span className="text-xs uppercase tracking-wider text-cyan-300/70 font-semibold">Day Favorability:</span>
+                  <FavorabilityBadge status={dailyData.overallFavorability || "FAVOURABLE"} />
+                </div>
+              </div>
+
+              <div className="text-base md:text-lg text-cyan-100/90 leading-relaxed space-y-4 whitespace-pre-wrap font-normal">
+                {dailyData.dailySummary}
+              </div>
+            </div>
+          </motion.div>
+
+          {/* 4 Pillars of Daily Life (Career, Wealth, Love, Health) */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            {/* Career & Purpose */}
+            <motion.div
+              variants={itemVariants}
+              className="bg-white/[0.02] border border-white/5 hover:border-blue-500/30 rounded-3xl p-6 md:p-8 backdrop-blur-2xl transition-all duration-300 group flex flex-col justify-between"
+            >
+              <div>
+                <div className="flex items-center justify-between gap-3 mb-5 border-b border-white/5 pb-4">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-xl bg-blue-500/10 flex items-center justify-center border border-blue-500/20">
+                      <Briefcase className="w-5 h-5 text-blue-400" />
+                    </div>
+                    <div>
+                      <h4 className="text-lg font-semibold text-blue-100">Career & Purpose</h4>
+                      <p className="text-xs text-blue-300/60">Professional Execution & Status</p>
+                    </div>
+                  </div>
+                  <FavorabilityBadge status={dailyData.careerFavorability || "GOOD"} />
+                </div>
+                <p className="text-indigo-200/80 leading-relaxed text-sm md:text-base">
+                  {dailyData.career}
+                </p>
+              </div>
+            </motion.div>
+
+            {/* Wealth & Finance */}
+            <motion.div
+              variants={itemVariants}
+              className="bg-white/[0.02] border border-white/5 hover:border-emerald-500/30 rounded-3xl p-6 md:p-8 backdrop-blur-2xl transition-all duration-300 group flex flex-col justify-between"
+            >
+              <div>
+                <div className="flex items-center justify-between gap-3 mb-5 border-b border-white/5 pb-4">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-xl bg-emerald-500/10 flex items-center justify-center border border-emerald-500/20">
+                      <Coins className="w-5 h-5 text-emerald-400" />
+                    </div>
+                    <div>
+                      <h4 className="text-lg font-semibold text-emerald-100">Wealth & Finance</h4>
+                      <p className="text-xs text-emerald-300/60">Asset Allocations & Expenditure</p>
+                    </div>
+                  </div>
+                  <FavorabilityBadge status={dailyData.financeFavorability || "FAVOURABLE"} />
+                </div>
+                <p className="text-indigo-200/80 leading-relaxed text-sm md:text-base">
+                  {dailyData.finance}
+                </p>
+              </div>
+            </motion.div>
+
+            {/* Love & Relationships */}
+            <motion.div
+              variants={itemVariants}
+              className="bg-white/[0.02] border border-white/5 hover:border-pink-500/30 rounded-3xl p-6 md:p-8 backdrop-blur-2xl transition-all duration-300 group flex flex-col justify-between"
+            >
+              <div>
+                <div className="flex items-center justify-between gap-3 mb-5 border-b border-white/5 pb-4">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-xl bg-pink-500/10 flex items-center justify-center border border-pink-500/20">
+                      <Heart className="w-5 h-5 text-pink-400" />
+                    </div>
+                    <div>
+                      <h4 className="text-lg font-semibold text-pink-100">Love & Relationships</h4>
+                      <p className="text-xs text-pink-300/60">Interpersonal & Emotional Bond</p>
+                    </div>
+                  </div>
+                  <FavorabilityBadge status={dailyData.loveFavorability || "GOOD"} />
+                </div>
+                <p className="text-indigo-200/80 leading-relaxed text-sm md:text-base">
+                  {dailyData.love}
+                </p>
+              </div>
+            </motion.div>
+
+            {/* Health & Vitality */}
+            <motion.div
+              variants={itemVariants}
+              className="bg-white/[0.02] border border-white/5 hover:border-rose-500/30 rounded-3xl p-6 md:p-8 backdrop-blur-2xl transition-all duration-300 group flex flex-col justify-between"
+            >
+              <div>
+                <div className="flex items-center justify-between gap-3 mb-5 border-b border-white/5 pb-4">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-xl bg-rose-500/10 flex items-center justify-center border border-rose-500/20">
+                      <Shield className="w-5 h-5 text-rose-400" />
+                    </div>
+                    <div>
+                      <h4 className="text-lg font-semibold text-rose-100">Health & Vitality</h4>
+                      <p className="text-xs text-rose-300/60">Energy Flow & Mind Balance</p>
+                    </div>
+                  </div>
+                  <FavorabilityBadge status={dailyData.healthFavorability || "FAVOURABLE"} />
+                </div>
+                <p className="text-indigo-200/80 leading-relaxed text-sm md:text-base">
+                  {dailyData.health}
+                </p>
+              </div>
+            </motion.div>
+          </div>
+
+          {/* Daily Harmonizing Remedy */}
+          <motion.div
+            variants={itemVariants}
+            className="bg-white/[0.03] border border-teal-500/20 rounded-3xl p-6 md:p-8 backdrop-blur-2xl shadow-xl flex flex-col sm:flex-row items-start sm:items-center gap-5"
+          >
+            <div className="w-12 h-12 rounded-2xl bg-teal-500/20 flex items-center justify-center border border-teal-500/30 shrink-0 text-teal-300">
+              <CheckCircle2 className="w-6 h-6" />
+            </div>
+            <div>
+              <h4 className="text-lg font-space font-bold text-teal-100">
+                Daily KP Harmonic Upaya (Remedy)
+              </h4>
+              <p className="text-sm md:text-base text-cyan-100/80 mt-1 leading-relaxed">
+                {dailyData.remedy}
+              </p>
+            </div>
+          </motion.div>
+        </motion.div>
       </div>
     </div>
   );

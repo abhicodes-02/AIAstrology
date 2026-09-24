@@ -49,12 +49,16 @@ export async function fetchAIKpDailyInsightData(
 
   const natalMoon = birthChart.planets.find((p: any) => p.name === "Moon");
   const natalAsc = birthChart.houses.cusps.find((c: any) => c.house === 1);
+  const natalSun = birthChart.planets.find((p: any) => p.name === "Sun");
 
   const siderealNatalMoonLon = natalMoon ? ((natalMoon.longitude - birthAyanamsa + 360) % 360) : 0;
   const natalMoonKp = getKpDetailsForLongitude(siderealNatalMoonLon);
 
   const siderealNatalAscLon = natalAsc ? ((natalAsc.longitude - birthAyanamsa + 360) % 360) : 0;
   const natalAscKp = getKpDetailsForLongitude(siderealNatalAscLon);
+
+  const siderealNatalSunLon = natalSun ? ((natalSun.longitude - birthAyanamsa + 360) % 360) : 0;
+  const natalSunKp = getKpDetailsForLongitude(siderealNatalSunLon);
 
   // 2. Target Day Transit Chart (KP)
   const now = targetDateStr ? new Date(targetDateStr) : new Date();
@@ -110,33 +114,34 @@ export async function fetchAIKpDailyInsightData(
     return defaultVal as FavorabilityLevel;
   }
 
-  // Default fallback data
+  // Fallback data with all matching fields as Vedic Daily Insight
   let kpDailyData = {
     dateFormatted,
     natalMoonSign: natalMoonKp.signName,
-    natalStarLord: natalMoonKp.starLord,
-    natalSubLord: natalMoonKp.subLord,
-    natalAscendantSign: natalAscKp.signName,
-    natalAscSubLord: natalAscKp.subLord,
+    natalAscendant: natalAscKp.signName,
+    natalSunSign: natalSunKp.signName,
+    birthNakshatra: natalMoonKp.nakshatraName,
     transitMoonSign: transitMoonKp.signName,
+    transitNakshatra: transitMoonKp.nakshatraName,
+    transitHouseFromMoon: transitHouseOccupied,
     transitStarLord: transitMoonKp.starLord,
     transitSubLord: transitMoonKp.subLord,
-    transitHouseOccupied,
-    cosmicScore: 84,
+    cosmicScore: 86,
     overallFavorability: "FAVOURABLE" as FavorabilityLevel,
     careerFavorability: "GOOD" as FavorabilityLevel,
     financeFavorability: "FAVOURABLE" as FavorabilityLevel,
     loveFavorability: "GOOD" as FavorabilityLevel,
     healthFavorability: "FAVOURABLE" as FavorabilityLevel,
-    kpSubLordTrigger: `Transit Moon in ${transitMoonKp.starLord} Star & ${transitMoonKp.subLord} Sub activating House ${transitHouseOccupied}`,
-    auspiciousKpTime: "10:15 AM - 12:45 PM",
-    luckySubLord: transitMoonKp.subLord,
-    dailySummary: `In KP Astrology, today's transit Moon enters ${transitMoonKp.signName} transiting through ${transitMoonKp.nakshatraName} nakshatra (${transitMoonKp.starLord} Star Lord) and currently vibrating under ${transitMoonKp.subLord} Sub-Lord. This dynamically energizes your ${transitHouseOccupied}th Placidus house relative to your natal Ascendant. Because ${transitMoonKp.subLord} holds the final decision key today, decisions made in alignment with patience and analytical facts will yield successful fruit.`,
-    career: `The current Cuspal Sub-Lord activity links into purposeful duty. If pursuing high-stakes negotiations or deliverables, ensure you consult factual reports before committing. Favorable periods under ${transitMoonKp.starLord} allow you to outmaneuver bureaucratic obstacles.`,
-    finance: `Financial movements are modulated by the Sub-Lord of transit Moon. Stable returns manifest if you stay away from unvetted speculation. Allocations made toward necessary long-term assets will progress favorably.`,
-    love: `Interactions with partners are harmonious as the Star Lord promotes genuine dialogue. Clarify minor expectations early in the afternoon to avoid misunderstandings. Single seekers will find mutual intellectual compatibility.`,
-    health: `Your vital energy will remain steady. Ensure balanced hydration and mental pauses during the peak transit hours. Light meditation will revitalize the neural system.`,
-    remedy: `To harmonize the Sub-Lord vibration of ${transitMoonKp.subLord}, meditate for 5 minutes during the morning hours facing east and visualize pristine celestial golden light.`
+    cosmicMood: `KP Sub-Lord ${transitMoonKp.subLord} Activation`,
+    luckyColor: "Emerald Teal & Pearlescent Silver",
+    luckyNumber: "5",
+    auspiciousTime: "10:15 AM - 12:45 PM",
+    dailySummary: `In KP Astrology, today's transit Moon enters ${transitMoonKp.signName} in ${transitMoonKp.nakshatraName} Nakshatra (${transitMoonKp.starLord} Star Lord), actively vibrating under ${transitMoonKp.subLord} Sub-Lord. This dynamically energizes your ${transitHouseOccupied}th Placidus house relative to your natal Ascendant. Because the Sub-Lord holds the ultimate decision key in Krishnamurti Paddhati, aligning your priorities with calm discernment and technical facts ensures outstanding fruition across all day-long undertakings.`,
+    career: `Professionally, the active Cuspal Sub-Lord inspires strategic problem-solving and calm deliberation. The placement of the transit Moon in the ${transitHouseOccupied}th house encourages you to address pending responsibilities without succumbing to workplace urgency. It is an auspicious day for constructive communication with superiors, drafting high-impact proposals, and refining operational details. Let calculated patience showcase your innate leadership acumen.`,
+    finance: `On the financial front, the KP planetary alignment encourages prudence and mindful resource allocation. Favorable alignments suggest steady cash flow, but caution is advised against impulsive speculative moves or spontaneous retail therapy. Reviewing investments, organizing budgets, and planning long-term security maneuvers will yield substantial dividends under this sub-lord.`,
+    love: `Your emotional world is enveloped in warmth, tenderness, and mutual empathy. For partnered seekers, honest conversations and small gestures of affection will deepen your emotional bond effortlessly. If tensions have lingered in recent days, the harmonious Star Lord provides a soothing balm to resolve misunderstandings. Single seekers will radiate an authentic, magnetic charm today.`,
+    health: `Your vitality remains strong, provided you stay attuned to your body's subtle rhythms. The energetic transits emphasize nervous system balance, hydration, and mindful breathing. Avoid excessive caffeine or late-night mental overstimulation. Engaging in light meditation will ground your vital prana and elevate your stamina across all daylight hours.`,
+    remedy: `To harmonize the Sub-Lord vibration of ${transitMoonKp.subLord}, spend 5 minutes in peaceful meditation during the morning hours facing east, visualizing serene celestial light and affirming positive intent.`
   };
 
   if (process.env.GEMINI_API_KEY && process.env.GEMINI_API_KEY !== "your_gemini_api_key_here") {
@@ -167,9 +172,10 @@ Return ONLY a JSON object:
   "financeFavorability": "FAVOURABLE",
   "loveFavorability": "GOOD",
   "healthFavorability": "FAVOURABLE",
-  "kpSubLordTrigger": "Brief summary of the Sub-Lord trigger",
-  "auspiciousKpTime": "Time range, e.g. 10:30 AM - 12:45 PM",
-  "luckySubLord": "${transitMoonKp.subLord}",
+  "cosmicMood": "Brief mood description mentioning active sub-lord",
+  "luckyColor": "Color name",
+  "luckyNumber": "7",
+  "auspiciousTime": "Time range, e.g. 10:30 AM - 12:45 PM",
   "dailySummary": "Comprehensive KP daily analysis emphasizing Star Lord & Sub Lord operations.",
   "career": "Specific KP career forecast for today.",
   "finance": "Specific KP financial forecast for today.",

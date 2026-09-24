@@ -6,7 +6,6 @@ import { getAccurateTimezone } from "@/lib/geoUtils";
 import {
   getKpAyanamsa,
   getKpDetailsForLongitude,
-  KpCusp,
   formatDMS
 } from "@/lib/kpAstrology";
 
@@ -51,18 +50,34 @@ export async function fetchAIKpVarshaphalData(
   const currentYear = new Date().getFullYear();
   const age = currentYear - year;
 
+  const monthNames = [
+    "Month 1 (Solar Return Initiation)",
+    "Month 2 (Resource Alignment)",
+    "Month 3 (Action & Endeavor)",
+    "Month 4 (Domestic Equilibrium)",
+    "Month 5 (Creative & Speculative Vitality)",
+    "Month 6 (Professional Diligence)",
+    "Month 7 (Relational & Partnership Gateway)",
+    "Month 8 (Transformational Transition)",
+    "Month 9 (Higher Insight & Destiny Direction)",
+    "Month 10 (Status & Authority Zenith)",
+    "Month 11 (Fulfillment of Desires & Gains)",
+    "Month 12 (Year-End Synthesis & Reflection)"
+  ];
+
   let kpVarshaphalData = {
     age,
     solarReturnSign: natalSunKp.signName,
     solarReturnStarLord: natalSunKp.starLord,
     solarReturnSubLord: natalSunKp.subLord,
-    varshaphal: `In KP Astrology Varshaphal, this annual solar cycle is calibrated through your natal Sun's KP Sub-Lord (${natalSunKp.subLord}) and Star Lord (${natalSunKp.starLord}). The sub-lord dictates the primary accomplishments and structural shifts over the next 12 months. Your efforts will crystallize into solid career milestones, reinforced by disciplined execution and clear strategic decisions.`,
-    monthlyPredictions: [
-      { month: "Quarter 1 (Months 1-3)", prediction: `Activated under ${natalSunKp.starLord} Star Lord: Excellent period for initiating long-delayed projects, professional expansion, and expanding influential networks.` },
-      { month: "Quarter 2 (Months 4-6)", prediction: `Governed by financial significators: Favorable cash flow with strategic re-investments. Ensure contracts are reviewed with meticulous attention.` },
-      { month: "Quarter 3 (Months 7-9)", prediction: `Sub-Lord shift activates personal evolution: Harmonic interpersonal bonds, heightened creative productivity, and rewarding travels.` },
-      { month: "Quarter 4 (Months 10-12)", prediction: `Fructification and rewards: Harvest of year-long ventures, heightened authority, and solid domestic contentment.` }
-    ]
+    varshaphal: `In KP (Krishnamurti Paddhati) Astrology, this annual solar return cycle is governed by your natal Sun's KP Sub-Lord (${natalSunKp.subLord}) and Star Lord (${natalSunKp.starLord}). In KP principles, the Sun is the cosmic source of vitality, while its Sub-Lord acts as the definitive arbiter of whether major yearly efforts achieve decisive fruition. Over this upcoming 12-month solar cycle, your primary professional, financial, and personal initiatives will undergo systematic elevation. By leveraging the analytical discernment of ${natalSunKp.subLord}, obstacles will convert into enduring milestones.`,
+    monthlyPredictions: monthNames.map((mName, i) => ({
+      month: mName,
+      theme: i % 2 === 0 ? "Strategic Progression" : "Consolidation & Balance",
+      prediction: `Under the governing influence of KP transit configurations during this phase, focus on calculated execution. The active Star Lord channels focused mental energy into essential responsibilities.`,
+      career: `Professional clarity improves. High-impact tasks undertaken during this monthly phase yield solid recognition from superiors and clients.`,
+      relationships: `Interpersonal warmth and clear dialogue dissolve mutual doubts, fostering deepened companionship and mutual support.`
+    }))
   };
 
   if (process.env.GEMINI_API_KEY && process.env.GEMINI_API_KEY !== "your_gemini_api_key_here") {
@@ -75,17 +90,21 @@ Natal Sun is at ${natalSunKp.degFormatted} in ${natalSunKp.signName} | Star Lord
 
 Analyze this upcoming year using strict KP Astrology methodology:
 1. Examine the Cuspal Sub-Lord combinations for major milestones (Career: 2-6-10-11, Wealth: 2-11, Stability: 1-4-9).
-2. Detail how the Sub-Lord filters the planetary influences across the 12 months.
-3. Provide a breakdown of 4 quarters / key monthly periods.
+2. Detail how the Sub-Lord filters the planetary influences across the 12 calendar months.
+3. Provide a full 12-month breakdown with theme, prediction, career, and relationships for each month.
 
 Return ONLY a JSON object:
 {
-  "varshaphal": "Comprehensive, technical, and insightful annual forecast based on KP Sub-Lord principles.",
+  "varshaphal": "A massive, deeply analyzed Yearly Varshaphal (Annual Prediction) detailing the major themes, opportunities, health, and challenges for the upcoming year based on KP Sub-Lord rules.",
   "monthlyPredictions": [
-    { "month": "Q1: Month 1-3", "prediction": "Detailed KP prediction for this period." },
-    { "month": "Q2: Month 4-6", "prediction": "Detailed KP prediction for this period." },
-    { "month": "Q3: Month 7-9", "prediction": "Detailed KP prediction for this period." },
-    { "month": "Q4: Month 10-12", "prediction": "Detailed KP prediction for this period." }
+    {
+      "month": "Month 1 (e.g. Month 1)",
+      "theme": "A 3-5 word theme for this month",
+      "prediction": "The main detailed paragraph describing the astrological KP sub-lord transits and overall energy.",
+      "career": "Specific career and financial prediction for this month.",
+      "relationships": "Specific love and family prediction for this month."
+    }
+    // Repeat for all 12 months
   ]
 }`;
 
@@ -99,7 +118,10 @@ Return ONLY a JSON object:
           });
           if (res.text) {
             const parsed = JSON.parse(res.text.replace(/```json\n?|```/g, "").trim());
-            kpVarshaphalData = { ...kpVarshaphalData, ...parsed };
+            if (parsed.varshaphal) kpVarshaphalData.varshaphal = parsed.varshaphal;
+            if (Array.isArray(parsed.monthlyPredictions) && parsed.monthlyPredictions.length > 0) {
+              kpVarshaphalData.monthlyPredictions = parsed.monthlyPredictions;
+            }
             break;
           }
         } catch (e: any) {

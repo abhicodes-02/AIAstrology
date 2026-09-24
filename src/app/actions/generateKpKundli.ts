@@ -10,7 +10,10 @@ import {
   buildKpSignificators,
   KpPlanet,
   KpCusp,
-  formatDMS
+  formatDMS,
+  SIGNS,
+  SIGN_LORDS,
+  NAKSHATRAS
 } from "@/lib/kpAstrology";
 
 export async function fetchAIKpKundliData(name: string, dob: string, tob: string, pob: string) {
@@ -78,15 +81,15 @@ export async function fetchAIKpKundliData(name: string, dob: string, tob: string
   const kpPlanets: KpPlanet[] = [];
 
   const planetNameMap: Record<string, string> = {
-    Sun: "Surya",
-    Moon: "Chandra",
-    Mars: "Mangal",
-    Mercury: "Budha",
-    Jupiter: "Guru",
-    Venus: "Shukra",
-    Saturn: "Shani",
-    "North Node": "Rahu",
-    "South Node": "Ketu"
+    Sun: "Su",
+    Moon: "Mo",
+    Mars: "Ma",
+    Mercury: "Me",
+    Jupiter: "Ju",
+    Venus: "Ve",
+    Saturn: "Sa",
+    "North Node": "Ra",
+    "South Node": "Ke"
   };
 
   chart.planets.forEach((p: any) => {
@@ -123,7 +126,7 @@ export async function fetchAIKpKundliData(name: string, dob: string, tob: string
       const rahuInfo = getKpDetailsForLongitude(rahuLon);
       kpPlanets.push({
         name: "Rahu",
-        vedicName: "Rahu",
+        vedicName: "Ra",
         longitude: rahuLon,
         signIndex: rahuInfo.signIndex,
         signName: rahuInfo.signName,
@@ -144,7 +147,7 @@ export async function fetchAIKpKundliData(name: string, dob: string, tob: string
       const ketuInfo = getKpDetailsForLongitude(ketuLon);
       kpPlanets.push({
         name: "Ketu",
-        vedicName: "Ketu",
+        vedicName: "Ke",
         longitude: ketuLon,
         signIndex: ketuInfo.signIndex,
         signName: ketuInfo.signName,
@@ -167,6 +170,7 @@ export async function fetchAIKpKundliData(name: string, dob: string, tob: string
   // 5. Ruling Planets (RP) at moment of birth/query
   const ascCusp = cusps[0];
   const moonPlanet = kpPlanets.find(p => p.name === "Moon");
+  const sunPlanet = kpPlanets.find(p => p.name === "Sun");
 
   const rulingPlanets = {
     ascendantSignLord: ascCusp.signLord,
@@ -184,18 +188,58 @@ export async function fetchAIKpKundliData(name: string, dob: string, tob: string
   };
   kpPlanets.forEach(p => {
     if (bpHouses[p.houseOccupied]) {
-      bpHouses[p.houseOccupied].push(p.name + (p.isRetrograde ? " (R)" : ""));
+      const label = `${p.vedicName}${p.isRetrograde ? "(R)" : ""}`;
+      bpHouses[p.houseOccupied].push(label);
     }
   });
 
-  // Default fallback KP Reading
+  // Calculate D-1 Rashi Houses (Sign-based) for dual comparison like Vedic
+  const ascSign = ascCusp.signIndex;
+  const d1Houses: Record<number, string[]> = {
+    1: [], 2: [], 3: [], 4: [], 5: [], 6: [], 7: [], 8: [], 9: [], 10: [], 11: [], 12: []
+  };
+  kpPlanets.forEach(p => {
+    let houseNum = p.signIndex - ascSign + 1;
+    if (houseNum <= 0) houseNum += 12;
+    const label = `${p.vedicName}${p.isRetrograde ? "(R)" : ""}`;
+    d1Houses[houseNum].push(label);
+  });
+
+  // Panchang calculations in KP
+  const siderealMoon = moonPlanet ? moonPlanet.longitude : 0;
+  const siderealSun = sunPlanet ? sunPlanet.longitude : 0;
+  let tithiDeg = siderealMoon - siderealSun;
+  if (tithiDeg < 0) tithiDeg += 360;
+  const tithiIndex = Math.floor(tithiDeg / 12) + 1;
+  const paksha = tithiIndex <= 15 ? "Shukla" : "Krishna";
+  const tithiNumber = tithiIndex <= 15 ? tithiIndex : tithiIndex - 15;
+  const tithi = `${paksha} ${tithiNumber}`;
+
+  let yogaDeg = siderealMoon + siderealSun;
+  if (yogaDeg >= 360) yogaDeg -= 360;
+  const yogas = ["Vishkumbha", "Priti", "Ayushman", "Saubhagya", "Shobhana", "Atiganda", "Sukarma", "Dhriti", "Shula", "Ganda", "Vriddhi", "Dhruva", "Vyaghata", "Harshana", "Vajra", "Siddhi", "Vyatipata", "Variyana", "Parigha", "Shiva", "Siddha", "Sadhya", "Shubha", "Shukla", "Brahma", "Indra", "Vaidhriti"];
+  const yoga = yogas[Math.floor(yogaDeg / (360 / 27))];
+
+  const movableKaranas = ["Bava", "Balava", "Kaulava", "Taitila", "Garaja", "Vanija", "Vishti (Bhadra)"];
+  let karana = "";
+  const karanaNum = Math.floor(tithiDeg / 6) + 1;
+  if (karanaNum === 1) karana = "Kintughna";
+  else if (karanaNum >= 58) {
+    if (karanaNum === 58) karana = "Shakuni";
+    else if (karanaNum === 59) karana = "Chatushpada";
+    else karana = "Naga";
+  } else {
+    karana = movableKaranas[(karanaNum - 2) % 7];
+  }
+
+  // Default fallback KP Reading exactly structured with Vedic-matching depth
   let readingData = {
-    kpSummary: `In Krishnamurti Paddhati (KP) astrology, your chart is anchored by the 1st Cusp Sub-Lord (${ascCusp.subLord}) and Moon's Sub-Lord (${moonPlanet?.subLord || "N/A"}). The sub-lords govern the ultimate fructification and timing of your life destiny.`,
-    careerKp: `Career matters are governed by the 10th Cuspal Sub-Lord (${cusps[9]?.subLord}) connecting through houses 2, 6, 10, and 11. Your primary career significators indicate calculated analytical execution and steady milestone realization.`,
-    financeKp: `Wealth accumulation is dictated by the 2nd Cusp Sub-Lord (${cusps[1]?.subLord}) and 11th Cusp Sub-Lord (${cusps[10]?.subLord}). When transits activate these star lords, lucrative earning avenues open seamlessly.`,
-    relationshipKp: `Marriage and close partnerships are analyzed through the 7th Cusp Sub-Lord (${cusps[6]?.subLord}). The cosmic sub-lord indicates deep emotional bonds with pragmatic mutual respect.`,
-    healthKp: `Vitality is guided by the 1st Cusp Sub-Lord (${ascCusp.subLord}) resisting 6th and 8th house afflictions. A consistent lifestyle and disciplined dietary routine ensure enduring stamina.`,
-    rulingPlanetsAdvice: `Your key KP Ruling Planets (${rulingPlanets.ascendantStarLord}, ${rulingPlanets.moonStarLord}, ${rulingPlanets.moonSignLord}) serve as cosmic chronometers. Whenever major transits cross these stars, crucial life events manifest.`
+    reading: `In Krishnamurti Paddhati (KP) astrology, your cosmic blueprint is anchored by the 1st Cusp Sub-Lord (${ascCusp.subLord}) and Moon's Sub-Lord (${moonPlanet?.subLord || "N/A"}). While planetary sign placement represents the raw potential, the Cuspal Sub-Lord (CSL) serves as the ultimate gatekeeper that confirms the realization and quality of your life events. Your chart demonstrates strong analytical intuition, purposeful tenacity, and an ability to navigate life transitions with strategic patience.`,
+    career: `Career matters are governed by the 10th Cuspal Sub-Lord (${cusps[9]?.subLord}) connecting through houses 2, 6, 10, and 11. Your primary career significators indicate calculated analytical execution and steady milestone realization. When transits trigger these ruling sub-lords, professional elevation, leadership acknowledgment, and impactful authority manifest without obstruction.`,
+    wealth: `Wealth accumulation is dictated by the 2nd Cusp Sub-Lord (${cusps[1]?.subLord}) and 11th Cusp Sub-Lord (${cusps[10]?.subLord}). When transits activate these star lords, lucrative earning avenues and solid asset acquisition open seamlessly. Prudent, long-range diversification protects against unforced losses and guarantees lasting fiscal sovereignty.`,
+    relationships: `Marriage and intimate partnerships are analyzed through the 7th Cusp Sub-Lord (${cusps[6]?.subLord}). The cosmic sub-lord indicates deep emotional bonds tempered by mutual respect, intellectual harmony, and pragmatic expectations. Navigating partnerships through clear, transparent communication ensures marital contentment and enduring trust.`,
+    health: `Physical vitality is guided by the 1st Cusp Sub-Lord (${ascCusp.subLord}) resisting 6th and 8th house afflictions. A consistent lifestyle, mindful nervous system regulation, and disciplined dietary routine ensure enduring stamina, vibrant prana, and balanced wellness.`,
+    fullLife: `Synthesizing your KP chart, your life journey demonstrates a continuous evolution from self-reliance to profound mastery. Your primary Ruling Planets (${rulingPlanets.ascendantStarLord}, ${rulingPlanets.moonStarLord}, ${rulingPlanets.moonSignLord}) serve as cosmic chronometers. Whenever major planetary transits and Dasha lords align with these exact Sub-Lords, transformative opportunities and life-defining milestones come to fruition with supreme certainty.`
   };
 
   // 7. Generate Deep KP AI Predictions with Gemini
@@ -228,12 +272,12 @@ Apply STRICT KP Astrology principles:
 
 Return ONLY a valid JSON object matching this exact schema:
 {
-  "kpSummary": "Thorough KP assessment explaining the core Ascendant and Moon sub-lords and overall life blueprint.",
-  "careerKp": "Deeply technical yet clear KP analysis of the 10th house cuspal sub lord and career trajectory.",
-  "financeKp": "Deep KP analysis of the 2nd and 11th house cuspal sub lords and wealth prosperity.",
-  "relationshipKp": "Clear KP evaluation of the 7th house cuspal sub lord and partnership dynamics.",
-  "healthKp": "KP analysis of 1st and 6th houses for physical vitality and wellness guidance.",
-  "rulingPlanetsAdvice": "Actionable timing advice on how to use their Ruling Planets (RP) for auspicious beginnings."
+  "reading": "A deeply inspiring and expansive Core Soul Urge reading synthesizing the Ascendant & Moon Cuspal Sub-Lords and the seeker's psychological & spiritual blueprint.",
+  "career": "Detailed analysis of Career & Power through the 10th Cuspal Sub-Lord and connections to houses 2, 6, 10, 11.",
+  "wealth": "Detailed analysis of Wealth & Finance through the 2nd and 11th Cuspal Sub-Lords.",
+  "relationships": "Detailed analysis of Love & Destiny through the 7th Cuspal Sub-Lord.",
+  "health": "Detailed analysis of Health & Vitality through the 1st CSL resisting 6th/8th houses.",
+  "fullLife": "Comprehensive Ultimate Life Path narrative detailing the trajectory of destiny, peak periods, and timing milestones guided by the Ruling Planets."
 }`;
 
       const modelsToTry = [
@@ -275,6 +319,24 @@ Return ONLY a valid JSON object matching this exact schema:
     dob,
     tob,
     pob,
+    houses: bpHouses, // KP Placidus Bhava houses for Chart 1
+    d1Houses: d1Houses, // KP Rashi houses for Chart 2
+    ascendant: `${ascCusp.signName} (${ascCusp.degFormatted})`,
+    ascendantLord: ascCusp.signLord,
+    ascendantSubLord: ascCusp.subLord,
+    moonSign: `${moonPlanet?.signName} (${moonPlanet?.degFormatted})`,
+    moonSignLord: moonPlanet?.signLord,
+    moonSubLord: moonPlanet?.subLord,
+    sunSign: `${sunPlanet?.signName} (${sunPlanet?.degFormatted})`,
+    sunSignLord: sunPlanet?.signLord,
+    sunSubLord: sunPlanet?.subLord,
+    nakshatra: moonPlanet?.nakshatraName || "Rohini",
+    nakshatraPada: moonPlanet?.nakshatraPada || 1,
+    nakshatraLord: moonPlanet?.starLord || "Moon",
+    tithi,
+    yoga,
+    karana,
+    ayanamsaVal: `KP New (${formatDMS(kpAyanamsa)})`,
     kpAyanamsa: formatDMS(kpAyanamsa),
     ascendantCusp: ascCusp,
     moonInfo: moonPlanet,
@@ -284,6 +346,11 @@ Return ONLY a valid JSON object matching this exact schema:
     houseSignificators,
     rulingPlanets,
     bpHouses,
-    readings: readingData
+    reading: readingData.reading,
+    career: readingData.career,
+    wealth: readingData.wealth,
+    relationships: readingData.relationships,
+    health: readingData.health,
+    fullLife: readingData.fullLife
   };
 }
