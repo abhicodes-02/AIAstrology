@@ -174,22 +174,80 @@ export default function KundliDashboardView({
                 </div>
               </div>
 
-              <div className="mt-8 pt-8 border-t border-white/5 grid grid-cols-2 gap-4">
-                <div>
-                  <p className="text-xs text-indigo-300/50 uppercase tracking-wider mb-1">Ascendant</p>
-                  <p className="font-medium text-indigo-100">{chartData.ascendant}</p>
+              <div className="mt-8 pt-8 border-t border-white/5 grid grid-cols-2 gap-4 text-xs">
+                {/* Ascendant */}
+                <div className="bg-white/[0.02] p-3 rounded-2xl border border-white/5">
+                  <p className="text-[10px] text-indigo-300/50 uppercase tracking-wider mb-0.5">Ascendant (Lagna)</p>
+                  <p className="font-semibold text-sm text-indigo-100">{chartData.ascendant}</p>
+                  {chartData.ascendantLord && (
+                    <p className="text-[11px] text-indigo-300/70 mt-0.5">Lord: {chartData.ascendantLord}</p>
+                  )}
+                  {chartData.ascendantNavamsa && (
+                    <p className="text-[10px] text-purple-300/60 mt-0.5">D-9: {chartData.ascendantNavamsa.split(" ")[0]}</p>
+                  )}
                 </div>
-                <div>
-                  <p className="text-xs text-indigo-300/50 uppercase tracking-wider mb-1">Moon Sign</p>
-                  <p className="font-medium text-indigo-100 flex items-center gap-2"><Moon className="w-3 h-3 text-blue-400" /> {chartData.moonSign}</p>
+
+                {/* Moon Sign */}
+                <div className="bg-white/[0.02] p-3 rounded-2xl border border-white/5">
+                  <p className="text-[10px] text-indigo-300/50 uppercase tracking-wider mb-0.5">Moon Sign (Rashi)</p>
+                  <p className="font-semibold text-sm text-indigo-100 flex items-center gap-1.5">
+                    <Moon className="w-3.5 h-3.5 text-blue-400" /> {chartData.moonSign}
+                  </p>
+                  {chartData.moonSignLord && (
+                    <p className="text-[11px] text-indigo-300/70 mt-0.5">Lord: {chartData.moonSignLord}</p>
+                  )}
+                  {chartData.moonNavamsa && (
+                    <p className="text-[10px] text-purple-300/60 mt-0.5">D-9: {chartData.moonNavamsa.split(" ")[0]}</p>
+                  )}
                 </div>
-                <div>
-                  <p className="text-xs text-indigo-300/50 uppercase tracking-wider mb-1">Sun Sign</p>
-                  <p className="font-medium text-indigo-100 flex items-center gap-2"><Sun className="w-3 h-3 text-yellow-500" /> {chartData.sunSign}</p>
+
+                {/* Sun Sign */}
+                <div className="bg-white/[0.02] p-3 rounded-2xl border border-white/5">
+                  <p className="text-[10px] text-indigo-300/50 uppercase tracking-wider mb-0.5">Sun Sign (Surya)</p>
+                  <p className="font-semibold text-sm text-indigo-100 flex items-center gap-1.5">
+                    <Sun className="w-3.5 h-3.5 text-yellow-500" /> {chartData.sunSign}
+                  </p>
+                  {chartData.sunSignLord && (
+                    <p className="text-[11px] text-indigo-300/70 mt-0.5">Lord: {chartData.sunSignLord}</p>
+                  )}
+                  {chartData.sunNavamsa && (
+                    <p className="text-[10px] text-purple-300/60 mt-0.5">D-9: {chartData.sunNavamsa.split(" ")[0]}</p>
+                  )}
                 </div>
-                <div>
-                  <p className="text-xs text-indigo-300/50 uppercase tracking-wider mb-1">Nakshatra</p>
-                  <p className="font-medium text-indigo-100">{chartData.nakshatra}</p>
+
+                {/* Nakshatra */}
+                <div className="bg-white/[0.02] p-3 rounded-2xl border border-white/5">
+                  <p className="text-[10px] text-indigo-300/50 uppercase tracking-wider mb-0.5">Nakshatra & Pada</p>
+                  <p className="font-semibold text-sm text-indigo-100">
+                    {chartData.nakshatra} {chartData.nakshatraPada ? `(Pada ${chartData.nakshatraPada})` : ""}
+                  </p>
+                  {chartData.nakshatraLord && (
+                    <p className="text-[11px] text-indigo-300/70 mt-0.5">Lord: {chartData.nakshatraLord}</p>
+                  )}
+                </div>
+
+                {/* Tithi */}
+                <div className="bg-white/[0.02] p-3 rounded-2xl border border-white/5">
+                  <p className="text-[10px] text-indigo-300/50 uppercase tracking-wider mb-0.5">Tithi</p>
+                  <p className="font-medium text-xs text-indigo-100">{chartData.tithi || "N/A"}</p>
+                </div>
+
+                {/* Yoga */}
+                <div className="bg-white/[0.02] p-3 rounded-2xl border border-white/5">
+                  <p className="text-[10px] text-indigo-300/50 uppercase tracking-wider mb-0.5">Yoga</p>
+                  <p className="font-medium text-xs text-indigo-100">{chartData.yoga || "N/A"}</p>
+                </div>
+
+                {/* Karana */}
+                <div className="bg-white/[0.02] p-3 rounded-2xl border border-white/5">
+                  <p className="text-[10px] text-indigo-300/50 uppercase tracking-wider mb-0.5">Karana</p>
+                  <p className="font-medium text-xs text-indigo-100">{chartData.karana || "N/A"}</p>
+                </div>
+
+                {/* Ayanamsa */}
+                <div className="bg-white/[0.02] p-3 rounded-2xl border border-white/5">
+                  <p className="text-[10px] text-indigo-300/50 uppercase tracking-wider mb-0.5">Ayanamsa</p>
+                  <p className="font-medium text-xs text-indigo-100">{chartData.ayanamsaVal || "Lahiri"}</p>
                 </div>
               </div>
             </motion.div>

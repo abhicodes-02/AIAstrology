@@ -2,7 +2,6 @@
 
 import * as celestine from "celestine";
 import { GoogleGenAI } from "@google/genai";
-import { getAccurateTimezone } from "@/lib/geoUtils";
 
 export async function fetchAIDailyInsightData(
   name: string,
@@ -14,17 +13,15 @@ export async function fetchAIDailyInsightData(
   // 1. Geocode location
   let lat = 22.5726;
   let lon = 88.3639;
-  let countryCode = "in";
   try {
     const geoRes = await fetch(
-      `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(pob)}&format=json&limit=1&addressdetails=1`,
+      `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(pob)}&format=json&limit=1`,
       { headers: { "User-Agent": "AIAstrology/1.0" } }
     );
     const geoData = await geoRes.json();
     if (geoData && geoData.length > 0) {
       lat = parseFloat(geoData[0].lat);
       lon = parseFloat(geoData[0].lon);
-      countryCode = geoData[0].address?.country_code || "";
     }
   } catch (err) {
     console.error("Geocoding failed in daily insight", err);
@@ -33,7 +30,7 @@ export async function fetchAIDailyInsightData(
   // 2. Birth Chart Calculation
   const [birthYear, birthMonth, birthDay] = dob.split("-").map(Number);
   const [birthHour, birthMinute] = tob.split(":").map(Number);
-  const timezone = await getAccurateTimezone(lat, lon, countryCode, pob);
+  const timezone = Math.round(lon / 15);
 
   const birthChart = celestine.calculateChart(
     {

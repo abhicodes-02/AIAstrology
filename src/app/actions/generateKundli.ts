@@ -113,15 +113,63 @@ export async function fetchAIKundliData(name: string, dob: string, tob: string, 
     d9Houses[d9House].push(shortName);
   });
 
+  const signLords = [
+    "Mangal (Mars)", "Shukra (Venus)", "Budha (Mercury)", "Chandra (Moon)",
+    "Surya (Sun)", "Budha (Mercury)", "Shukra (Venus)", "Mangal (Mars)",
+    "Brihaspati (Jupiter)", "Shani (Saturn)", "Shani (Saturn)", "Brihaspati (Jupiter)"
+  ];
+
+  const nakshatraLords = [
+    "Ketu", "Shukra (Venus)", "Surya (Sun)", "Chandra (Moon)", "Mangal (Mars)", "Rahu",
+    "Brihaspati (Jupiter)", "Shani (Saturn)", "Budha (Mercury)", "Ketu", "Shukra (Venus)", "Surya (Sun)",
+    "Chandra (Moon)", "Mangal (Mars)", "Rahu", "Brihaspati (Jupiter)", "Shani (Saturn)", "Budha (Mercury)",
+    "Ketu", "Shukra (Venus)", "Surya (Sun)", "Chandra (Moon)", "Mangal (Mars)", "Rahu",
+    "Brihaspati (Jupiter)", "Shani (Saturn)", "Budha (Mercury)"
+  ];
+
+  const degInNak = siderealMoon % (360 / 27);
+  const nakshatraPada = Math.floor(degInNak / (360 / 108)) + 1;
+
+  const sunSignIdx = Math.floor(siderealSun / 30);
+  const moonSignIdx = Math.floor(siderealMoon / 30);
+
+  const sunNavamsa = signs[Math.floor(siderealSun / (360 / 108)) % 12];
+  const moonNavamsa = signs[Math.floor(siderealMoon / (360 / 108)) % 12];
+  const ascNavamsa = signs[Math.floor(ascSidereal / (360 / 108)) % 12];
+
+  // Karana: Each half of a tithi (6 degrees)
+  const movableKaranas = ["Bava", "Balava", "Kaulava", "Taitila", "Garaja", "Vanija", "Vishti (Bhadra)"];
+  let karana = "";
+  const karanaNum = Math.floor(tithiDeg / 6) + 1;
+  if (karanaNum === 1) karana = "Kintughna";
+  else if (karanaNum >= 58) {
+    if (karanaNum === 58) karana = "Shakuni";
+    else if (karanaNum === 59) karana = "Chatushpada";
+    else karana = "Naga";
+  } else {
+    karana = movableKaranas[(karanaNum - 2) % 7];
+  }
+
   const chartData = {
     houses: d1Houses,
     d9Houses: d9Houses,
     ascendant: ascendantName,
-    sunSign: signs[Math.floor(siderealSun / 30)],
-    moonSign: signs[Math.floor(siderealMoon / 30)],
+    ascendantLord: signLords[ascSign],
+    ascendantNavamsa: ascNavamsa,
+    sunSign: signs[sunSignIdx],
+    sunSignLord: signLords[sunSignIdx],
+    sunNavamsa: sunNavamsa,
+    moonSign: signs[moonSignIdx],
+    moonSignLord: signLords[moonSignIdx],
+    moonNavamsa: moonNavamsa,
     nakshatra,
+    nakshatraPada,
+    nakshatraLord: nakshatraLords[nakshatraIndex],
     tithi: `${paksha} Paksha, Tithi ${tithiNumber}`,
+    paksha,
     yoga,
+    karana,
+    ayanamsaVal: `Lahiri ${ayanamsa.toFixed(2)}°`,
     reading: `[AI BUSY] Welcome ${name}. The AI is currently experiencing high demand. Please wait a moment and try again.`,
     career: `[AI BUSY] The AI is currently experiencing high demand. Please try again.`,
     relationships: `[AI BUSY] The AI is currently experiencing high demand. Please try again.`,

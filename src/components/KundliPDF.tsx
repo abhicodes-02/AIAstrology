@@ -76,8 +76,9 @@ export const KundliPDF = ({ chartData, name, dob, tob, pob, d1Image, d9Image }: 
         <Text style={styles.title}>Cosmic Blueprint</Text>
         <Text style={styles.subtitle}>Name: {name}</Text>
         <Text style={styles.subtitle}>DOB: {dob} | Time: {tob}</Text>
-        <Text style={styles.subtitle}>Location: {pob}</Text>
-        <Text style={styles.subtitle}>Ascendant: {chartData.ascendant} | Moon Sign: {chartData.moonSign}</Text>
+        <Text style={styles.subtitle}>Ascendant: {chartData.ascendant} (D-9: {chartData.ascendantNavamsa?.split(' ')[0]}) | Moon: {chartData.moonSign} (D-9: {chartData.moonNavamsa?.split(' ')[0]})</Text>
+        <Text style={styles.subtitle}>Sun: {chartData.sunSign} (D-9: {chartData.sunNavamsa?.split(' ')[0]}) | Nakshatra: {chartData.nakshatra} {chartData.nakshatraPada ? `(Pada ${chartData.nakshatraPada})` : ""}</Text>
+        <Text style={styles.subtitle}>Tithi: {chartData.tithi} | Yoga: {chartData.yoga} | Karana: {chartData.karana} | Ayanamsa: {chartData.ayanamsaVal}</Text>
       </View>
 
       <View style={styles.chartContainer}>
