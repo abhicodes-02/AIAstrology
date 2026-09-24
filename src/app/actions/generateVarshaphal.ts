@@ -50,29 +50,27 @@ export async function fetchAIVarshaphalData(name: string, dob: string, tob: stri
   if (process.env.GEMINI_API_KEY && process.env.GEMINI_API_KEY !== "your_gemini_api_key_here") {
     try {
       const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
-      const prompt = `Act as an expert Bengali Vedic Astrologer. (IMPORTANT: Write the entire response in English). A user named ${name} was born on ${dob} in ${pob}. Their Sun is in ${signs[Math.floor(siderealSun / 30)]}. 
-      Generate a deeply detailed Varshaphal (Solar Return Annual Forecast) for their current year of life, incorporating transits and planetary returns.
-      Return ONLY a JSON object with these exact keys:
-      {
-        "varshaphal": "A massive, deeply analyzed Yearly Varshaphal (Annual Prediction) detailing the major themes, opportunities, health, and challenges for the upcoming year.",
-        "monthlyPredictions": [
-          { 
-            "month": "Month 1 (e.g. January)", 
-            "theme": "A 3-5 word theme for this month",
-            "prediction": "The main detailed paragraph describing the astrological transits and overall energy for this month.",
-            "career": "Specific career and financial prediction for this month.",
-            "relationships": "Specific love and family prediction for this month."
-          },
-          { 
-            "month": "Month 2 (e.g. February)", 
-            "theme": "A 3-5 word theme for this month",
-            "prediction": "The main detailed paragraph describing the astrological transits and overall energy for this month.",
-            "career": "Specific career and financial prediction for this month.",
-            "relationships": "Specific love and family prediction for this month."
-          }
-          // ... all 12 months
-        ]
-      }`;
+      const prompt = `Act as a master traditional Vedic Astrologer providing an authentic, realistic, and unvarnished Varshaphal (Tajika Solar Return Annual Forecast). (IMPORTANT: Write the entire response strictly in English).
+A seeker named ${name} was born on ${dob} in ${pob}. Their Natal Sun is in ${signs[Math.floor(siderealSun / 30)]}.
+
+CRITICAL RULES FOR ACCURACY & AUTHENTICITY:
+1. NO SUGARCOATING OR CHEAP OPTIMISM: Real astrological years contain arduous quarters, tests of patience, health slumps, and financial pressure. Be dignified, penetrating, and truthful.
+2. DUALITY IN EVERY PREDICTION: For the yearly forecast and every single month, clearly articulate BOTH the opportunities AND the hazards, mental fatigue, interpersonal frictions, and financial traps.
+3. SPECIFIC DIFFICULT PERIODS: Point out which months require defensive maneuvers, rest, or emotional caution rather than blind expansion.
+
+Return ONLY a JSON object with these exact keys:
+{
+  "varshaphal": "A massive, deeply analyzed Yearly Varshaphal (Annual Prediction) detailing the major themes, breakthrough opportunities, painful challenges, health warnings, and karmic crossroads for the upcoming year.",
+  "monthlyPredictions": [
+    { 
+      "month": "Month 1 (e.g. Month of Solar Return / January)", 
+      "theme": "A realistic 3-5 word theme for this month",
+      "prediction": "The main detailed paragraph describing the astrological transits, challenges to navigate, and overall energy for this month.",
+      "career": "Specific career and financial predictions including obstacles, deadlines, or breakthroughs.",
+      "relationships": "Specific love and family dynamics including potential friction points or harmony."
+    }
+  ]
+}`;
       
       let aiJson: any = null;
       const fallbackModels = ["gemini-3.6-flash", "gemini-3.5-flash", "gemini-3.5-flash-lite"];

@@ -180,8 +180,8 @@ Current Celestial Transit Date:
 - Transit Moon House relative to Natal Moon (Chandra Lagna): ${transitHouseFromMoon}th House
 
 Task:
-Generate a deeply detailed, personalized, and eloquent Daily Cosmic Reading for ${name} for today.
-Explain specifically how the transit Moon's journey through ${transitMoonSign} and the ${transitHouseFromMoon}th house from their Janma Rashi impacts their day in general and across all 4 key life spheres: Career/Work, Wealth/Finance, Love/Relationships, and Health/Vitality.
+Generate a deeply detailed, authentic, and realistic Daily Cosmic Reading for ${name} for today.
+CRITICAL: Do NOT sugarcoat or give empty praise. Explain both the positive currents AND the specific irritations, potential arguments, mental fatigue, impulse spending risks, and hurdles created by today's transit Moon through the ${transitHouseFromMoon}th house from their Janma Rashi. Give actionable, realistic guidance on what to pursue and what to strictly avoid.
 
 Return ONLY a valid JSON object with these exact keys:
 {

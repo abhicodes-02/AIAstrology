@@ -131,17 +131,31 @@ export async function fetchAIKundliData(name: string, dob: string, tob: string, 
   if (process.env.GEMINI_API_KEY && process.env.GEMINI_API_KEY !== "your_gemini_api_key_here") {
     try {
       const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
-      const prompt = `Act as an expert Bengali Vedic Astrologer. (IMPORTANT: Write the entire response in English). A user named ${name} has Lagna: ${ascendantName}, Moon: ${signs[Math.floor(siderealMoon / 30)]} (${nakshatra} Nakshatra), Sun: ${signs[Math.floor(siderealSun / 30)]}. D-1 Houses: ${JSON.stringify(d1Houses)}. D-9 Navamsa Houses: ${JSON.stringify(d9Houses)}. 
-      Provide a MASSIVE, highly detailed astrological reading. Do not hold back; give specific predictions based on the exact planets in their houses. 
-      Return ONLY a JSON object with these exact keys:
-      {
-        "reading": "A deeply personalized opening paragraph analyzing their core personality and soul urge.",
-        "career": "A massive deep-dive into their career, business, and worldly success based on the 10th house and D-10 indications.",
-        "relationships": "A deep analysis of their romantic life, marriage timing, and spouse characteristics based on the 7th house and D-9 Navamsa.",
-        "health": "Detailed health predictions and physical vitality based on the 6th house and Ascendant.",
-        "wealth": "Financial prospects, hidden wealth, and income sources based on the 2nd and 11th houses.",
-        "fullLife": "A grand, sweeping summary of their life's ultimate purpose, karmic lessons, and major life periods (Dashas)."
-      }`;
+      const prompt = `Act as a master traditional Vedic Astrologer (Jyotishi) renowned for unvarnished truth, psychological depth, and karmic realism. (IMPORTANT: Write the entire response in English).
+A seeker named ${name} has:
+- Lagna (Ascendant): ${ascendantName}
+- Moon (Janma Rashi): ${signs[Math.floor(siderealMoon / 30)]} in ${nakshatra} Nakshatra
+- Sun (Surya): ${signs[Math.floor(siderealSun / 30)]}
+- D-1 Rashi Houses: ${JSON.stringify(d1Houses)}
+- D-9 Navamsa Houses: ${JSON.stringify(d9Houses)}
+
+CRITICAL INSTRUCTIONS FOR AUTHENTICITY & ACCURACY:
+1. STRICTLY AVOID SUGARCOATING OR FLATTERY: Do NOT write a generic, purely positive horoscope. Real human lives are full of struggle, mental anguish, delays, karmic blockages, and personal flaws. Speak the unfiltered astrological truth with dignity and precision.
+2. ANALYZE BOTH BLESSINGS & HARSH REALITIES (DUAL BALANCE): In every single domain, explicitly reveal the shadow side, malefic afflictions, doshas, difficult house placements (6th, 8th, 12th houses, Saturn/Mars/Rahu/Ketu pressures), internal conflicts, and periods of breakdown or vulnerability alongside the strengths.
+3. GROUNDED PERSONALITY: Point out their real psychological blindspots, emotional defense mechanisms, fears, and internal contradictions (e.g. Scorpio Moon's intense brooding/distrust, Aquarius detachment, Mars aggression, Rahu illusions).
+4. FINANCIAL & CAREER STRUGGLES: Discuss career bottlenecks, periods of aimlessness, workplace politics or severe competition, and financial drains/bad decisions before any lasting stability.
+5. RELATIONSHIP FRICTION: Discuss actual romantic disillusionment, ego clashes, emotional misunderstandings, potential delays, or tests of patience in marriage/partnerships.
+6. HEALTH VULNERABILITIES: Explicitly pinpoint physical sensitivities, psychosomatic stress manifestations, digestive/nervous weak points according to classical Vedic rules.
+
+Return ONLY a valid JSON object with these exact keys:
+{
+  "reading": "A deeply realistic opening analysis of their core personality, psychological contradictions, emotional struggles, and underlying soul urge—balancing their gifts with their real shadow self.",
+  "career": "A grounded, deep-dive evaluation of their professional journey. Detail both their peaks AND their major career roadblocks, professional rivalries, periods of stagnation, and lessons in humility.",
+  "relationships": "An authentic, penetrating reading of their romantic and marital fate based on the 7th house, Venus, and D-9 Navamsa. Address emotional challenges, high expectations, conflicts, spouse personality quirks/friction, and lessons in love.",
+  "health": "Specific, unvarnished health prognosis. Identify organ vulnerabilities, stress triggers, nervous system strain, and physical habits that must be guarded against.",
+  "wealth": "A realistic financial blueprint based on the 2nd, 8th, and 11th houses. Detail wealth-building capability alongside periods of financial losses, wasteful expenditures, impulse risks, and karmic monetary tests.",
+  "fullLife": "A grand, mature Vedic synthesis of their ultimate life path. Discuss the heavy karmic baggage, pivotal crisis points/turning moments, the major Dasha struggles, and the profound wisdom forged through hardship."
+}`;
       
       let aiJson = null;
       const fallbackModels = ["gemini-3.6-flash", "gemini-3.5-flash", "gemini-3.5-flash-lite"];
