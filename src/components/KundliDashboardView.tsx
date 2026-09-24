@@ -115,12 +115,20 @@ export default function KundliDashboardView({
             </h1>
           </div>
           <div className="flex flex-wrap items-center gap-3">
+            <Link href={`/kp-kundli?name=${encodeURIComponent(name)}&dob=${dob}&tob=${encodeURIComponent(tob)}&pob=${encodeURIComponent(pob)}`}>
+              <Button 
+                variant="outline" 
+                className="bg-cyan-500/10 border-cyan-500/30 hover:bg-cyan-500/20 text-cyan-200 rounded-full px-5 backdrop-blur-md transition-all font-semibold"
+              >
+                <Sparkles className="w-4 h-4 mr-2 text-cyan-400" /> Switch to KP Mode
+              </Button>
+            </Link>
             <Link href={`/daily-insight?name=${encodeURIComponent(name)}&dob=${dob}&tob=${encodeURIComponent(tob)}&pob=${encodeURIComponent(pob)}`}>
               <Button 
                 variant="outline" 
-                className="bg-cyan-500/10 border-cyan-500/30 hover:bg-cyan-500/20 text-cyan-200 rounded-full px-5 backdrop-blur-md transition-all font-medium"
+                className="bg-indigo-500/10 border-indigo-500/30 hover:bg-indigo-500/20 text-indigo-200 rounded-full px-5 backdrop-blur-md transition-all font-medium"
               >
-                <Compass className="w-4 h-4 mr-2 text-cyan-400" /> Daily Insight
+                <Compass className="w-4 h-4 mr-2 text-indigo-400" /> Daily Insight
               </Button>
             </Link>
             <Button 

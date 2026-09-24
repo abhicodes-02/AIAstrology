@@ -89,6 +89,8 @@ export default function BirthDetailsForm() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+  const [submitMode, setSubmitMode] = useState<"vedic" | "kp">("vedic");
+
   function onSubmit(values: z.infer<typeof formSchema>) {
     setIsSubmitting(true);
     
@@ -100,8 +102,11 @@ export default function BirthDetailsForm() {
       pob: values.pob
     });
 
-    // Navigate to the kundli results page
-    router.push(`/kundli?${params.toString()}`);
+    if (submitMode === "kp") {
+      router.push(`/kp-kundli?${params.toString()}`);
+    } else {
+      router.push(`/kundli?${params.toString()}`);
+    }
   }
 
   return (
@@ -112,7 +117,7 @@ export default function BirthDetailsForm() {
         </div>
         <CardTitle className="text-3xl font-bold font-space text-indigo-100">Awaken Your Stars</CardTitle>
         <CardDescription className="text-indigo-200/70 text-base">
-          Enter your exact birth details to generate your perfect Vedic Kundli.
+          Enter your exact birth details to generate your Vedic or KP Astrology chart.
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -220,22 +225,43 @@ export default function BirthDetailsForm() {
               )}
             />
 
-            <Button 
-              type="submit" 
-              className="w-full bg-indigo-600 hover:bg-indigo-500 text-white shadow-[0_0_20px_rgba(79,70,229,0.3)] transition-all duration-300 h-12 text-lg font-medium mt-4"
-              disabled={isSubmitting}
-            >
-              {isSubmitting ? (
-                <span className="flex items-center gap-2">
-                  <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                  Aligning Planets...
-                </span>
-              ) : (
-                <span className="flex items-center gap-2">
-                  Generate Kundli <Sparkles className="w-5 h-5" />
-                </span>
-              )}
-            </Button>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+              <Button 
+                type="submit" 
+                onClick={() => setSubmitMode("vedic")}
+                className="w-full bg-indigo-600 hover:bg-indigo-500 text-white shadow-[0_0_15px_rgba(79,70,229,0.3)] transition-all duration-300 h-12 text-sm font-semibold flex items-center justify-center gap-2"
+                disabled={isSubmitting}
+              >
+                {isSubmitting && submitMode === "vedic" ? (
+                  <span className="flex items-center gap-2">
+                    <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                    Generating...
+                  </span>
+                ) : (
+                  <span className="flex items-center gap-2">
+                    Vedic Kundli <Sparkles className="w-4 h-4" />
+                  </span>
+                )}
+              </Button>
+
+              <Button 
+                type="submit" 
+                onClick={() => setSubmitMode("kp")}
+                className="w-full bg-gradient-to-r from-cyan-600 to-teal-600 hover:from-cyan-500 hover:to-teal-500 text-white shadow-[0_0_15px_rgba(6,182,212,0.35)] transition-all duration-300 h-12 text-sm font-bold flex items-center justify-center gap-2 border border-cyan-400/30"
+                disabled={isSubmitting}
+              >
+                {isSubmitting && submitMode === "kp" ? (
+                  <span className="flex items-center gap-2">
+                    <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                    Calculating KP...
+                  </span>
+                ) : (
+                  <span className="flex items-center gap-2">
+                    KP Astrology <Sparkles className="w-4 h-4 text-cyan-200" />
+                  </span>
+                )}
+              </Button>
+            </div>
           </form>
         </Form>
       </CardContent>
