@@ -136,6 +136,19 @@ export async function fetchAIDailyInsightData(
     day: "numeric",
   });
 
+  function normalizeFavorability(val: any, defaultVal = "GOOD"): "WORST" | "BAD" | "GOOD" | "FAVOURABLE" | "HIGHLY FAVOURABLE" {
+    if (!val || typeof val !== "string") return defaultVal as any;
+    const upper = val.toUpperCase().trim();
+    if (upper.includes("HIGHLY") || upper.includes("EXCELLENT")) return "HIGHLY FAVOURABLE";
+    if (upper.includes("FAVOURABLE") || upper.includes("FAVORABLE")) return "FAVOURABLE";
+    if (upper.includes("WORST") || upper.includes("TERRIBLE")) return "WORST";
+    if (upper.includes("BAD") || upper.includes("POOR") || upper.includes("CHALLENGING")) return "BAD";
+    if (upper.includes("GOOD") || upper.includes("AVERAGE") || upper.includes("MODERATE") || upper.includes("NEUTRAL")) return "GOOD";
+    return defaultVal as any;
+  }
+
+  type FavorabilityLevel = "WORST" | "BAD" | "GOOD" | "FAVOURABLE" | "HIGHLY FAVOURABLE";
+
   // Default fallback data
   let dailyData = {
     dateFormatted,
@@ -147,6 +160,11 @@ export async function fetchAIDailyInsightData(
     transitNakshatra,
     transitHouseFromMoon,
     cosmicScore: 82,
+    overallFavorability: "FAVOURABLE" as FavorabilityLevel,
+    careerFavorability: "GOOD" as FavorabilityLevel,
+    financeFavorability: "FAVOURABLE" as FavorabilityLevel,
+    loveFavorability: "GOOD" as FavorabilityLevel,
+    healthFavorability: "FAVOURABLE" as FavorabilityLevel,
     cosmicMood: "Intuitive, Balanced & Auspicious",
     luckyColor: "Royal Indigo & Pearl White",
     luckyNumber: "7",
@@ -180,20 +198,26 @@ Current Celestial Transit Date:
 - Transit Moon House relative to Natal Moon (Chandra Lagna): ${transitHouseFromMoon}th House
 
 Task:
-Generate a deeply detailed, personalized, and eloquent Daily Cosmic Reading for ${name} for today.
-Explain specifically how the transit Moon's journey through ${transitMoonSign} and the ${transitHouseFromMoon}th house from their Janma Rashi impacts their day in general and across all 4 key life spheres: Career/Work, Wealth/Finance, Love/Relationships, and Health/Vitality.
+Generate a deeply detailed, authentic Daily Cosmic Reading for ${name} for today.
+CRITICAL: Do NOT sugarcoat. Provide precise favorability ratings for the entire day overall, and for each of the 4 domains (Career, Finance, Love, Health).
+Each favorability tag MUST be strictly one of: ["WORST", "BAD", "GOOD", "FAVOURABLE", "HIGHLY FAVOURABLE"].
 
 Return ONLY a valid JSON object with these exact keys:
 {
-  "cosmicScore": <number between 65 and 96 representing today's auspiciousness>,
+  "cosmicScore": <number between 40 and 96 representing today's auspiciousness>,
+  "overallFavorability": "<Exactly one of: 'WORST', 'BAD', 'GOOD', 'FAVOURABLE', 'HIGHLY FAVOURABLE'>",
   "cosmicMood": "<A 3-5 word evocative phrase describing today's overarching psychological and spiritual mood>",
   "luckyColor": "<1-2 auspicious colors for today based on transits>",
   "luckyNumber": "<lucky single or double digit number>",
   "auspiciousTime": "<auspicious time window today, e.g. '10:30 AM - 12:15 PM'>",
   "dailySummary": "<2 detailed, beautifully written paragraphs explaining the overall cosmic energy, transit Moon influence, and general life guidance for today>",
+  "careerFavorability": "<Exactly one of: 'WORST', 'BAD', 'GOOD', 'FAVOURABLE', 'HIGHLY FAVOURABLE'>",
   "career": "<1-2 detailed paragraphs describing work, business, job focus, productivity, negotiations, and workplace dynamics today>",
+  "financeFavorability": "<Exactly one of: 'WORST', 'BAD', 'GOOD', 'FAVOURABLE', 'HIGHLY FAVOURABLE'>",
   "finance": "<1-2 detailed paragraphs describing money flow, financial precautions, investment opportunities, and spending advice today>",
+  "loveFavorability": "<Exactly one of: 'WORST', 'BAD', 'GOOD', 'FAVOURABLE', 'HIGHLY FAVOURABLE'>",
   "love": "<1-2 detailed paragraphs describing romantic connection, emotional harmony, partner dynamics, family bonding, or single prospects today>",
+  "healthFavorability": "<Exactly one of: 'WORST', 'BAD', 'GOOD', 'FAVOURABLE', 'HIGHLY FAVOURABLE'>",
   "health": "<1-2 detailed paragraphs detailing energy levels, physical vitality, mental serenity, dietary precautions, and wellness practices for today>",
   "remedy": "<A practical, authentic Vedic astrological remedy, mantra, or auspicious daily practice for harmony and protection today>"
 }`;
@@ -225,6 +249,11 @@ Return ONLY a valid JSON object with these exact keys:
         dailyData = {
           ...dailyData,
           cosmicScore: typeof aiJson.cosmicScore === "number" ? aiJson.cosmicScore : 85,
+          overallFavorability: normalizeFavorability(aiJson.overallFavorability, "FAVOURABLE"),
+          careerFavorability: normalizeFavorability(aiJson.careerFavorability, "GOOD"),
+          financeFavorability: normalizeFavorability(aiJson.financeFavorability, "FAVOURABLE"),
+          loveFavorability: normalizeFavorability(aiJson.loveFavorability, "GOOD"),
+          healthFavorability: normalizeFavorability(aiJson.healthFavorability, "FAVOURABLE"),
           cosmicMood: aiJson.cosmicMood || dailyData.cosmicMood,
           luckyColor: aiJson.luckyColor || dailyData.luckyColor,
           luckyNumber: String(aiJson.luckyNumber || dailyData.luckyNumber),

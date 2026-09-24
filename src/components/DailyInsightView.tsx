@@ -22,6 +22,36 @@ import {
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 
+function FavorabilityBadge({ status }: { status: string }) {
+  const norm = (status || "GOOD").toUpperCase().trim();
+  let badgeStyle = "bg-indigo-500/15 text-indigo-300 border-indigo-500/30";
+  let dotColor = "bg-indigo-400";
+
+  if (norm.includes("HIGHLY")) {
+    badgeStyle = "bg-emerald-500/20 text-emerald-300 border-emerald-500/40 shadow-[0_0_15px_rgba(16,185,129,0.25)]";
+    dotColor = "bg-emerald-400 animate-pulse";
+  } else if (norm.includes("FAVOURABLE") || norm.includes("FAVORABLE")) {
+    badgeStyle = "bg-cyan-500/20 text-cyan-300 border-cyan-500/40 shadow-[0_0_15px_rgba(6,182,212,0.2)]";
+    dotColor = "bg-cyan-400";
+  } else if (norm === "GOOD") {
+    badgeStyle = "bg-blue-500/20 text-blue-300 border-blue-500/40";
+    dotColor = "bg-blue-400";
+  } else if (norm === "BAD") {
+    badgeStyle = "bg-amber-500/20 text-amber-300 border-amber-500/40 shadow-[0_0_15px_rgba(245,158,11,0.2)]";
+    dotColor = "bg-amber-400";
+  } else if (norm === "WORST") {
+    badgeStyle = "bg-rose-500/20 text-rose-300 border-rose-500/40 shadow-[0_0_15px_rgba(244,63,94,0.3)]";
+    dotColor = "bg-rose-400 animate-pulse";
+  }
+
+  return (
+    <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold tracking-wider uppercase border backdrop-blur-md ${badgeStyle}`}>
+      <span className={`w-2 h-2 rounded-full ${dotColor}`} />
+      {norm}
+    </span>
+  );
+}
+
 export default function DailyInsightView({
   dailyData,
   name,
@@ -208,6 +238,11 @@ export default function DailyInsightView({
                     </p>
                   </div>
                 </div>
+
+                <div className="flex items-center gap-2.5 bg-white/[0.03] px-3.5 py-1.5 rounded-full border border-white/10 self-start sm:self-auto">
+                  <span className="text-xs uppercase tracking-wider text-indigo-300/70 font-semibold">Day Favorability:</span>
+                  <FavorabilityBadge status={dailyData.overallFavorability || "FAVOURABLE"} />
+                </div>
               </div>
 
               <div className="text-base md:text-lg text-indigo-100/90 leading-relaxed space-y-4 whitespace-pre-wrap font-normal">
@@ -224,14 +259,17 @@ export default function DailyInsightView({
               className="bg-white/[0.02] border border-white/5 hover:border-blue-500/30 rounded-3xl p-6 md:p-8 backdrop-blur-2xl transition-all duration-300 group flex flex-col justify-between"
             >
               <div>
-                <div className="flex items-center gap-3.5 mb-5">
-                  <div className="w-11 h-11 bg-blue-500/10 border border-blue-500/25 rounded-2xl flex items-center justify-center text-blue-400 group-hover:scale-105 transition-transform">
-                    <Briefcase className="w-5 h-5" />
+                <div className="flex items-start justify-between gap-3 mb-5">
+                  <div className="flex items-center gap-3.5">
+                    <div className="w-11 h-11 bg-blue-500/10 border border-blue-500/25 rounded-2xl flex items-center justify-center text-blue-400 group-hover:scale-105 transition-transform">
+                      <Briefcase className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <h4 className="text-xl font-space font-bold text-blue-100">Career & Ambition</h4>
+                      <span className="text-xs text-blue-300/60 uppercase tracking-wider font-medium">Work, Deals & Leadership</span>
+                    </div>
                   </div>
-                  <div>
-                    <h4 className="text-xl font-space font-bold text-blue-100">Career & Ambition</h4>
-                    <span className="text-xs text-blue-300/60 uppercase tracking-wider font-medium">Work, Deals & Leadership</span>
-                  </div>
+                  <FavorabilityBadge status={dailyData.careerFavorability || "GOOD"} />
                 </div>
                 <p className="text-indigo-100/80 leading-relaxed text-sm md:text-base whitespace-pre-wrap">
                   {dailyData.career}
@@ -245,14 +283,17 @@ export default function DailyInsightView({
               className="bg-white/[0.02] border border-white/5 hover:border-emerald-500/30 rounded-3xl p-6 md:p-8 backdrop-blur-2xl transition-all duration-300 group flex flex-col justify-between"
             >
               <div>
-                <div className="flex items-center gap-3.5 mb-5">
-                  <div className="w-11 h-11 bg-emerald-500/10 border border-emerald-500/25 rounded-2xl flex items-center justify-center text-emerald-400 group-hover:scale-105 transition-transform">
-                    <Coins className="w-5 h-5" />
+                <div className="flex items-start justify-between gap-3 mb-5">
+                  <div className="flex items-center gap-3.5">
+                    <div className="w-11 h-11 bg-emerald-500/10 border border-emerald-500/25 rounded-2xl flex items-center justify-center text-emerald-400 group-hover:scale-105 transition-transform">
+                      <Coins className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <h4 className="text-xl font-space font-bold text-emerald-100">Wealth & Cash Flow</h4>
+                      <span className="text-xs text-emerald-300/60 uppercase tracking-wider font-medium">Finances, Purchases & Returns</span>
+                    </div>
                   </div>
-                  <div>
-                    <h4 className="text-xl font-space font-bold text-emerald-100">Wealth & Cash Flow</h4>
-                    <span className="text-xs text-emerald-300/60 uppercase tracking-wider font-medium">Finances, Purchases & Returns</span>
-                  </div>
+                  <FavorabilityBadge status={dailyData.financeFavorability || "FAVOURABLE"} />
                 </div>
                 <p className="text-indigo-100/80 leading-relaxed text-sm md:text-base whitespace-pre-wrap">
                   {dailyData.finance}
@@ -266,14 +307,17 @@ export default function DailyInsightView({
               className="bg-white/[0.02] border border-white/5 hover:border-pink-500/30 rounded-3xl p-6 md:p-8 backdrop-blur-2xl transition-all duration-300 group flex flex-col justify-between"
             >
               <div>
-                <div className="flex items-center gap-3.5 mb-5">
-                  <div className="w-11 h-11 bg-pink-500/10 border border-pink-500/25 rounded-2xl flex items-center justify-center text-pink-400 group-hover:scale-105 transition-transform">
-                    <Heart className="w-5 h-5" />
+                <div className="flex items-start justify-between gap-3 mb-5">
+                  <div className="flex items-center gap-3.5">
+                    <div className="w-11 h-11 bg-pink-500/10 border border-pink-500/25 rounded-2xl flex items-center justify-center text-pink-400 group-hover:scale-105 transition-transform">
+                      <Heart className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <h4 className="text-xl font-space font-bold text-pink-100">Love & Harmony</h4>
+                      <span className="text-xs text-pink-300/60 uppercase tracking-wider font-medium">Partner, Family & Social Bonds</span>
+                    </div>
                   </div>
-                  <div>
-                    <h4 className="text-xl font-space font-bold text-pink-100">Love & Harmony</h4>
-                    <span className="text-xs text-pink-300/60 uppercase tracking-wider font-medium">Partner, Family & Social Bonds</span>
-                  </div>
+                  <FavorabilityBadge status={dailyData.loveFavorability || "GOOD"} />
                 </div>
                 <p className="text-indigo-100/80 leading-relaxed text-sm md:text-base whitespace-pre-wrap">
                   {dailyData.love}
@@ -287,14 +331,17 @@ export default function DailyInsightView({
               className="bg-white/[0.02] border border-white/5 hover:border-rose-500/30 rounded-3xl p-6 md:p-8 backdrop-blur-2xl transition-all duration-300 group flex flex-col justify-between"
             >
               <div>
-                <div className="flex items-center gap-3.5 mb-5">
-                  <div className="w-11 h-11 bg-rose-500/10 border border-rose-500/25 rounded-2xl flex items-center justify-center text-rose-400 group-hover:scale-105 transition-transform">
-                    <Shield className="w-5 h-5" />
+                <div className="flex items-start justify-between gap-3 mb-5">
+                  <div className="flex items-center gap-3.5">
+                    <div className="w-11 h-11 bg-rose-500/10 border border-rose-500/25 rounded-2xl flex items-center justify-center text-rose-400 group-hover:scale-105 transition-transform">
+                      <Shield className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <h4 className="text-xl font-space font-bold text-rose-100">Health & Vitality</h4>
+                      <span className="text-xs text-rose-300/60 uppercase tracking-wider font-medium">Physical Stamina & Peace of Mind</span>
+                    </div>
                   </div>
-                  <div>
-                    <h4 className="text-xl font-space font-bold text-rose-100">Health & Vitality</h4>
-                    <span className="text-xs text-rose-300/60 uppercase tracking-wider font-medium">Physical Stamina & Peace of Mind</span>
-                  </div>
+                  <FavorabilityBadge status={dailyData.healthFavorability || "FAVOURABLE"} />
                 </div>
                 <p className="text-indigo-100/80 leading-relaxed text-sm md:text-base whitespace-pre-wrap">
                   {dailyData.health}
