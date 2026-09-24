@@ -2,6 +2,7 @@
 
 import * as celestine from "celestine";
 import { GoogleGenAI } from "@google/genai";
+import { getAccurateTimezone } from "@/lib/geoUtils";
 
 export async function fetchAIDailyInsightData(
   name: string,
@@ -13,15 +14,17 @@ export async function fetchAIDailyInsightData(
   // 1. Geocode location
   let lat = 22.5726;
   let lon = 88.3639;
+  let countryCode = "in";
   try {
     const geoRes = await fetch(
-      `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(pob)}&format=json&limit=1`,
+      `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(pob)}&format=json&limit=1&addressdetails=1`,
       { headers: { "User-Agent": "AIAstrology/1.0" } }
     );
     const geoData = await geoRes.json();
     if (geoData && geoData.length > 0) {
       lat = parseFloat(geoData[0].lat);
       lon = parseFloat(geoData[0].lon);
+      countryCode = geoData[0].address?.country_code || "";
     }
   } catch (err) {
     console.error("Geocoding failed in daily insight", err);
@@ -30,7 +33,7 @@ export async function fetchAIDailyInsightData(
   // 2. Birth Chart Calculation
   const [birthYear, birthMonth, birthDay] = dob.split("-").map(Number);
   const [birthHour, birthMinute] = tob.split(":").map(Number);
-  const timezone = Math.round(lon / 15);
+  const timezone = await getAccurateTimezone(lat, lon, countryCode, pob);
 
   const birthChart = celestine.calculateChart(
     {
@@ -180,8 +183,8 @@ Current Celestial Transit Date:
 - Transit Moon House relative to Natal Moon (Chandra Lagna): ${transitHouseFromMoon}th House
 
 Task:
-Generate a deeply detailed, authentic, and realistic Daily Cosmic Reading for ${name} for today.
-CRITICAL: Do NOT sugarcoat or give empty praise. Explain both the positive currents AND the specific irritations, potential arguments, mental fatigue, impulse spending risks, and hurdles created by today's transit Moon through the ${transitHouseFromMoon}th house from their Janma Rashi. Give actionable, realistic guidance on what to pursue and what to strictly avoid.
+Generate a deeply detailed, personalized, and eloquent Daily Cosmic Reading for ${name} for today.
+Explain specifically how the transit Moon's journey through ${transitMoonSign} and the ${transitHouseFromMoon}th house from their Janma Rashi impacts their day in general and across all 4 key life spheres: Career/Work, Wealth/Finance, Love/Relationships, and Health/Vitality.
 
 Return ONLY a valid JSON object with these exact keys:
 {

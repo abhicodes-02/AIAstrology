@@ -2,19 +2,22 @@
 
 import * as celestine from "celestine";
 import { GoogleGenAI } from "@google/genai";
+import { getAccurateTimezone } from "@/lib/geoUtils";
 
 export async function fetchAIKundliData(name: string, dob: string, tob: string, pob: string) {
   // 1. Geocode the location
-  let lat = 0;
-  let lon = 0;
+  let lat = 22.5726;
+  let lon = 88.3639;
+  let countryCode = "in";
   try {
-    const geoRes = await fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(pob)}&format=json&limit=1`, {
+    const geoRes = await fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(pob)}&format=json&limit=1&addressdetails=1`, {
       headers: { "User-Agent": "AIAstrology/1.0" }
     });
     const geoData = await geoRes.json();
     if (geoData && geoData.length > 0) {
       lat = parseFloat(geoData[0].lat);
       lon = parseFloat(geoData[0].lon);
+      countryCode = geoData[0].address?.country_code || "";
     }
   } catch (err) {
     console.error("Geocoding failed", err);
@@ -22,9 +25,9 @@ export async function fetchAIKundliData(name: string, dob: string, tob: string, 
 
   const [year, month, day] = dob.split("-").map(Number);
   const [hour, minute] = tob.split(":").map(Number);
-  const timezone = Math.round(lon / 15);
+  const timezone = await getAccurateTimezone(lat, lon, countryCode, pob);
 
-  const birth = { year, month, day, hour, minute, latitude: lat || 22.5726, longitude: lon || 88.3639, timezone }; // Default Kolkata
+  const birth = { year, month, day, hour, minute, latitude: lat, longitude: lon, timezone };
 
   const chartOptions = { includeNodes: "true" as const };
   const chart = celestine.calculateChart(birth, chartOptions);
