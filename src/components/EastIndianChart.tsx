@@ -85,22 +85,22 @@ const EastIndianChart: React.FC<EastIndianChartProps> = ({
               
               {/* Ascendant Marker (Vedic) */}
               {!isKp && sign.id === lagnaSignIndex && (
-                <text x={sign.cx} y={sign.cy - 16} textAnchor="middle" className="fill-amber-400 text-[10px] font-bold" stroke="none">
-                  Lagna {cusps.find(c => c.houseNumber === 1)?.degreeStr || ""}
+                <text x={sign.cx} y={sign.cy - 16} textAnchor="middle" className="fill-amber-400 text-[12px] font-bold" stroke="none">
+                  Asc
                 </text>
               )}
               
               {/* KP Cusps */}
               {isKp && signCusps.map((cusp, idx) => (
                 <text key={`cusp-${idx}`} x={sign.cx} y={sign.cy - 12 + (idx * 10)} textAnchor="middle" className="fill-red-400/80 text-[10px] font-bold tracking-wider" stroke="none">
-                  {romanNumerals[cusp.houseNumber]} {cusp.degreeStr ? cusp.degreeStr : ''}
+                  {romanNumerals[cusp.houseNumber]}
                 </text>
               ))}
               
               {/* Planets */}
               {signPlanets.length > 0 && (
-                <text x={sign.cx} y={sign.cy + ((!isKp && sign.id === lagnaSignIndex) || (isKp && signCusps.length > 0) ? 6 : -4)} textAnchor="middle" className={`${isKp ? 'fill-blue-300' : 'fill-indigo-100'} text-[11px] font-semibold tracking-wide`} stroke="none">
-                  {signPlanets.map(p => `${p.name.substring(0,2)}${p.isRetrograde ? "®" : ""} ${p.degreeStr || ''}`.trim()).join(" ")}
+                <text x={sign.cx} y={sign.cy + ((!isKp && sign.id === lagnaSignIndex) || (isKp && signCusps.length > 0) ? 6 : -4)} textAnchor="middle" className={`${isKp ? 'fill-blue-300' : 'fill-indigo-100'} text-[14px] font-bold tracking-wide`} stroke="none">
+                  {signPlanets.map(p => `${p.name.substring(0,2)}${p.isRetrograde ? "(R)" : ""}`.trim()).join(" ")}
                 </text>
               )}
 
