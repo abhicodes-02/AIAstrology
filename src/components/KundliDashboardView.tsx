@@ -144,12 +144,12 @@ export default function KundliDashboardView({
         <motion.div 
           animate={{ x: [0, 50, 0], y: [0, 30, 0] }}
           transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-          className="absolute top-[-10%] left-[-10%] w-[50vw] h-[50vw] bg-purple-900/10 rounded-full blur-[120px]" 
+          className="absolute top-[-20%] left-[-10%] w-[60vw] h-[60vw] bg-[radial-gradient(circle_at_center,rgba(88,28,135,0.12),transparent_60%)] rounded-full" 
         />
         <motion.div 
           animate={{ x: [0, -50, 0], y: [0, -30, 0] }}
           transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
-          className="absolute bottom-[-10%] right-[-10%] w-[50vw] h-[50vw] bg-blue-900/10 rounded-full blur-[120px]" 
+          className="absolute bottom-[-20%] right-[-10%] w-[60vw] h-[60vw] bg-[radial-gradient(circle_at_center,rgba(30,58,138,0.12),transparent_60%)] rounded-full" 
         />
         
       </div>
@@ -372,7 +372,7 @@ export default function KundliDashboardView({
 
             {/* Daily Insight CTA (Side Card) */}
             <motion.div variants={itemVariants} className="bg-gradient-to-br from-cyan-950/40 via-indigo-950/40 to-purple-950/40 border border-cyan-500/30 rounded-3xl p-6 md:p-8 backdrop-blur-2xl shadow-[0_0_35px_rgba(6,182,212,0.12)] relative overflow-hidden group flex flex-col justify-between gap-5">
-              <div className="absolute -right-16 -top-16 w-48 h-48 bg-cyan-500/15 rounded-full blur-[70px] group-hover:scale-150 transition-transform duration-1000" />
+              <div className="absolute -right-16 -top-16 w-48 h-48 bg-[radial-gradient(circle_at_center,rgba(6,182,212,0.15),transparent_70%)] rounded-full group-hover:scale-150 transition-transform duration-1000" />
               
               <div className="relative z-10">
                 <h3 className="text-xl font-space font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-200 to-indigo-300 flex items-center gap-2.5 mb-2">
@@ -393,7 +393,7 @@ export default function KundliDashboardView({
 
             {/* Varshaphal CTA (Side Card) */}
             <motion.div variants={itemVariants} className="bg-gradient-to-br from-yellow-950/40 via-orange-950/30 to-amber-950/20 border border-yellow-500/30 rounded-3xl p-6 md:p-8 backdrop-blur-2xl shadow-[0_0_35px_rgba(234,179,8,0.15)] relative overflow-hidden group flex flex-col justify-between gap-5">
-              <div className="absolute -right-16 -top-16 w-48 h-48 bg-yellow-500/20 rounded-full blur-[70px] group-hover:scale-150 transition-transform duration-1000" />
+              <div className="absolute -right-16 -top-16 w-48 h-48 bg-[radial-gradient(circle_at_center,rgba(234,179,8,0.2),transparent_70%)] rounded-full group-hover:scale-150 transition-transform duration-1000" />
               
               <div className="relative z-10">
                 <h3 className="text-xl font-space font-bold text-transparent bg-clip-text bg-gradient-to-r from-yellow-200 to-orange-400 flex items-center gap-2.5 mb-2">
@@ -418,7 +418,7 @@ export default function KundliDashboardView({
             
             {/* Core Soul Urge (Hero Block) */}
             <motion.div variants={itemVariants} className="bg-gradient-to-br from-indigo-900/20 to-purple-900/20 border border-indigo-500/20 rounded-3xl p-6 md:p-10 backdrop-blur-2xl shadow-[0_0_50px_rgba(79,70,229,0.1)] relative overflow-hidden group">
-              <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-500/10 rounded-full blur-[80px] group-hover:bg-indigo-500/20 transition-all duration-700" />
+              <div className="absolute top-0 right-0 w-64 h-64 bg-[radial-gradient(circle_at_center,rgba(99,102,241,0.1),transparent_70%)] rounded-full group-hover:bg-indigo-500/20 transition-all duration-700" />
               <div className="relative z-10">
                 <div className="flex items-center gap-4 mb-6">
                   <div className="w-12 h-12 rounded-2xl bg-indigo-500/20 flex items-center justify-center border border-indigo-500/30 shadow-[0_0_15px_rgba(99,102,241,0.2)]">

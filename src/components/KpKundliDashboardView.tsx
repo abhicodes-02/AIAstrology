@@ -110,12 +110,12 @@ export default function KpKundliDashboardView({
         <motion.div
           animate={{ x: [0, 50, 0], y: [0, 30, 0] }}
           transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-          className="absolute top-[-10%] left-[-10%] w-[50vw] h-[50vw] bg-cyan-900/15 rounded-full blur-[120px]"
+          className="absolute top-[-20%] left-[-10%] w-[60vw] h-[60vw] bg-[radial-gradient(circle_at_center,rgba(8,145,178,0.15),transparent_60%)] rounded-full"
         />
         <motion.div
           animate={{ x: [0, -50, 0], y: [0, -30, 0] }}
           transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
-          className="absolute bottom-[-10%] right-[-10%] w-[50vw] h-[50vw] bg-teal-900/15 rounded-full blur-[120px]"
+          className="absolute bottom-[-20%] right-[-10%] w-[60vw] h-[60vw] bg-[radial-gradient(circle_at_center,rgba(13,148,136,0.15),transparent_60%)] rounded-full"
         />
       </div>
 
@@ -304,7 +304,7 @@ export default function KpKundliDashboardView({
               variants={itemVariants}
               className="bg-gradient-to-br from-cyan-950/30 via-indigo-950/20 to-purple-950/20 border border-cyan-500/20 rounded-3xl p-6 md:p-10 backdrop-blur-2xl shadow-[0_0_50px_rgba(6,182,212,0.1)] relative overflow-hidden group"
             >
-              <div className="absolute top-0 right-0 w-64 h-64 bg-cyan-500/10 rounded-full blur-[80px] group-hover:bg-cyan-500/20 transition-all duration-700" />
+              <div className="absolute top-0 right-0 w-64 h-64 bg-[radial-gradient(circle_at_center,rgba(6,182,212,0.1),transparent_70%)] rounded-full group-hover:bg-cyan-500/20 transition-all duration-700" />
               <div className="relative z-10">
                 <div className="flex items-center gap-4 mb-6">
                   <div className="w-12 h-12 rounded-2xl bg-cyan-500/20 flex items-center justify-center border border-cyan-500/30 shadow-[0_0_15px_rgba(6,182,212,0.2)]">

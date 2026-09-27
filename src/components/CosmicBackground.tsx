@@ -10,7 +10,8 @@ export const CosmicBackground = () => {
   useEffect(() => {
     setMounted(true);
     // Generate random stars, moons, and suns
-    const newElements = Array.from({ length: 40 }).map((_, i) => {
+    // Reduced from 40 to 15 to prevent layout thrashing and massive GPU lag on live production
+    const newElements = Array.from({ length: 15 }).map((_, i) => {
       const type = Math.random() > 0.85 ? "moon" : Math.random() > 0.85 ? "sun" : "star";
       return {
         id: i,
@@ -48,7 +49,7 @@ export const CosmicBackground = () => {
                   ease: "linear",
                   delay: el.delay,
                 }}
-                className="absolute top-0 left-0 bg-white rounded-full shadow-[0_0_10px_3px_rgba(255,255,255,0.9)]"
+                className="absolute top-0 left-0 bg-white rounded-full opacity-80"
                 style={{ width: el.size, height: el.size }}
               />
             );
