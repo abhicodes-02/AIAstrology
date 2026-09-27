@@ -89,10 +89,29 @@ export default function BirthDetailsForm() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+  // Load saved details from localStorage on mount
+  useEffect(() => {
+    const savedName = localStorage.getItem("astro_name");
+    const savedDob = localStorage.getItem("astro_dob");
+    const savedTob = localStorage.getItem("astro_tob");
+    const savedPob = localStorage.getItem("astro_pob");
+
+    if (savedName) form.setValue("name", savedName);
+    if (savedDob) form.setValue("dob", savedDob);
+    if (savedTob) form.setValue("tob", savedTob);
+    if (savedPob) form.setValue("pob", savedPob);
+  }, [form]);
+
   const [submitMode, setSubmitMode] = useState<"vedic" | "kp">("vedic");
 
   function onSubmit(values: z.infer<typeof formSchema>) {
     setIsSubmitting(true);
+    
+    // Save to localStorage so user doesn't have to re-enter
+    localStorage.setItem("astro_name", values.name);
+    localStorage.setItem("astro_dob", values.dob);
+    localStorage.setItem("astro_tob", values.tob);
+    localStorage.setItem("astro_pob", values.pob);
     
     // Create query string from form values
     const params = new URLSearchParams({
