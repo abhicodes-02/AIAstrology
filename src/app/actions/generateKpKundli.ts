@@ -235,11 +235,14 @@ export async function fetchAIKpKundliData(name: string, dob: string, tob: string
   // Default fallback KP Reading exactly structured with Vedic-matching depth
   let readingData = {
     reading: `In Krishnamurti Paddhati (KP) astrology, your cosmic blueprint is anchored by the 1st Cusp Sub-Lord (${ascCusp.subLord}) and Moon's Sub-Lord (${moonPlanet?.subLord || "N/A"}). While planetary sign placement represents the raw potential, the Cuspal Sub-Lord (CSL) serves as the ultimate gatekeeper that confirms the realization and quality of your life events. Your chart demonstrates strong analytical intuition, purposeful tenacity, and an ability to navigate life transitions with strategic patience.`,
+    education: `Education and academic pursuits are governed by the 4th Cusp Sub-Lord (${cusps[3]?.subLord}) and 9th Cusp Sub-Lord (${cusps[8]?.subLord}). Your chart suggests a highly intellectual foundation and an innate ability to grasp complex concepts. When favorable Dasha periods align, academic milestones and advanced learning opportunities are easily achieved.`,
+    family: `Family life and domestic harmony are indicated by the 2nd Cusp Sub-Lord (${cusps[1]?.subLord}). Your ruling planets show a deeply rooted sense of responsibility towards your lineage and household. Strong familial bonds and legacy building are central themes in your cosmic blueprint.`,
     career: `Career matters are governed by the 10th Cuspal Sub-Lord (${cusps[9]?.subLord}) connecting through houses 2, 6, 10, and 11. Your primary career significators indicate calculated analytical execution and steady milestone realization. When transits trigger these ruling sub-lords, professional elevation, leadership acknowledgment, and impactful authority manifest without obstruction.`,
     wealth: `Wealth accumulation is dictated by the 2nd Cusp Sub-Lord (${cusps[1]?.subLord}) and 11th Cusp Sub-Lord (${cusps[10]?.subLord}). When transits activate these star lords, lucrative earning avenues and solid asset acquisition open seamlessly. Prudent, long-range diversification protects against unforced losses and guarantees lasting fiscal sovereignty.`,
     relationships: `Marriage and intimate partnerships are analyzed through the 7th Cusp Sub-Lord (${cusps[6]?.subLord}). The cosmic sub-lord indicates deep emotional bonds tempered by mutual respect, intellectual harmony, and pragmatic expectations. Navigating partnerships through clear, transparent communication ensures marital contentment and enduring trust.`,
     health: `Physical vitality is guided by the 1st Cusp Sub-Lord (${ascCusp.subLord}) resisting 6th and 8th house afflictions. A consistent lifestyle, mindful nervous system regulation, and disciplined dietary routine ensure enduring stamina, vibrant prana, and balanced wellness.`,
-    fullLife: `Synthesizing your KP chart, your life journey demonstrates a continuous evolution from self-reliance to profound mastery. Your primary Ruling Planets (${rulingPlanets.ascendantStarLord}, ${rulingPlanets.moonStarLord}, ${rulingPlanets.moonSignLord}) serve as cosmic chronometers. Whenever major planetary transits and Dasha lords align with these exact Sub-Lords, transformative opportunities and life-defining milestones come to fruition with supreme certainty.`
+    fullLife: `Synthesizing your KP chart, your life journey demonstrates a continuous evolution from self-reliance to profound mastery. Your primary Ruling Planets (${rulingPlanets.ascendantStarLord}, ${rulingPlanets.moonStarLord}, ${rulingPlanets.moonSignLord}) serve as cosmic chronometers. Whenever major planetary transits and Dasha lords align with these exact Sub-Lords, transformative opportunities and life-defining milestones come to fruition with supreme certainty.`,
+    breakthroughs: `Major life breakthroughs are intricately tied to the precise activation of your Ruling Planets and Key Sub-Lords through Dasha sequences. (Note: AI regeneration required for exact DD/MM/YYYY timeline predictions).`
   };
 
   // 7. Generate Deep KP AI Predictions with Gemini
@@ -251,7 +254,8 @@ A seeker named ${name} has provided their exact birth chart details computed wit
 
 - Ascendant Cusp (1st House): ${ascCusp.degFormatted} in ${ascCusp.signName} | Star Lord: ${ascCusp.starLord} | Sub-Lord: ${ascCusp.subLord}
 - Moon: ${moonPlanet?.degFormatted} in ${moonPlanet?.signName} | Star Lord: ${moonPlanet?.starLord} | Sub-Lord: ${moonPlanet?.subLord}
-- 2nd Cusp (Wealth): Sub-Lord is ${cusps[1]?.subLord}
+- 2nd Cusp (Wealth & Family): Sub-Lord is ${cusps[1]?.subLord}
+- 4th Cusp (Education): Sub-Lord is ${cusps[3]?.subLord}
 - 7th Cusp (Marriage & Partnerships): Sub-Lord is ${cusps[6]?.subLord}
 - 10th Cusp (Career & Status): Sub-Lord is ${cusps[9]?.subLord}
 - 11th Cusp (Gains & Fulfillment): Sub-Lord is ${cusps[10]?.subLord}
@@ -264,20 +268,24 @@ Asc Star Lord: ${rulingPlanets.ascendantStarLord}, Moon Star Lord: ${rulingPlane
 
 Apply STRICT KP Astrology principles:
 1. "The Planet represents the Source, the Star Lord represents the Nature of the Event, and the Sub-Lord decides the Final Fructification (Yes or No)."
-2. Career: Analyze 10th Cuspal Sub-Lord (CSL) linking to houses 2, 6, 10, 11 (success) vs 5, 8, 12 (setbacks).
-3. Finance: Analyze 2nd and 11th CSL.
-4. Marriage/Relationships: Analyze 7th CSL linking to 2, 7, 11 (harmony) vs 1, 6, 10 (separation/delay).
-5. Health: 1st CSL vs 6, 8, 12.
-6. Ruling Planets guidance for timing events.
+2. Education: Analyze 4th and 9th CSL.
+3. Family & Wealth: Analyze 2nd and 11th CSL.
+4. Career: Analyze 10th Cuspal Sub-Lord (CSL) linking to houses 2, 6, 10, 11 (success) vs 5, 8, 12 (setbacks).
+5. Marriage/Relationships: Analyze 7th CSL linking to 2, 7, 11 (harmony) vs 1, 6, 10 (separation/delay).
+6. Health: 1st CSL vs 6, 8, 12.
+7. Past, Present, Future: For each section, deeply analyze the karmic past (what they were), the present challenges/strengths (what they are), and the destined trajectory (what they will become).
 
-Return ONLY a valid JSON object matching this exact schema:
+Return ONLY a valid JSON object matching this exact schema. DO NOT output a short response. EACH string field MUST be a highly detailed astrological treatise of AT LEAST 300-400 words. Write in deep, analytical paragraphs:
 {
-  "reading": "A deeply inspiring and expansive Core Soul Urge reading synthesizing the Ascendant & Moon Cuspal Sub-Lords and the seeker's psychological & spiritual blueprint.",
-  "career": "Detailed analysis of Career & Power through the 10th Cuspal Sub-Lord and connections to houses 2, 6, 10, 11.",
-  "wealth": "Detailed analysis of Wealth & Finance through the 2nd and 11th Cuspal Sub-Lords.",
-  "relationships": "Detailed analysis of Love & Destiny through the 7th Cuspal Sub-Lord.",
-  "health": "Detailed analysis of Health & Vitality through the 1st CSL resisting 6th/8th houses.",
-  "fullLife": "Comprehensive Ultimate Life Path narrative detailing the trajectory of destiny, peak periods, and timing milestones guided by the Ruling Planets."
+  "reading": "A monumental Core Soul Urge reading synthesizing the Ascendant & Moon Cuspal Sub-Lords. Meticulously detail their karmic past (what they were), their present state of mind (what they are), and their ultimate evolution (what they are going to be).",
+  "education": "An encyclopedic, highly precise analysis of Education, intellect, and higher learning through the 4th and 9th CSL. Include early learning environment (past), current intellectual capacity and focus (present), and future mastery or academic achievements.",
+  "family": "An encyclopedic, highly precise analysis of Family, lineage, and domestic harmony through the 2nd CSL. Include ancestral karma/upbringing (past), current home life/struggles (present), and future family building/stability.",
+  "career": "An encyclopedic, highly precise analysis of Career & Power through the 10th Cuspal Sub-Lord. Detail past struggles, foundational career karma, present authority/workplace dynamics, and exact future peaks of success and recognition.",
+  "wealth": "An encyclopedic, highly precise analysis of Wealth & Finance through the 2nd and 11th CSL. Detail past financial karma, present accumulation strategies, and future legacy/wealth potential.",
+  "relationships": "An encyclopedic, highly precise analysis of Love & Destiny through the 7th CSL. Detail past relationship patterns/breakbreaks, present harmony/lessons, and future marital bliss or karmic soulmate connections.",
+  "health": "An encyclopedic, highly precise analysis of Health & Vitality through the 1st CSL resisting 6th/8th houses. Include past ailments, current vitality/stress triggers, and future longevity/health warnings.",
+  "fullLife": "A staggering, Comprehensive Ultimate Life Path narrative detailing the entire trajectory of destiny, pivotal crisis points, and precise timing milestones guided by the Ruling Planets.",
+  "breakthroughs": "A dedicated, hyper-detailed timeline of ALL major life breakthroughs (career peaks, marriage, financial windfalls, spiritual awakenings). You MUST calculate and list the exact age these occurred/will occur, and explicitly predict the exact dd/mm/yyyy dates for each major breakthrough based on planetary sub-lords and dashas."
 }`;
 
       const modelsToTry = [
@@ -295,6 +303,7 @@ Return ONLY a valid JSON object matching this exact schema:
             config: {
               temperature: 0.7,
               responseMimeType: "application/json",
+              maxOutputTokens: 8192,
             },
           });
 
@@ -347,10 +356,13 @@ Return ONLY a valid JSON object matching this exact schema:
     rulingPlanets,
     bpHouses,
     reading: readingData.reading,
+    education: readingData.education,
+    family: readingData.family,
     career: readingData.career,
     wealth: readingData.wealth,
     relationships: readingData.relationships,
     health: readingData.health,
-    fullLife: readingData.fullLife
+    fullLife: readingData.fullLife,
+    breakthroughs: readingData.breakthroughs
   };
 }

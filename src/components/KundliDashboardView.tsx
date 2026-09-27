@@ -3,8 +3,9 @@
 import { motion } from "framer-motion";
 import { Sparkles, ArrowLeft, Star, Sun, Moon, MapPin, Clock, Calendar, Heart, Shield, Coins, Briefcase, Download, Loader2, Compass } from "lucide-react";
 import Link from "next/link";
-import KundliChart from "@/components/KundliChart";
+import EastIndianChart from "@/components/EastIndianChart";
 import { Button } from "@/components/ui/button";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { useRef, useState } from "react";
 import { toJpeg } from "html-to-image";
 
@@ -80,6 +81,61 @@ export default function KundliDashboardView({
     hidden: { opacity: 0, y: 20 },
     show: { opacity: 1, y: 0, transition: { type: "spring" as const, stiffness: 100 } }
   };
+
+  const signsList = ["Aries", "Taurus", "Gemini", "Cancer", "Leo", "Virgo", "Libra", "Scorpio", "Sagittarius", "Capricorn", "Aquarius", "Pisces"];
+  
+  // Helper for Vedic Ascendant Cusp object
+  // Find exact index from string like "Kumbha (Aquarius)" or fallback to passed index
+  const getSignIdx = (signStr: string) => {
+    const s = signStr.toLowerCase();
+    const idx = signsList.findIndex(x => s.includes(x.toLowerCase()));
+    return idx >= 0 ? idx + 1 : 1;
+  };
+
+  const ascSignIndex = chartData.d1AscSignIndex || getSignIdx(chartData.ascendant);
+  const d9AscSignIndex = chartData.d9AscSignIndex || getSignIdx(chartData.ascendantNavamsa);
+
+  const lagnaCuspD1 = [{ houseNumber: 1, signIndex: ascSignIndex, degreeStr: chartData.lagnaDegreeStr || "" }];
+  // D9 lagna degree usually isn't shown directly on D9, but we can keep it blank
+  const lagnaCuspD9 = [{ houseNumber: 1, signIndex: d9AscSignIndex, degreeStr: "" }];
+
+  let d1Planets = [];
+  let d9Planets = [];
+
+  if (chartData.planetsData && chartData.planetsData.length > 0) {
+    d1Planets = chartData.planetsData.map((p: any) => ({
+      name: p.shortName,
+      signIndex: p.d1SignIndex,
+      isRetrograde: p.isRetrograde,
+      degreeStr: p.degreeStr
+    }));
+    d9Planets = chartData.planetsData.map((p: any) => ({
+      name: p.shortName,
+      signIndex: p.d9SignIndex,
+      isRetrograde: p.isRetrograde,
+      degreeStr: ""
+    }));
+  } else {
+    // Fallback if planetsData is missing but we have houses object (legacy cache)
+    const parsePlanet = (pStr: string, signIdx: number) => {
+      const isRx = pStr.includes("Rx");
+      const name = pStr.replace("Rx", "");
+      return { name, signIndex: signIdx, isRetrograde: isRx };
+    };
+
+    d1Planets = Object.keys(chartData.houses || {}).flatMap(hNumStr => {
+      const hNum = parseInt(hNumStr);
+      const signIdx = ((ascSignIndex - 1 + hNum - 1) % 12) + 1;
+      return (chartData.houses[hNumStr] || []).map((p: string) => parsePlanet(p, signIdx));
+    });
+
+    const d9HousesData = chartData.d9Houses || chartData.houses || {};
+    d9Planets = Object.keys(d9HousesData).flatMap(hNumStr => {
+      const hNum = parseInt(hNumStr);
+      const signIdx = ((d9AscSignIndex - 1 + hNum - 1) % 12) + 1;
+      return (d9HousesData[hNumStr] || []).map((p: string) => parsePlanet(p, signIdx));
+    });
+  }
 
   return (
     <div className="min-h-screen bg-transparent text-indigo-100 font-sans relative overflow-x-hidden selection:bg-indigo-500/30">
@@ -252,6 +308,30 @@ export default function KundliDashboardView({
               </div>
             </motion.div>
 
+            {/* Doshas Section */}
+            <motion.div variants={itemVariants} className="bg-red-950/10 border border-red-500/20 rounded-3xl p-6 backdrop-blur-2xl shadow-xl">
+              <div className="flex items-center gap-3 mb-4">
+                <Shield className="w-5 h-5 text-red-400" />
+                <h3 className="text-lg font-space font-semibold text-red-100">Doshas Analysis</h3>
+              </div>
+              <div className="space-y-3">
+                {Array.isArray(chartData.doshas) && chartData.doshas.length > 0 ? (
+                  chartData.doshas.map((dosha: any, idx: number) => (
+                    <div key={idx} className="flex justify-between items-center bg-black/20 p-3 rounded-xl border border-white/5">
+                      <span className="text-sm font-medium text-red-100/90">{dosha.name}</span>
+                      <span className={`text-xs px-2 py-1 rounded-md font-bold uppercase tracking-wider ${dosha.present ? 'bg-red-500/20 text-red-300' : 'bg-green-500/10 text-green-400'}`}>
+                        {dosha.present ? 'Present' : 'Not Present'}
+                      </span>
+                    </div>
+                  ))
+                ) : (
+                  <div className="text-sm text-indigo-300/50 italic">
+                    {typeof chartData.doshas === 'string' ? 'Dosha analysis needs regeneration for list format.' : 'No doshas detected.'}
+                  </div>
+                )}
+              </div>
+            </motion.div>
+
             {/* Lagna Chart */}
             <motion.div variants={itemVariants} className="bg-white/[0.02] border border-white/5 rounded-3xl p-6 md:p-8 backdrop-blur-2xl shadow-2xl">
               <div className="flex justify-between items-center mb-8">
@@ -260,8 +340,14 @@ export default function KundliDashboardView({
                   <p className="text-xs text-indigo-300/50 mt-1 uppercase tracking-widest">Physical Reality</p>
                 </div>
               </div>
-              <div id="d1-chart" className="aspect-square w-full opacity-90">
-                <KundliChart planets={chartData.houses} />
+              <div id="d1-chart" className="aspect-square w-full opacity-90 flex items-center justify-center">
+                <EastIndianChart 
+                  planets={d1Planets}
+                  cusps={lagnaCuspD1}
+                  width={350} height={350}
+                  showOm={true}
+                  centerTitle={`Lagna ${ascSignIndex}`}
+                />
               </div>
             </motion.div>
 
@@ -273,8 +359,14 @@ export default function KundliDashboardView({
                   <p className="text-xs text-indigo-300/50 mt-1 uppercase tracking-widest">Soul & Destiny</p>
                 </div>
               </div>
-              <div id="d9-chart" className="aspect-square w-full opacity-90">
-                <KundliChart planets={chartData.d9Houses || chartData.houses} />
+              <div id="d9-chart" className="aspect-square w-full opacity-90 flex items-center justify-center">
+                <EastIndianChart 
+                  planets={d9Planets}
+                  cusps={lagnaCuspD9}
+                  width={350} height={350}
+                  showOm={true}
+                  centerTitle={`Lagna ${d9AscSignIndex}`}
+                />
               </div>
             </motion.div>
 
@@ -342,62 +434,91 @@ export default function KundliDashboardView({
               </div>
             </motion.div>
 
-            {/* 2x2 Grid for Specifics */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              {/* Career */}
-              <motion.div variants={itemVariants} className="bg-white/[0.02] border border-white/5 hover:border-blue-500/30 rounded-3xl p-6 md:p-8 backdrop-blur-2xl transition-all duration-300 group">
-                <div className="flex items-center gap-3 mb-4">
-                  <Briefcase className="w-5 h-5 text-blue-400" />
-                  <h4 className="text-lg font-semibold text-blue-100">Career & Power</h4>
-                </div>
-                <p className="text-indigo-200/80 leading-relaxed text-sm md:text-base">
-                  {chartData.career}
-                </p>
-              </motion.div>
-
-              {/* Wealth */}
-              <motion.div variants={itemVariants} className="bg-white/[0.02] border border-white/5 hover:border-emerald-500/30 rounded-3xl p-6 md:p-8 backdrop-blur-2xl transition-all duration-300 group">
-                <div className="flex items-center gap-3 mb-4">
-                  <Coins className="w-5 h-5 text-emerald-400" />
-                  <h4 className="text-lg font-semibold text-emerald-100">Wealth & Finance</h4>
-                </div>
-                <p className="text-indigo-200/80 leading-relaxed text-sm md:text-base">
-                  {chartData.wealth || "No wealth data available."}
-                </p>
-              </motion.div>
-
-              {/* Love */}
-              <motion.div variants={itemVariants} className="bg-white/[0.02] border border-white/5 hover:border-pink-500/30 rounded-3xl p-6 md:p-8 backdrop-blur-2xl transition-all duration-300 group">
-                <div className="flex items-center gap-3 mb-4">
-                  <Heart className="w-5 h-5 text-pink-400" />
-                  <h4 className="text-lg font-semibold text-pink-100">Love & Destiny</h4>
-                </div>
-                <p className="text-indigo-200/80 leading-relaxed text-sm md:text-base">
-                  {chartData.relationships}
-                </p>
-              </motion.div>
-
-              {/* Health */}
-              <motion.div variants={itemVariants} className="bg-white/[0.02] border border-white/5 hover:border-rose-500/30 rounded-3xl p-6 md:p-8 backdrop-blur-2xl transition-all duration-300 group">
-                <div className="flex items-center gap-3 mb-4">
-                  <Shield className="w-5 h-5 text-rose-400" />
-                  <h4 className="text-lg font-semibold text-rose-100">Health & Vitality</h4>
-                </div>
-                <p className="text-indigo-200/80 leading-relaxed text-sm md:text-base">
-                  {chartData.health || "No health data available."}
-                </p>
-              </motion.div>
-            </div>
-
-            {/* Ultimate Life Path */}
-            <motion.div variants={itemVariants} className="bg-white/[0.03] border border-purple-500/20 rounded-3xl p-6 md:p-10 backdrop-blur-2xl shadow-xl">
-              <div className="flex items-center gap-3 mb-6">
-                <Sparkles className="w-6 h-6 text-purple-400" />
-                <h3 className="text-2xl font-space font-bold text-purple-100">Ultimate Life Path</h3>
-              </div>
-              <p className="text-base md:text-lg text-indigo-100/80 leading-relaxed whitespace-pre-wrap">
-                {chartData.fullLife || "Full life overview is not available."}
-              </p>
+            {/* Massive Collapsable Sections for Life Areas */}
+            <motion.div variants={itemVariants} className="bg-white/[0.02] border border-white/5 rounded-3xl p-6 md:p-8 backdrop-blur-2xl shadow-2xl">
+              <Accordion className="w-full space-y-4">
+                
+                <AccordionItem value="career" className="border border-white/5 rounded-2xl px-6 bg-white/[0.01] overflow-hidden data-[state=open]:bg-white/[0.03] data-[state=open]:border-blue-500/30 transition-all duration-300">
+                  <AccordionTrigger className="hover:no-underline py-6">
+                    <div className="flex items-center gap-4 text-blue-100">
+                      <div className="w-10 h-10 rounded-xl bg-blue-500/20 flex items-center justify-center border border-blue-500/30">
+                        <Briefcase className="w-5 h-5" />
+                      </div>
+                      <span className="text-xl font-space font-semibold tracking-wide">Career & Power</span>
+                    </div>
+                  </AccordionTrigger>
+                  <AccordionContent className="pb-8 pt-2">
+                    <div className="text-indigo-100/80 leading-relaxed text-base space-y-4 whitespace-pre-wrap">
+                      {chartData.career || "No career data available."}
+                    </div>
+                  </AccordionContent>
+                </AccordionItem>
+  
+                <AccordionItem value="wealth" className="border border-white/5 rounded-2xl px-6 bg-white/[0.01] overflow-hidden data-[state=open]:bg-white/[0.03] data-[state=open]:border-emerald-500/30 transition-all duration-300">
+                  <AccordionTrigger className="hover:no-underline py-6">
+                    <div className="flex items-center gap-4 text-emerald-100">
+                      <div className="w-10 h-10 rounded-xl bg-emerald-500/20 flex items-center justify-center border border-emerald-500/30">
+                        <Coins className="w-5 h-5" />
+                      </div>
+                      <span className="text-xl font-space font-semibold tracking-wide">Wealth & Finance</span>
+                    </div>
+                  </AccordionTrigger>
+                  <AccordionContent className="pb-8 pt-2">
+                    <div className="text-indigo-100/80 leading-relaxed text-base space-y-4 whitespace-pre-wrap">
+                      {chartData.wealth || "No wealth data available."}
+                    </div>
+                  </AccordionContent>
+                </AccordionItem>
+  
+                <AccordionItem value="love" className="border border-white/5 rounded-2xl px-6 bg-white/[0.01] overflow-hidden data-[state=open]:bg-white/[0.03] data-[state=open]:border-pink-500/30 transition-all duration-300">
+                  <AccordionTrigger className="hover:no-underline py-6">
+                    <div className="flex items-center gap-4 text-pink-100">
+                      <div className="w-10 h-10 rounded-xl bg-pink-500/20 flex items-center justify-center border border-pink-500/30">
+                        <Heart className="w-5 h-5" />
+                      </div>
+                      <span className="text-xl font-space font-semibold tracking-wide">Love & Destiny</span>
+                    </div>
+                  </AccordionTrigger>
+                  <AccordionContent className="pb-8 pt-2">
+                    <div className="text-indigo-100/80 leading-relaxed text-base space-y-4 whitespace-pre-wrap">
+                      {chartData.relationships || "No relationship data available."}
+                    </div>
+                  </AccordionContent>
+                </AccordionItem>
+  
+                <AccordionItem value="health" className="border border-white/5 rounded-2xl px-6 bg-white/[0.01] overflow-hidden data-[state=open]:bg-white/[0.03] data-[state=open]:border-rose-500/30 transition-all duration-300">
+                  <AccordionTrigger className="hover:no-underline py-6">
+                    <div className="flex items-center gap-4 text-rose-100">
+                      <div className="w-10 h-10 rounded-xl bg-rose-500/20 flex items-center justify-center border border-rose-500/30">
+                        <Shield className="w-5 h-5" />
+                      </div>
+                      <span className="text-xl font-space font-semibold tracking-wide">Health & Vitality</span>
+                    </div>
+                  </AccordionTrigger>
+                  <AccordionContent className="pb-8 pt-2">
+                    <div className="text-indigo-100/80 leading-relaxed text-base space-y-4 whitespace-pre-wrap">
+                      {chartData.health || "No health data available."}
+                    </div>
+                  </AccordionContent>
+                </AccordionItem>
+  
+                <AccordionItem value="fullLife" className="border border-white/5 rounded-2xl px-6 bg-white/[0.01] overflow-hidden data-[state=open]:bg-purple-950/40 data-[state=open]:border-purple-500/50 transition-all duration-300">
+                  <AccordionTrigger className="hover:no-underline py-6">
+                    <div className="flex items-center gap-4 text-purple-100">
+                      <div className="w-10 h-10 rounded-xl bg-purple-500/20 flex items-center justify-center border border-purple-500/30 shadow-[0_0_15px_rgba(168,85,247,0.3)]">
+                        <Sparkles className="w-5 h-5" />
+                      </div>
+                      <span className="text-xl font-space font-semibold tracking-wide">Ultimate Life Path</span>
+                    </div>
+                  </AccordionTrigger>
+                  <AccordionContent className="pb-8 pt-2">
+                    <div className="text-purple-50/90 leading-relaxed text-base md:text-lg space-y-6 whitespace-pre-wrap font-light">
+                      {chartData.fullLife || "Full life overview is not available."}
+                    </div>
+                  </AccordionContent>
+                </AccordionItem>
+  
+              </Accordion>
             </motion.div>
           </div>
         </motion.div>

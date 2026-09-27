@@ -89,6 +89,8 @@ export async function fetchAIKundliData(name: string, dob: string, tob: string, 
     // Usually, we'd use true node. As a fallback, we'll skip if not available, but celestine has nodes.
   }
 
+  const planetsData: any[] = [];
+
   planetaryBodies.forEach((planet: any) => {
     // Only map the 9 traditional Vedic planets (Navagraha)
     if (!["Sun", "Moon", "Mars", "Mercury", "Jupiter", "Venus", "Saturn", "North Node", "South Node", "Rahu", "Ketu"].includes(planet.name)) return;
@@ -100,17 +102,27 @@ export async function fetchAIKundliData(name: string, dob: string, tob: string, 
 
     const pSidereal = getSidereal(planet.longitude);
     const pSign = Math.floor(pSidereal / 30);
+    const degInSign = pSidereal % 30;
+    const degreeStr = `${Math.floor(degInSign)}°`;
     
     // D-1 House (Whole Sign from Lagna)
     let d1House = pSign - ascSign + 1;
     if (d1House <= 0) d1House += 12;
-    d1Houses[d1House].push(shortName);
+    d1Houses[d1House].push(shortName + (planet.isRetrograde ? "Rx" : ""));
 
     // D-9 Navamsa
     const pNavamsaSign = Math.floor(pSidereal / (30/9)) % 12;
     let d9House = pNavamsaSign - ascNavamsaSign + 1;
     if (d9House <= 0) d9House += 12;
-    d9Houses[d9House].push(shortName);
+    d9Houses[d9House].push(shortName + (planet.isRetrograde ? "Rx" : ""));
+
+    planetsData.push({
+      shortName,
+      d1SignIndex: pSign + 1,
+      d9SignIndex: pNavamsaSign + 1,
+      isRetrograde: Boolean(planet.isRetrograde),
+      degreeStr
+    });
   });
 
   const signLords = [
@@ -151,6 +163,10 @@ export async function fetchAIKundliData(name: string, dob: string, tob: string, 
   }
 
   const chartData = {
+    planetsData,
+    lagnaDegreeStr: `${Math.floor(ascSidereal % 30)}°`,
+    d1AscSignIndex: ascSign + 1,
+    d9AscSignIndex: ascNavamsaSign + 1,
     houses: d1Houses,
     d9Houses: d9Houses,
     ascendant: ascendantName,
@@ -175,6 +191,7 @@ export async function fetchAIKundliData(name: string, dob: string, tob: string, 
     relationships: `[AI BUSY] The AI is currently experiencing high demand. Please try again.`,
     health: `[AI BUSY] The AI is currently experiencing high demand. Please try again.`,
     wealth: `[AI BUSY] The AI is currently experiencing high demand. Please try again.`,
+    doshas: [] as any[],
     fullLife: `[AI BUSY] The AI is currently experiencing high demand. Please try again.`
   };
 
@@ -205,11 +222,17 @@ Return ONLY a valid JSON object with these exact keys:
   "relationships": "An authentic, penetrating reading of their romantic and marital fate based on the 7th house, Venus, and D-9 Navamsa. Address emotional challenges, high expectations, conflicts, spouse personality quirks/friction, and lessons in love.",
   "health": "Specific, unvarnished health prognosis. Identify organ vulnerabilities, stress triggers, nervous system strain, and physical habits that must be guarded against.",
   "wealth": "A realistic financial blueprint based on the 2nd, 8th, and 11th houses. Detail wealth-building capability alongside periods of financial losses, wasteful expenditures, impulse risks, and karmic monetary tests.",
+  "doshas": [
+    { "name": "Manglik Dosha", "present": true },
+    { "name": "Kalsarp Dosha", "present": false },
+    { "name": "Pitra Dosha", "present": false },
+    { "name": "Guru Chandal Dosha", "present": false }
+  ],
   "fullLife": "A grand, mature Vedic synthesis of their ultimate life path. Discuss the heavy karmic baggage, pivotal crisis points/turning moments, the major Dasha struggles, and the profound wisdom forged through hardship."
 }`;
       
       let aiJson = null;
-      const fallbackModels = ["gemini-3.6-flash", "gemini-3.5-flash", "gemini-3.5-flash-lite"];
+      const fallbackModels = ["gemini-2.5-flash", "gemini-2.0-flash", "gemini-1.5-flash", "gemini-1.5-pro"];
       
       for (const modelName of fallbackModels) {
         if (aiJson) break; // Stop if we already got successful data
@@ -238,6 +261,7 @@ Return ONLY a valid JSON object with these exact keys:
         chartData.relationships = aiJson.relationships;
         chartData.health = aiJson.health || "";
         chartData.wealth = aiJson.wealth || "";
+        chartData.doshas = aiJson.doshas || [];
         chartData.fullLife = aiJson.fullLife || "Full life overview is not available.";
       } else {
         throw new Error("All fallback models failed due to rate limits or API errors.");

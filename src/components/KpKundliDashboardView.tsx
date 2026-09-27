@@ -19,11 +19,14 @@ import {
   Compass,
   Layers,
   Zap,
-  Info
+  Info,
+  BookOpen,
+  Users
 } from "lucide-react";
 import Link from "next/link";
-import KundliChart from "@/components/KundliChart";
+import EastIndianChart from "@/components/EastIndianChart";
 import { Button } from "@/components/ui/button";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { useRef, useState } from "react";
 import { toJpeg } from "html-to-image";
 
@@ -142,14 +145,6 @@ export default function KpKundliDashboardView({
           </div>
 
           <div className="flex flex-wrap items-center gap-3">
-            <Link href={`/kp-daily-insight?${queryParams}`}>
-              <Button
-                variant="outline"
-                className="bg-cyan-500/10 border-cyan-500/30 hover:bg-cyan-500/20 text-cyan-200 rounded-full px-5 backdrop-blur-md transition-all font-medium"
-              >
-                <Compass className="w-4 h-4 mr-2 text-cyan-400" /> Daily Insight
-              </Button>
-            </Link>
             <Button
               variant="outline"
               className="bg-white/5 border-white/10 hover:bg-white/10 text-cyan-100 rounded-full px-6 backdrop-blur-md transition-all"
@@ -268,84 +263,36 @@ export default function KpKundliDashboardView({
               </div>
             </motion.div>
 
-            {/* KP Bhava Chalit Chart (Chart 1) */}
+            {/* KP East Indian Chart */}
             <motion.div
               variants={itemVariants}
               className="bg-white/[0.02] border border-white/5 rounded-3xl p-6 md:p-8 backdrop-blur-2xl shadow-2xl"
             >
               <div className="flex justify-between items-center mb-8">
                 <div>
-                  <h3 className="text-xl font-space font-semibold text-cyan-50">KP Bhava Chalit Chart</h3>
-                  <p className="text-xs text-cyan-300/50 mt-1 uppercase tracking-widest">Placidus Unequal Cusps</p>
+                  <h3 className="text-xl font-space font-semibold text-cyan-50">KP East Indian Chart</h3>
+                  <p className="text-xs text-cyan-300/50 mt-1 uppercase tracking-widest">Fixed Sign Layout</p>
                 </div>
               </div>
-              <div id="kp-bhava-chart" className="aspect-square w-full opacity-90">
-                <KundliChart planets={chartData.houses || {}} />
+              <div id="kp-bhava-chart" className="aspect-square w-full opacity-90 flex items-center justify-center">
+                <EastIndianChart 
+                  planets={(chartData.planets || []).map((p: any) => ({ 
+                    name: p.vedicName, 
+                    signIndex: p.signIndex + 1, 
+                    isRetrograde: p.isRetrograde,
+                    degreeStr: p.degFormatted ? p.degFormatted.split("°")[0] + "°" : ""
+                  }))} 
+                  cusps={(chartData.cusps || []).map((c: any) => ({
+                    houseNumber: c.houseNumber,
+                    signIndex: c.signIndex + 1,
+                    degreeStr: c.degFormatted ? c.degFormatted.split("°")[0] + "°" : ""
+                  }))}
+                  width={350}
+                  height={350}
+                  isKp={true}
+                  centerTitle="K.P. Cusp Chart"
+                />
               </div>
-            </motion.div>
-
-            {/* KP Rashi Chart (Chart 2) */}
-            <motion.div
-              variants={itemVariants}
-              className="bg-white/[0.02] border border-white/5 rounded-3xl p-6 md:p-8 backdrop-blur-2xl shadow-2xl"
-            >
-              <div className="flex justify-between items-center mb-8">
-                <div>
-                  <h3 className="text-xl font-space font-semibold text-cyan-50">KP Rashi Chart</h3>
-                  <p className="text-xs text-cyan-300/50 mt-1 uppercase tracking-widest">Sidereal Sign Positions</p>
-                </div>
-              </div>
-              <div id="kp-rashi-chart" className="aspect-square w-full opacity-90">
-                <KundliChart planets={chartData.d1Houses || chartData.houses} />
-              </div>
-            </motion.div>
-
-            {/* Daily Insight CTA (Side Card) */}
-            <motion.div
-              variants={itemVariants}
-              className="bg-gradient-to-br from-cyan-950/40 via-indigo-950/40 to-purple-950/40 border border-cyan-500/30 rounded-3xl p-6 md:p-8 backdrop-blur-2xl shadow-[0_0_35px_rgba(6,182,212,0.12)] relative overflow-hidden group flex flex-col justify-between gap-5"
-            >
-              <div className="absolute -right-16 -top-16 w-48 h-48 bg-cyan-500/15 rounded-full blur-[70px] group-hover:scale-150 transition-transform duration-1000" />
-              
-              <div className="relative z-10">
-                <h3 className="text-xl font-space font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-200 to-indigo-300 flex items-center gap-2.5 mb-2">
-                  <Compass className="w-5 h-5 text-cyan-400" />
-                  Today&apos;s KP Daily Insight
-                </h3>
-                <p className="text-cyan-100/70 text-xs md:text-sm leading-relaxed">
-                  Real-time transit Moon analyzed through active KP Star Lords & Sub-Lords.
-                </p>
-              </div>
-              
-              <Link href={`/kp-daily-insight?${queryParams}`} className="relative z-10 w-full">
-                <Button size="lg" className="w-full bg-gradient-to-r from-cyan-500 to-teal-600 hover:from-cyan-400 hover:to-teal-500 text-white font-bold text-sm md:text-base py-5 rounded-2xl shadow-[0_0_20px_rgba(6,182,212,0.3)] hover:shadow-[0_0_35px_rgba(6,182,212,0.5)] transition-all hover:scale-[1.02]">
-                  <Sparkles className="w-4 h-4 mr-2" /> View KP Daily Insight
-                </Button>
-              </Link>
-            </motion.div>
-
-            {/* Varshaphal CTA (Side Card) */}
-            <motion.div
-              variants={itemVariants}
-              className="bg-gradient-to-br from-yellow-950/40 via-orange-950/30 to-amber-950/20 border border-yellow-500/30 rounded-3xl p-6 md:p-8 backdrop-blur-2xl shadow-[0_0_35px_rgba(234,179,8,0.15)] relative overflow-hidden group flex flex-col justify-between gap-5"
-            >
-              <div className="absolute -right-16 -top-16 w-48 h-48 bg-yellow-500/20 rounded-full blur-[70px] group-hover:scale-150 transition-transform duration-1000" />
-              
-              <div className="relative z-10">
-                <h3 className="text-xl font-space font-bold text-transparent bg-clip-text bg-gradient-to-r from-yellow-200 to-orange-400 flex items-center gap-2.5 mb-2">
-                  <Sun className="w-5 h-5 text-yellow-400" />
-                  Your Year Ahead (KP)
-                </h3>
-                <p className="text-yellow-100/70 text-xs md:text-sm leading-relaxed">
-                  Annual Solar Return & Sub-Lord Milestones for your current year of life.
-                </p>
-              </div>
-              
-              <Link href={`/kp-varshaphal?${queryParams}`} className="relative z-10 w-full">
-                <Button size="lg" className="w-full bg-yellow-500 hover:bg-yellow-400 text-yellow-950 font-bold text-sm md:text-base py-5 rounded-2xl shadow-[0_0_20px_rgba(234,179,8,0.35)] hover:shadow-[0_0_40px_rgba(234,179,8,0.55)] transition-all hover:scale-[1.02]">
-                  <Sparkles className="w-4 h-4 mr-2" /> Generate KP Varshaphal
-                </Button>
-              </Link>
             </motion.div>
           </div>
 
@@ -378,77 +325,163 @@ export default function KpKundliDashboardView({
               </div>
             </motion.div>
 
-            {/* 2x2 Grid for Specifics (Career, Wealth, Love, Health) */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              {/* Career */}
-              <motion.div
-                variants={itemVariants}
-                className="bg-white/[0.02] border border-white/5 hover:border-blue-500/30 rounded-3xl p-6 md:p-8 backdrop-blur-2xl transition-all duration-300 group"
-              >
-                <div className="flex items-center gap-3 mb-4">
-                  <Briefcase className="w-5 h-5 text-blue-400" />
-                  <h4 className="text-lg font-semibold text-blue-100">Career & 10th CSL</h4>
-                </div>
-                <p className="text-indigo-200/80 leading-relaxed text-sm md:text-base">
-                  {chartData.career}
-                </p>
-              </motion.div>
+            {/* Massive Collapsable Sections for Life Areas */}
+            <motion.div variants={itemVariants} className="bg-white/[0.02] border border-white/5 rounded-3xl p-6 md:p-8 backdrop-blur-2xl shadow-2xl">
+              <Accordion className="w-full space-y-4">
+                
+                <AccordionItem value="education" className="border border-white/5 rounded-2xl px-6 bg-white/[0.01] overflow-hidden data-[state=open]:bg-white/[0.03] data-[state=open]:border-violet-500/30 transition-all duration-300">
+                  <AccordionTrigger className="hover:no-underline py-6">
+                    <div className="flex items-center gap-4 text-violet-100">
+                      <div className="w-10 h-10 rounded-xl bg-violet-500/20 flex items-center justify-center border border-violet-500/30">
+                        <BookOpen className="w-5 h-5 text-violet-300" />
+                      </div>
+                      <div className="text-left">
+                        <h4 className="text-xl font-semibold font-space tracking-wide">Education & Intellect</h4>
+                        <p className="text-xs text-violet-300/60 font-medium">4th & 9th Cuspal Sub-Lord Analysis</p>
+                      </div>
+                    </div>
+                  </AccordionTrigger>
+                  <AccordionContent className="pb-8 pt-2">
+                    <div className="text-indigo-100/80 leading-relaxed text-base space-y-4 whitespace-pre-wrap">
+                      {chartData.education || "No education data available."}
+                    </div>
+                  </AccordionContent>
+                </AccordionItem>
 
-              {/* Wealth */}
-              <motion.div
-                variants={itemVariants}
-                className="bg-white/[0.02] border border-white/5 hover:border-emerald-500/30 rounded-3xl p-6 md:p-8 backdrop-blur-2xl transition-all duration-300 group"
-              >
-                <div className="flex items-center gap-3 mb-4">
-                  <Coins className="w-5 h-5 text-emerald-400" />
-                  <h4 className="text-lg font-semibold text-emerald-100">Wealth & 2nd/11th CSL</h4>
-                </div>
-                <p className="text-indigo-200/80 leading-relaxed text-sm md:text-base">
-                  {chartData.wealth || "No wealth data available."}
-                </p>
-              </motion.div>
+                <AccordionItem value="family" className="border border-white/5 rounded-2xl px-6 bg-white/[0.01] overflow-hidden data-[state=open]:bg-white/[0.03] data-[state=open]:border-orange-500/30 transition-all duration-300">
+                  <AccordionTrigger className="hover:no-underline py-6">
+                    <div className="flex items-center gap-4 text-orange-100">
+                      <div className="w-10 h-10 rounded-xl bg-orange-500/20 flex items-center justify-center border border-orange-500/30">
+                        <Users className="w-5 h-5 text-orange-300" />
+                      </div>
+                      <div className="text-left">
+                        <h4 className="text-xl font-semibold font-space tracking-wide">Family & Lineage</h4>
+                        <p className="text-xs text-orange-300/60 font-medium">2nd Cuspal Sub-Lord Analysis</p>
+                      </div>
+                    </div>
+                  </AccordionTrigger>
+                  <AccordionContent className="pb-8 pt-2">
+                    <div className="text-indigo-100/80 leading-relaxed text-base space-y-4 whitespace-pre-wrap">
+                      {chartData.family || "No family data available."}
+                    </div>
+                  </AccordionContent>
+                </AccordionItem>
 
-              {/* Love */}
-              <motion.div
-                variants={itemVariants}
-                className="bg-white/[0.02] border border-white/5 hover:border-pink-500/30 rounded-3xl p-6 md:p-8 backdrop-blur-2xl transition-all duration-300 group"
-              >
-                <div className="flex items-center gap-3 mb-4">
-                  <Heart className="w-5 h-5 text-pink-400" />
-                  <h4 className="text-lg font-semibold text-pink-100">Love & 7th CSL</h4>
-                </div>
-                <p className="text-indigo-200/80 leading-relaxed text-sm md:text-base">
-                  {chartData.relationships}
-                </p>
-              </motion.div>
+                <AccordionItem value="career" className="border border-white/5 rounded-2xl px-6 bg-white/[0.01] overflow-hidden data-[state=open]:bg-white/[0.03] data-[state=open]:border-blue-500/30 transition-all duration-300">
+                  <AccordionTrigger className="hover:no-underline py-6">
+                    <div className="flex items-center gap-4 text-blue-100">
+                      <div className="w-10 h-10 rounded-xl bg-blue-500/20 flex items-center justify-center border border-blue-500/30">
+                        <Briefcase className="w-5 h-5 text-blue-300" />
+                      </div>
+                      <div className="text-left">
+                        <h4 className="text-xl font-semibold font-space tracking-wide">Career & Power</h4>
+                        <p className="text-xs text-blue-300/60 font-medium">10th Cuspal Sub-Lord Analysis</p>
+                      </div>
+                    </div>
+                  </AccordionTrigger>
+                  <AccordionContent className="pb-8 pt-2">
+                    <div className="text-indigo-100/80 leading-relaxed text-base space-y-4 whitespace-pre-wrap">
+                      {chartData.career || "No career data available."}
+                    </div>
+                  </AccordionContent>
+                </AccordionItem>
 
-              {/* Health */}
-              <motion.div
-                variants={itemVariants}
-                className="bg-white/[0.02] border border-white/5 hover:border-rose-500/30 rounded-3xl p-6 md:p-8 backdrop-blur-2xl transition-all duration-300 group"
-              >
-                <div className="flex items-center gap-3 mb-4">
-                  <Shield className="w-5 h-5 text-rose-400" />
-                  <h4 className="text-lg font-semibold text-rose-100">Health & 1st CSL</h4>
-                </div>
-                <p className="text-indigo-200/80 leading-relaxed text-sm md:text-base">
-                  {chartData.health || "No health data available."}
-                </p>
-              </motion.div>
-            </div>
+                <AccordionItem value="wealth" className="border border-white/5 rounded-2xl px-6 bg-white/[0.01] overflow-hidden data-[state=open]:bg-white/[0.03] data-[state=open]:border-emerald-500/30 transition-all duration-300">
+                  <AccordionTrigger className="hover:no-underline py-6">
+                    <div className="flex items-center gap-4 text-emerald-100">
+                      <div className="w-10 h-10 rounded-xl bg-emerald-500/20 flex items-center justify-center border border-emerald-500/30">
+                        <Coins className="w-5 h-5 text-emerald-300" />
+                      </div>
+                      <div className="text-left">
+                        <h4 className="text-xl font-semibold font-space tracking-wide">Wealth & Legacy</h4>
+                        <p className="text-xs text-emerald-300/60 font-medium">2nd & 11th Cuspal Sub-Lord Analysis</p>
+                      </div>
+                    </div>
+                  </AccordionTrigger>
+                  <AccordionContent className="pb-8 pt-2">
+                    <div className="text-indigo-100/80 leading-relaxed text-base space-y-4 whitespace-pre-wrap">
+                      {chartData.wealth || "No wealth data available."}
+                    </div>
+                  </AccordionContent>
+                </AccordionItem>
 
-            {/* Ultimate Life Path */}
-            <motion.div
-              variants={itemVariants}
-              className="bg-white/[0.03] border border-cyan-500/20 rounded-3xl p-6 md:p-10 backdrop-blur-2xl shadow-xl"
-            >
-              <div className="flex items-center gap-3 mb-6">
-                <Sparkles className="w-6 h-6 text-cyan-400" />
-                <h3 className="text-2xl font-space font-bold text-cyan-100">Ultimate Life Path & Timing</h3>
-              </div>
-              <p className="text-base md:text-lg text-indigo-100/80 leading-relaxed whitespace-pre-wrap">
-                {chartData.fullLife || "Full life overview is not available."}
-              </p>
+                <AccordionItem value="love" className="border border-white/5 rounded-2xl px-6 bg-white/[0.01] overflow-hidden data-[state=open]:bg-white/[0.03] data-[state=open]:border-pink-500/30 transition-all duration-300">
+                  <AccordionTrigger className="hover:no-underline py-6">
+                    <div className="flex items-center gap-4 text-pink-100">
+                      <div className="w-10 h-10 rounded-xl bg-pink-500/20 flex items-center justify-center border border-pink-500/30">
+                        <Heart className="w-5 h-5 text-pink-300" />
+                      </div>
+                      <div className="text-left">
+                        <h4 className="text-xl font-semibold font-space tracking-wide">Love & Destiny</h4>
+                        <p className="text-xs text-pink-300/60 font-medium">7th Cuspal Sub-Lord Analysis</p>
+                      </div>
+                    </div>
+                  </AccordionTrigger>
+                  <AccordionContent className="pb-8 pt-2">
+                    <div className="text-indigo-100/80 leading-relaxed text-base space-y-4 whitespace-pre-wrap">
+                      {chartData.relationships || "No relationship data available."}
+                    </div>
+                  </AccordionContent>
+                </AccordionItem>
+
+                <AccordionItem value="health" className="border border-white/5 rounded-2xl px-6 bg-white/[0.01] overflow-hidden data-[state=open]:bg-white/[0.03] data-[state=open]:border-rose-500/30 transition-all duration-300">
+                  <AccordionTrigger className="hover:no-underline py-6">
+                    <div className="flex items-center gap-4 text-rose-100">
+                      <div className="w-10 h-10 rounded-xl bg-rose-500/20 flex items-center justify-center border border-rose-500/30">
+                        <Shield className="w-5 h-5 text-rose-300" />
+                      </div>
+                      <div className="text-left">
+                        <h4 className="text-xl font-semibold font-space tracking-wide">Health & Vitality</h4>
+                        <p className="text-xs text-rose-300/60 font-medium">1st & 6th Cuspal Sub-Lord Analysis</p>
+                      </div>
+                    </div>
+                  </AccordionTrigger>
+                  <AccordionContent className="pb-8 pt-2">
+                    <div className="text-indigo-100/80 leading-relaxed text-base space-y-4 whitespace-pre-wrap">
+                      {chartData.health || "No health data available."}
+                    </div>
+                  </AccordionContent>
+                </AccordionItem>
+
+                <AccordionItem value="fullLife" className="border border-white/5 rounded-2xl px-6 bg-white/[0.01] overflow-hidden data-[state=open]:bg-cyan-950/40 data-[state=open]:border-cyan-500/50 transition-all duration-300">
+                  <AccordionTrigger className="hover:no-underline py-6">
+                    <div className="flex items-center gap-4 text-cyan-100">
+                      <div className="w-10 h-10 rounded-xl bg-cyan-500/20 flex items-center justify-center border border-cyan-500/30 shadow-[0_0_15px_rgba(6,182,212,0.3)]">
+                        <Sparkles className="w-5 h-5 text-cyan-300" />
+                      </div>
+                      <div className="text-left">
+                        <h4 className="text-xl font-semibold font-space tracking-wide">Ultimate Life Path & Timing</h4>
+                        <p className="text-xs text-cyan-300/80 font-medium tracking-widest uppercase">Ruling Planets Synthesis</p>
+                      </div>
+                    </div>
+                  </AccordionTrigger>
+                  <AccordionContent className="pb-8 pt-2">
+                    <div className="text-cyan-50/90 leading-relaxed text-base md:text-lg space-y-6 whitespace-pre-wrap font-light">
+                      {chartData.fullLife || "Full life overview is not available."}
+                    </div>
+                  </AccordionContent>
+                </AccordionItem>
+                
+                <AccordionItem value="breakthroughs" className="border border-white/5 rounded-2xl px-6 bg-white/[0.01] overflow-hidden data-[state=open]:bg-indigo-950/40 data-[state=open]:border-indigo-500/50 transition-all duration-300">
+                  <AccordionTrigger className="hover:no-underline py-6">
+                    <div className="flex items-center gap-4 text-indigo-100">
+                      <div className="w-10 h-10 rounded-xl bg-indigo-500/20 flex items-center justify-center border border-indigo-500/30 shadow-[0_0_15px_rgba(99,102,241,0.3)]">
+                        <Calendar className="w-5 h-5" />
+                      </div>
+                      <div className="text-left">
+                        <h4 className="text-xl font-semibold font-space tracking-wide">Major Breakthroughs Timeline</h4>
+                        <p className="text-xs text-indigo-300/80 font-medium tracking-widest uppercase">Exact Dates & Ages</p>
+                      </div>
+                    </div>
+                  </AccordionTrigger>
+                  <AccordionContent className="pb-8 pt-2">
+                    <div className="text-indigo-50/90 leading-relaxed text-base md:text-lg space-y-6 whitespace-pre-wrap font-light">
+                      {chartData.breakthroughs || "Timeline of major breakthroughs is not available."}
+                    </div>
+                  </AccordionContent>
+                </AccordionItem>
+
+              </Accordion>
             </motion.div>
 
             {/* Dedicated KP Mathematical Tables (Cusps, Planets, 4-Fold Significators) */}
