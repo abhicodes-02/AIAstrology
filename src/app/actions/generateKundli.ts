@@ -215,6 +215,9 @@ CRITICAL INSTRUCTIONS FOR AUTHENTICITY & ACCURACY:
 5. RELATIONSHIP FRICTION: Discuss actual romantic disillusionment, ego clashes, emotional misunderstandings, potential delays, or tests of patience in marriage/partnerships.
 6. HEALTH VULNERABILITIES: Explicitly pinpoint physical sensitivities, psychosomatic stress manifestations, digestive/nervous weak points according to classical Vedic rules.
 
+CRITICAL MATHEMATICAL DATE CALCULATION RULE:
+The user was born in the year ${year}. If you ever mention an AGE for a milestone, you MUST mathematically calculate the year as exactly: (${year} + Age). For example, if Age is 22, the year MUST be ${year + 22}. DO NOT hallucinate dates that contradict this simple addition.
+
 Return ONLY a valid JSON object with these exact keys:
 {
   "reading": "A deeply realistic opening analysis of their core personality, psychological contradictions, emotional struggles, and underlying soul urge—balancing their gifts with their real shadow self.",

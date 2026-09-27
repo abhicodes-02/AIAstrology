@@ -275,6 +275,12 @@ Apply STRICT KP Astrology principles:
 6. Health: 1st CSL vs 6, 8, 12.
 7. Past, Present, Future: For each section, deeply analyze the karmic past (what they were), the present challenges/strengths (what they are), and the destined trajectory (what they will become).
 
+CRITICAL MATHEMATICAL DATE CALCULATION RULE:
+The user was born in the year ${year}.
+Whenever you mention an AGE for a breakthrough or event (e.g., "Age 22"), you MUST mathematically calculate the year of that breakthrough as exactly: (${year} + Age).
+For example, if Age is 22, the year MUST be ${year + 22}.
+DO NOT HALLUCINATE RANDOM DATES. Ensure every single DD/MM/YYYY date provided mathematically perfectly matches the formula: (Birth Year + Age = Event Year).
+
 Return ONLY a valid JSON object matching this exact schema. DO NOT output a short response. EACH string field MUST be a highly detailed astrological treatise of AT LEAST 300-400 words. Write in deep, analytical paragraphs:
 {
   "reading": "A monumental Core Soul Urge reading synthesizing the Ascendant & Moon Cuspal Sub-Lords. Meticulously detail their karmic past (what they were), their present state of mind (what they are), and their ultimate evolution (what they are going to be).",
