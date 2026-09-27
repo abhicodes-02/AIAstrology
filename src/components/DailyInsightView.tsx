@@ -21,6 +21,8 @@ import {
   ChevronLeft,
 } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useTransition } from "react";
 import { Button } from "@/components/ui/button";
 
 function FavorabilityBadge({ status }: { status: string }) {
@@ -66,6 +68,21 @@ export default function DailyInsightView({
   tob: string;
   pob: string;
 }) {
+  const router = useRouter();
+  const [isPending, startTransition] = useTransition();
+
+  const navigateToDate = (targetDateIso?: string) => {
+    startTransition(() => {
+      const url = new URL(window.location.href);
+      if (targetDateIso) {
+        url.searchParams.set("date", targetDateIso);
+      } else {
+        url.searchParams.delete("date");
+      }
+      router.push(url.pathname + url.search);
+    });
+  };
+
   const containerVariants: any = {
     hidden: { opacity: 0 },
     show: {
@@ -95,6 +112,17 @@ export default function DailyInsightView({
 
   return (
     <div className="min-h-screen bg-transparent text-indigo-100 font-sans relative overflow-x-hidden selection:bg-indigo-500/30">
+      
+      {/* Loading Overlay when switching dates */}
+      {isPending && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 backdrop-blur-sm transition-opacity duration-300">
+          <div className="flex flex-col items-center gap-4">
+            <div className="w-16 h-16 rounded-full border-4 border-indigo-500/30 border-t-indigo-400 animate-spin" />
+            <p className="text-indigo-200 font-space tracking-widest uppercase text-sm animate-pulse">Calculating Transits...</p>
+          </div>
+        </div>
+      )}
+
       {/* Background ambient glowing orbs */}
       <div className="fixed inset-0 z-0 pointer-events-none">
         <motion.div
@@ -128,31 +156,31 @@ export default function DailyInsightView({
               
               {/* Interactive Day Navigation Bar */}
               <div className="flex items-center gap-1.5 bg-indigo-950/40 p-1 rounded-full border border-indigo-500/20 backdrop-blur-md">
-                <Link
-                  href={`/daily-insight?${queryParams}&date=${prevDateIso}`}
-                  className="p-1.5 rounded-full hover:bg-indigo-500/20 text-indigo-300 transition-colors"
+                <button
+                  onClick={() => navigateToDate(prevDateIso)}
+                  className="p-1.5 rounded-full hover:bg-indigo-500/20 text-indigo-300 transition-colors cursor-pointer"
                   title="Previous Day"
                 >
                   <ChevronLeft className="w-3.5 h-3.5" />
-                </Link>
+                </button>
                 <div className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-indigo-200 px-2.5 py-1">
                   <Calendar className="w-3.5 h-3.5 text-indigo-400" />
                   {dailyData.dateFormatted}
                 </div>
-                <Link
-                  href={`/daily-insight?${queryParams}&date=${nextDateIso}`}
-                  className="p-1.5 rounded-full hover:bg-indigo-500/20 text-indigo-300 transition-colors"
+                <button
+                  onClick={() => navigateToDate(nextDateIso)}
+                  className="p-1.5 rounded-full hover:bg-indigo-500/20 text-indigo-300 transition-colors cursor-pointer"
                   title="Next Day"
                 >
                   <ChevronRight className="w-3.5 h-3.5" />
-                </Link>
-                <Link
-                  href={`/daily-insight?${queryParams}`}
-                  className="text-[11px] font-bold uppercase tracking-wider bg-indigo-500/20 hover:bg-indigo-500/30 text-indigo-300 px-2.5 py-1 rounded-full border border-indigo-500/30 transition-all ml-1"
+                </button>
+                <button
+                  onClick={() => navigateToDate(undefined)}
+                  className="text-[11px] font-bold uppercase tracking-wider bg-indigo-500/20 hover:bg-indigo-500/30 text-indigo-300 px-2.5 py-1 rounded-full border border-indigo-500/30 transition-all ml-1 cursor-pointer"
                   title="Jump to Present Date"
                 >
                   Today
-                </Link>
+                </button>
               </div>
             </div>
             <h1 className="text-4xl md:text-6xl font-bold font-space text-transparent bg-clip-text bg-gradient-to-r from-cyan-100 via-indigo-200 to-purple-200 tracking-tight">
