@@ -291,7 +291,7 @@ Return ONLY a valid JSON object matching this exact schema. DO NOT output a shor
   "relationships": "An encyclopedic, highly precise analysis of Love & Destiny through the 7th CSL. Detail past relationship patterns/breakbreaks, present harmony/lessons, and future marital bliss or karmic soulmate connections.",
   "health": "An encyclopedic, highly precise analysis of Health & Vitality through the 1st CSL resisting 6th/8th houses. Include past ailments, current vitality/stress triggers, and future longevity/health warnings.",
   "fullLife": "A staggering, Comprehensive Ultimate Life Path narrative detailing the entire trajectory of destiny, pivotal crisis points, and precise timing milestones guided by the Ruling Planets.",
-  "breakthroughs": "A dedicated, hyper-detailed timeline of ALL major life breakthroughs (career peaks, marriage, financial windfalls, spiritual awakenings). You MUST calculate and list the exact age these occurred/will occur, and explicitly predict the exact dd/mm/yyyy dates for each major breakthrough based on planetary sub-lords and dashas."
+  "breakthroughs": "A hyper-detailed timeline of major life breakthroughs. CRITICAL: Do NOT invent generic milestones. EVERY single breakthrough (career peak, marriage, wealth windfall) MUST be flawlessly and explicitly derived from the user's actual Cuspal Sub-Lords, Planetary Placements, and KP Ruling Planets. Justify the event astrologically. Calculate exact ages and predict exact DD/MM/YYYY dates based on the mathematical rule."
 }`;
 
       const modelsToTry = [
