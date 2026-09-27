@@ -257,7 +257,15 @@ Return ONLY a valid JSON object with these exact keys:
 }`;
 
       let aiJson: any = null;
-      const fallbackModels = ["gemini-3.6-flash", "gemini-3.5-flash", "gemini-3.5-flash-lite"];
+      const fallbackModels = [
+        "gemini-3.8-flash",
+        "gemini-3.7-flash", 
+        "gemini-3.6-flash",
+        "gemini-3.5-flash",
+        "gemini-3.5-flash-lite",
+        "gemini-3.1-pro-preview",
+        "gemini-2.5-pro"
+      ];
 
       for (const modelName of fallbackModels) {
         if (aiJson) break;
