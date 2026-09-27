@@ -162,6 +162,51 @@ export async function fetchAIKundliData(name: string, dob: string, tob: string, 
     karana = movableKaranas[(karanaNum - 2) % 7];
   }
 
+  // MATHEMATICAL DOSHA CALCULATION
+  const isManglik = [1, 2, 4, 7, 8, 12].some(h => (d1Houses[h as keyof typeof d1Houses] || []).some(p => p.startsWith("Mars")));
+  
+  let hasGuruChandal = false;
+  let hasPitra = false;
+  
+  Object.values(d1Houses).forEach(planetsArr => {
+    const planets = planetsArr as string[];
+    const hasRahuKetu = planets.some(p => p.startsWith("Rahu") || p.startsWith("Ketu"));
+    if (hasRahuKetu) {
+      if (planets.some(p => p.startsWith("Jupi"))) hasGuruChandal = true;
+      if (planets.some(p => p.startsWith("Sun") || p.startsWith("Moon"))) hasPitra = true;
+    }
+  });
+
+  // Kalsarp calculation (all 7 planets on one side of Rahu-Ketu axis)
+  const rahuP = chart.planets.find((p: any) => p.name === "True Node" || p.name === "Mean Node" || p.name === "Rahu");
+  let hasKalsarp = false;
+  if (rahuP) {
+    const rahuSidereal = getSidereal(rahuP.longitude);
+    const planetsToCheck = ["Sun", "Moon", "Mars", "Mercury", "Jupiter", "Venus", "Saturn"];
+    let allForward = true;
+    let allBackward = true;
+    
+    planetsToCheck.forEach(name => {
+      const p = chart.planets.find((pl: any) => pl.name === name);
+      if (p) {
+        const pSidereal = getSidereal(p.longitude);
+        let dist = pSidereal - rahuSidereal;
+        if (dist < 0) dist += 360;
+        
+        if (dist > 180) allForward = false;
+        if (dist < 180) allBackward = false;
+      }
+    });
+    hasKalsarp = allForward || allBackward;
+  }
+
+  const computedDoshas = [
+    { name: "Manglik Dosha", present: isManglik },
+    { name: "Kalsarp Dosha", present: hasKalsarp },
+    { name: "Pitra Dosha", present: hasPitra },
+    { name: "Guru Chandal Dosha", present: hasGuruChandal }
+  ];
+
   const chartData = {
     planetsData,
     lagnaDegreeStr: `${Math.floor(ascSidereal % 30)}°`,
@@ -191,7 +236,7 @@ export async function fetchAIKundliData(name: string, dob: string, tob: string, 
     relationships: `[AI BUSY] The AI is currently experiencing high demand. Please try again.`,
     health: `[AI BUSY] The AI is currently experiencing high demand. Please try again.`,
     wealth: `[AI BUSY] The AI is currently experiencing high demand. Please try again.`,
-    doshas: [] as any[],
+    doshas: computedDoshas,
     fullLife: `[AI BUSY] The AI is currently experiencing high demand. Please try again.`
   };
 
@@ -272,7 +317,7 @@ Return ONLY a valid JSON object with these exact keys:
         chartData.relationships = aiJson.relationships;
         chartData.health = aiJson.health || "";
         chartData.wealth = aiJson.wealth || "";
-        chartData.doshas = aiJson.doshas || [];
+        chartData.doshas = computedDoshas; // ALWAYS override AI hallucination with pure math
         chartData.fullLife = aiJson.fullLife || "Full life overview is not available.";
       } else {
         throw new Error("All fallback models failed due to rate limits or API errors.");
