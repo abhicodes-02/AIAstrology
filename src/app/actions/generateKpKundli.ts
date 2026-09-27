@@ -289,10 +289,13 @@ Return ONLY a valid JSON object matching this exact schema. DO NOT output a shor
 }`;
 
       const modelsToTry = [
-        "gemini-2.5-flash",
-        "gemini-2.0-flash",
-        "gemini-1.5-flash",
-        "gemini-1.5-pro",
+        "gemini-2.5-flash", 
+        "gemini-2.0-flash", 
+        "gemini-2.0-flash-lite-preview-02-05",
+        "gemini-1.5-flash", 
+        "gemini-1.5-flash-8b",
+        "gemini-2.0-pro-exp-02-05",
+        "gemini-1.5-pro"
       ];
 
       for (const modelName of modelsToTry) {
