@@ -76,11 +76,14 @@ export async function fetchAIVarshaphalData(name: string, dob: string, tob: stri
       
       let aiJson: any = null;
       const fallbackModels = [
-          "gemini-2.5-pro",
+          "gemini-3.8-flash",
+          "gemini-3.7-flash",
+          "gemini-3.6-flash",
+          "gemini-3.5-flash",
+          "gemini-3-flash",
           "gemini-2.5-flash",
-          "gemini-2.0-flash",
-          "gemini-1.5-pro",
-          "gemini-1.5-flash",
+          "gemini-3.5-flash-lite",
+          "gemini-3.1-flash-lite",
           "gemini-flash-lite-latest"
         ];
       
@@ -100,7 +103,7 @@ export async function fetchAIVarshaphalData(name: string, dob: string, tob: stri
           }
         } catch (err: any) {
           console.warn(`[Model: ${modelName}] Varshaphal AI generation failed. Error:`, err.message);
-          await new Promise(resolve => setTimeout(resolve, 1500));
+          // Instant cascade (no delay)
         }
       }
 
