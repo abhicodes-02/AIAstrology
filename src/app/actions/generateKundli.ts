@@ -293,7 +293,8 @@ Write in clear, simple language that anyone can easily understand. Aim for exact
           "gemini-2.5-flash",
           "gemini-2.0-flash",
           "gemini-1.5-pro",
-          "gemini-1.5-flash"
+          "gemini-1.5-flash",
+          "gemini-flash-lite-latest"
         ];
       
       

@@ -80,7 +80,8 @@ export async function fetchAIVarshaphalData(name: string, dob: string, tob: stri
           "gemini-2.5-flash",
           "gemini-2.0-flash",
           "gemini-1.5-pro",
-          "gemini-1.5-flash"
+          "gemini-1.5-flash",
+          "gemini-flash-lite-latest"
         ];
       
       for (const modelName of fallbackModels) {

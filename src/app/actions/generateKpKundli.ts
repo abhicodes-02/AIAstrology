@@ -307,7 +307,8 @@ Return ONLY a valid JSON object matching this exact schema. Write in clear, simp
           "gemini-2.5-flash",
           "gemini-2.0-flash",
           "gemini-1.5-pro",
-          "gemini-1.5-flash"
+          "gemini-1.5-flash",
+          "gemini-flash-lite-latest"
         ];
 
       // AI Generation wrapped in a strict 8-second timeout to prevent Vercel 504 crashes
