@@ -22,7 +22,21 @@ export default function VarshaphalDashboardView({
   pob: string; 
 }) {
   const printRef = useRef<HTMLDivElement>(null);
+
   const [isDownloading, setIsDownloading] = useState(false);
+
+  const renderSafe = (data: any, fallback: string) => {
+    if (!data) return fallback;
+    if (typeof data === 'string') return data;
+    if (Array.isArray(data)) {
+      return data.map(item => {
+        if (typeof item === 'string') return item;
+        return Object.entries(item).map(([k, v]) => `${k}: ${v}`).join(' | ');
+      }).join('\n\n');
+    }
+    return JSON.stringify(data, null, 2);
+  };
+
 
   const handleDownloadPDF = async () => {
     setIsDownloading(true);
