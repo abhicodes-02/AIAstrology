@@ -7,16 +7,16 @@ import { motion } from "framer-motion";
 export default function Home() {
   return (
     <main className="flex-1 flex flex-col items-center justify-center p-4 md:p-8 min-h-screen relative overflow-hidden bg-transparent">
-      {/* Mystical decorative elements */}
+      {/* Mystical decorative elements - Replaced heavy filter blurs with performant radial gradients */}
       <motion.div 
         animate={{ scale: [1, 1.2, 1], opacity: [0.3, 0.5, 0.3] }}
         transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-        className="absolute top-1/4 left-1/4 w-72 h-72 bg-purple-600/30 rounded-full blur-[120px] pointer-events-none" 
+        className="absolute top-1/4 left-1/4 w-[400px] h-[400px] bg-[radial-gradient(circle_at_center,_rgba(147,51,234,0.3)_0%,_transparent_70%)] pointer-events-none rounded-full" 
       />
       <motion.div 
         animate={{ scale: [1, 1.5, 1], opacity: [0.2, 0.4, 0.2] }}
         transition={{ duration: 10, repeat: Infinity, ease: "easeInOut", delay: 2 }}
-        className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-indigo-600/30 rounded-full blur-[150px] pointer-events-none" 
+        className="absolute bottom-1/4 right-1/4 w-[600px] h-[600px] bg-[radial-gradient(circle_at_center,_rgba(79,70,229,0.25)_0%,_transparent_70%)] pointer-events-none rounded-full" 
       />
       
       <div className="z-10 w-full max-w-6xl mx-auto flex flex-col lg:flex-row items-center gap-12 lg:gap-24 pt-12 lg:pt-0">
@@ -82,7 +82,7 @@ export default function Home() {
           transition={{ duration: 0.8, delay: 0.5, type: "spring", stiffness: 100 }}
           className="flex-1 w-full relative"
         >
-          <div className="absolute -inset-1 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-2xl blur-lg opacity-30 animate-pulse" />
+          <div className="absolute -inset-1 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-2xl blur-xl opacity-20" />
           <div className="relative z-10 bg-transparent/80 backdrop-blur-xl border border-indigo-500/30 p-1 rounded-2xl shadow-2xl">
             <BirthDetailsForm />
           </div>

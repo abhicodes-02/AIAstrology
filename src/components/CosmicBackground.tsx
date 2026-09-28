@@ -9,18 +9,17 @@ export const CosmicBackground = () => {
 
   useEffect(() => {
     setMounted(true);
-    // Generate random stars, moons, and suns
-    // Reduced from 40 to 15 to prevent layout thrashing and massive GPU lag on live production
-    const newElements = Array.from({ length: 15 }).map((_, i) => {
+    // Severely reduced to 5 slow floating elements to prevent massive CPU/GPU lag on home page
+    const newElements = Array.from({ length: 6 }).map((_, i) => {
       const type = Math.random() > 0.85 ? "moon" : Math.random() > 0.85 ? "sun" : "star";
       return {
         id: i,
         type,
-        x: Math.random() * 100, // percentage
-        y: Math.random() * 100, // percentage
-        size: type === "star" ? Math.random() * 3 + 1 : Math.random() * 20 + 20,
-        duration: Math.random() * 20 + 20, // 20-40s falling duration
-        delay: Math.random() * -40, // random start time
+        x: Math.random() * 90 + 5, // percentage
+        y: Math.random() * 90 + 5, // percentage
+        size: type === "star" ? Math.random() * 2 + 1 : Math.random() * 10 + 15,
+        duration: Math.random() * 20 + 20, 
+        delay: Math.random() * -20,
         rotation: Math.random() * 360,
       };
     });
@@ -37,19 +36,19 @@ export const CosmicBackground = () => {
             return (
               <motion.div
                 key={el.id}
-                initial={{ x: `${el.x}vw`, y: "-10vh", opacity: 0 }}
+                initial={{ x: `${el.x}vw`, y: `${el.y}vh`, opacity: 0.1 }}
                 animate={{
-                  y: ["-10vh", "110vh"],
-                  opacity: [0, 1, 1, 0],
-                  x: [`${el.x}vw`, `${el.x - 5}vw`],
+                  y: [`${el.y}vh`, `${el.y - 3}vh`, `${el.y}vh`],
+                  opacity: [0.2, 0.8, 0.2],
+                  x: [`${el.x}vw`, `${el.x + 1}vw`, `${el.x}vw`],
                 }}
                 transition={{
                   duration: el.duration,
                   repeat: Infinity,
-                  ease: "linear",
+                  ease: "easeInOut",
                   delay: el.delay,
                 }}
-                className="absolute top-0 left-0 bg-white rounded-full opacity-80"
+                className="absolute top-0 left-0 bg-white rounded-full opacity-60"
                 style={{ width: el.size, height: el.size }}
               />
             );
@@ -59,19 +58,19 @@ export const CosmicBackground = () => {
             return (
               <motion.svg
                 key={el.id}
-                initial={{ x: `${el.x}vw`, y: "-10vh", rotate: el.rotation }}
+                initial={{ x: `${el.x}vw`, y: `${el.y}vh`, rotate: el.rotation, opacity: 0.2 }}
                 animate={{
-                  y: ["-10vh", "110vh"],
-                  rotate: el.rotation + 360,
-                  opacity: [0, 0.8, 0.8, 0],
+                  y: [`${el.y}vh`, `${el.y - 2}vh`, `${el.y}vh`],
+                  rotate: el.rotation + 15,
+                  opacity: [0.3, 0.6, 0.3],
                 }}
                 transition={{
                   duration: el.duration * 1.5,
                   repeat: Infinity,
-                  ease: "linear",
+                  ease: "easeInOut",
                   delay: el.delay,
                 }}
-                className="absolute top-0 left-0 text-blue-200 opacity-60"
+                className="absolute top-0 left-0 text-blue-200"
                 style={{ width: el.size, height: el.size }}
                 viewBox="0 0 24 24"
                 fill="currentColor"
@@ -85,19 +84,19 @@ export const CosmicBackground = () => {
             return (
               <motion.svg
                 key={el.id}
-                initial={{ x: `${el.x}vw`, y: "-10vh", rotate: el.rotation }}
+                initial={{ x: `${el.x}vw`, y: `${el.y}vh`, rotate: el.rotation, opacity: 0.2 }}
                 animate={{
-                  y: ["-10vh", "110vh"],
-                  rotate: el.rotation - 360,
-                  opacity: [0, 0.7, 0.7, 0],
+                  y: [`${el.y}vh`, `${el.y - 2}vh`, `${el.y}vh`],
+                  rotate: el.rotation - 15,
+                  opacity: [0.3, 0.6, 0.3],
                 }}
                 transition={{
                   duration: el.duration * 1.8,
                   repeat: Infinity,
-                  ease: "linear",
+                  ease: "easeInOut",
                   delay: el.delay,
                 }}
-                className="absolute top-0 left-0 text-amber-500 opacity-60"
+                className="absolute top-0 left-0 text-amber-500"
                 style={{ width: el.size, height: el.size }}
                 viewBox="0 0 24 24"
                 fill="none"
@@ -125,4 +124,3 @@ export const CosmicBackground = () => {
     </div>
   );
 };
-
