@@ -52,7 +52,7 @@ export async function fetchAIVarshaphalData(name: string, dob: string, tob: stri
       const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
       const prompt = `Act as an expert Bengali Vedic Astrologer. (IMPORTANT: Write the entire response in English). A user named ${name} was born on ${dob} in ${pob}. Their Sun is in ${signs[Math.floor(siderealSun / 30)]}. 
       Generate a deeply detailed Varshaphal (Solar Return Annual Forecast) for their current year of life, incorporating transits and planetary returns.
-      Make it EXTREMELY detailed and profound. Aim for at least 300-400 words per field for maximum value. Return ONLY a JSON object with these exact keys:
+      Make it EXTREMELY detailed and profound. Aim for at least 300-400 words per field for maximum value. Use elegant text formatting like • bullet points and line breaks inside the string (Do NOT use **markdown** as it will not render) to make it highly readable and perfectly structured. Return ONLY a JSON object with these exact keys:
       {
         "varshaphal": "A massive, deeply analyzed Yearly Varshaphal (Annual Prediction) detailing the major themes, opportunities, health, and challenges for the upcoming year.",
         "monthlyPredictions": [

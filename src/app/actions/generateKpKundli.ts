@@ -289,7 +289,7 @@ Whenever you mention an AGE for a breakthrough or event (e.g., "Age 22"), you MU
 For example, if Age is 22, the year MUST be ${year + 22}.
 DO NOT HALLUCINATE RANDOM DATES. Ensure every single DD/MM/YYYY date provided mathematically perfectly matches the formula: (Birth Year + Age = Event Year).
 
-Return ONLY a valid JSON object matching this exact schema. Write in clear language that anyone can easily understand, but make it EXTREMELY detailed and profound. Aim for at least 300-400 words per field to provide maximum value. Write in detailed, analytical paragraphs:
+Return ONLY a valid JSON object matching this exact schema. Write in clear language that anyone can easily understand, but make it EXTREMELY detailed and profound. Aim for at least 300-400 words per field to provide maximum value. Use elegant text formatting like • bullet points and line breaks inside the string (Do NOT use **markdown** as it will not render) to make it highly readable and perfectly structured. Write in detailed, analytical paragraphs:
 {
   "reading": "A monumental Core Soul Urge reading synthesizing the Ascendant & Moon Cuspal Sub-Lords. Meticulously detail their karmic past (what they were), their present state of mind (what they are), and their ultimate evolution (what they are going to be).",
   "education": "An encyclopedic, highly precise analysis of Education, intellect, and higher learning through the 4th and 9th CSL. Include early learning environment (past), current intellectual capacity and focus (present), and future mastery or academic achievements.",
@@ -299,7 +299,7 @@ Return ONLY a valid JSON object matching this exact schema. Write in clear langu
   "relationships": "An encyclopedic, highly precise analysis of Love & Destiny through the 7th CSL. Detail past relationship patterns/breakbreaks, present harmony/lessons, and future marital bliss or karmic soulmate connections.",
   "health": "An encyclopedic, highly precise analysis of Health & Vitality through the 1st CSL resisting 6th/8th houses. Include past ailments, current vitality/stress triggers, and future longevity/health warnings.",
   "fullLife": "A staggering, Comprehensive Ultimate Life Path narrative detailing the entire trajectory of destiny, pivotal crisis points, and precise timing milestones guided by the Ruling Planets.",
-  "breakthroughs": "A hyper-detailed timeline of major life breakthroughs. CRITICAL: Do NOT invent generic milestones. EVERY single breakthrough (career peak, marriage, wealth windfall) MUST be flawlessly and explicitly derived from the user's actual Cuspal Sub-Lords, Planetary Placements, and KP Ruling Planets. Justify the event astrologically. Calculate exact ages and predict exact DD/MM/YYYY dates based on the mathematical rule."
+  "breakthroughs": "CRITICAL: This MUST be a single beautifully formatted Markdown string using bullet points. DO NOT output a JSON array or object. A hyper-detailed timeline of major life breakthroughs. CRITICAL: Do NOT invent generic milestones. EVERY single breakthrough (career peak, marriage, wealth windfall) MUST be flawlessly and explicitly derived from the user's actual Cuspal Sub-Lords, Planetary Placements, and KP Ruling Planets. Justify the event astrologically. Calculate exact ages and predict exact DD/MM/YYYY dates based on the mathematical rule."
 }`;
 
       const modelsToTry = [
