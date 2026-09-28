@@ -271,7 +271,7 @@ CRITICAL INSTRUCTIONS FOR AUTHENTICITY & ACCURACY:
 CRITICAL MATHEMATICAL DATE CALCULATION RULE:
 The user was born in the year ${year}. If you ever mention an AGE for a milestone, you MUST mathematically calculate the year as exactly: (${year} + Age). For example, if Age is 22, the year MUST be ${year + 22}. DO NOT hallucinate dates that contradict this simple addition.
 
-Write in clear language that anyone can easily understand, but make it EXTREMELY detailed and profound. Aim for at least 300-400 words per field to provide maximum value. Use elegant text formatting like • bullet points and line breaks inside the string (Do NOT use **markdown** as it will not render) to make it highly readable and perfectly structured. Return ONLY a valid JSON object with these exact keys:
+Write in clear language that anyone can easily understand, but make it EXTREMELY detailed and profound. Aim for at least 300-400 words per field to provide maximum value. Return ONLY a valid JSON object with these exact keys:
 {
   "reading": "A deeply realistic opening analysis of their core personality, psychological contradictions, emotional struggles, and underlying soul urgeâ€”balancing their gifts with their real shadow self.",
   "career": "A grounded, deep-dive evaluation of their professional journey. Detail both their peaks AND their major career roadblocks, professional rivalries, periods of stagnation, and lessons in humility.",
