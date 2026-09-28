@@ -182,7 +182,9 @@ export default function BirthDetailsForm() {
                 name="tob"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-indigo-200">Time of Birth</FormLabel>
+                    <FormLabel className="text-indigo-200">
+                      Time of Birth <span className="text-indigo-400/70 text-[10px] ml-1">(AM/PM or 24-hour)</span>
+                    </FormLabel>
                     <FormControl>
                       <div className="relative">
                         <Input type="time" className="pl-10 bg-black/20 border-indigo-500/30 text-indigo-100 focus-visible:ring-indigo-500" {...field} />
@@ -190,6 +192,9 @@ export default function BirthDetailsForm() {
                       </div>
                     </FormControl>
                     <FormMessage className="text-red-400" />
+                    <p className="text-[10px] text-indigo-300/50 leading-tight">
+                      *If no AM/PM selector appears, use 24-hour format (e.g., 14:30 for 2:30 PM).
+                    </p>
                   </FormItem>
                 )}
               />
