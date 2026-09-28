@@ -289,7 +289,7 @@ Whenever you mention an AGE for a breakthrough or event (e.g., "Age 22"), you MU
 For example, if Age is 22, the year MUST be ${year + 22}.
 DO NOT HALLUCINATE RANDOM DATES. Ensure every single DD/MM/YYYY date provided mathematically perfectly matches the formula: (Birth Year + Age = Event Year).
 
-Return ONLY a valid JSON object matching this exact schema. Write in clear, simple language that people can easily understand. Aim for exactly 150-200 words per field to ensure fast generation. Write in detailed, analytical paragraphs:
+Return ONLY a valid JSON object matching this exact schema. Write in clear language that anyone can easily understand, but make it EXTREMELY detailed and profound. Aim for at least 300-400 words per field to provide maximum value. Write in detailed, analytical paragraphs:
 {
   "reading": "A monumental Core Soul Urge reading synthesizing the Ascendant & Moon Cuspal Sub-Lords. Meticulously detail their karmic past (what they were), their present state of mind (what they are), and their ultimate evolution (what they are going to be).",
   "education": "An encyclopedic, highly precise analysis of Education, intellect, and higher learning through the 4th and 9th CSL. Include early learning environment (past), current intellectual capacity and focus (present), and future mastery or academic achievements.",
