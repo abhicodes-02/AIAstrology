@@ -162,7 +162,7 @@ export default function VarshaphalDashboardView({
               
               <div className="prose prose-invert prose-yellow max-w-none">
                 <p className="text-lg md:text-xl text-yellow-50/90 leading-relaxed font-light whitespace-pre-wrap">
-                  {data.varshaphal}
+                  {renderSafe(data.varshaphal, "Varshaphal overview not available.")}
                 </p>
               </div>
             </div>
@@ -207,7 +207,7 @@ export default function VarshaphalDashboardView({
                     {/* Main Overview */}
                     <div className="flex-grow">
                       <p className="text-indigo-100/90 leading-relaxed text-base font-light">
-                        {monthData.prediction}
+                        {renderSafe(monthData.prediction, "")}
                       </p>
                     </div>
 
@@ -219,7 +219,7 @@ export default function VarshaphalDashboardView({
                             <div className="flex items-center gap-2 mb-2 text-blue-300 font-medium text-sm">
                               <Briefcase className="w-4 h-4" /> Career
                             </div>
-                            <p className="text-blue-100/70 text-sm leading-relaxed">{monthData.career}</p>
+                            <p className="text-blue-100/70 text-sm leading-relaxed">{renderSafe(monthData.career, "")}</p>
                           </div>
                         )}
                         {monthData.relationships && (
@@ -227,7 +227,7 @@ export default function VarshaphalDashboardView({
                             <div className="flex items-center gap-2 mb-2 text-pink-300 font-medium text-sm">
                               <Heart className="w-4 h-4" /> Relationships
                             </div>
-                            <p className="text-pink-100/70 text-sm leading-relaxed">{monthData.relationships}</p>
+                            <p className="text-pink-100/70 text-sm leading-relaxed">{renderSafe(monthData.relationships, "")}</p>
                           </div>
                         )}
                       </div>

@@ -72,6 +72,19 @@ export default function DailyInsightView({
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
 
+  const renderSafe = (data: any, fallback: string) => {
+    if (!data) return fallback;
+    if (typeof data === 'string') return data;
+    if (Array.isArray(data)) {
+      return data.map(item => {
+        if (typeof item === 'string') return item;
+        return Object.entries(item).map(([k, v]) => `${k}: ${v}`).join(' | ');
+      }).join('\n\n');
+    }
+    return JSON.stringify(data, null, 2);
+  };
+
+
   const navigateToDate = (targetDateIso?: string) => {
     startTransition(() => {
       const url = new URL(window.location.href);
@@ -333,7 +346,7 @@ export default function DailyInsightView({
                   <FavorabilityBadge status={dailyData.careerFavorability || "GOOD"} />
                 </div>
                 <p className="text-indigo-100/80 leading-relaxed text-sm md:text-base whitespace-pre-wrap">
-                  {dailyData.career}
+                  {renderSafe(dailyData.career, "")}
                 </p>
               </div>
             </motion.div>
@@ -405,7 +418,7 @@ export default function DailyInsightView({
                   <FavorabilityBadge status={dailyData.healthFavorability || "FAVOURABLE"} />
                 </div>
                 <p className="text-indigo-100/80 leading-relaxed text-sm md:text-base whitespace-pre-wrap">
-                  {dailyData.health}
+                  {renderSafe(dailyData.health, "")}
                 </p>
               </div>
             </motion.div>

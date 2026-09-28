@@ -47,6 +47,19 @@ export default function KpKundliDashboardView({
   const [isDownloading, setIsDownloading] = useState(false);
   const [activeKpTable, setActiveKpTable] = useState<"cusps" | "planets" | "significators">("cusps");
 
+  const renderSafe = (data: any, fallback: string) => {
+    if (!data) return fallback;
+    if (typeof data === 'string') return data;
+    if (Array.isArray(data)) {
+      return data.map(item => {
+        if (typeof item === 'string') return item;
+        return Object.entries(item).map(([k, v]) => `${k}: ${v}`).join(' | ');
+      }).join('\n\n');
+    }
+    return JSON.stringify(data, null, 2);
+  };
+
+
   const queryParams = new URLSearchParams({ name, dob, tob, pob }).toString();
 
   const handleDownloadPDF = async () => {
@@ -320,7 +333,7 @@ export default function KpKundliDashboardView({
                   </div>
                 </div>
                 <p className="text-lg md:text-xl text-cyan-100/90 leading-relaxed font-light">
-                  {chartData.reading}
+                  {renderSafe(chartData.reading, "Reading not available.")}
                 </p>
               </div>
             </motion.div>
@@ -343,7 +356,7 @@ export default function KpKundliDashboardView({
                   </AccordionTrigger>
                   <AccordionContent className="pb-8 pt-2">
                     <div className="text-indigo-100/80 leading-relaxed text-base space-y-4 whitespace-pre-wrap">
-                      {chartData.education || "No education data available."}
+                      {renderSafe(chartData.education, "No education data available.")}
                     </div>
                   </AccordionContent>
                 </AccordionItem>
@@ -362,7 +375,7 @@ export default function KpKundliDashboardView({
                   </AccordionTrigger>
                   <AccordionContent className="pb-8 pt-2">
                     <div className="text-indigo-100/80 leading-relaxed text-base space-y-4 whitespace-pre-wrap">
-                      {chartData.family || "No family data available."}
+                      {renderSafe(chartData.family, "No family data available.")}
                     </div>
                   </AccordionContent>
                 </AccordionItem>
@@ -381,7 +394,7 @@ export default function KpKundliDashboardView({
                   </AccordionTrigger>
                   <AccordionContent className="pb-8 pt-2">
                     <div className="text-indigo-100/80 leading-relaxed text-base space-y-4 whitespace-pre-wrap">
-                      {chartData.career || "No career data available."}
+                      {renderSafe(chartData.career, "No career data available.")}
                     </div>
                   </AccordionContent>
                 </AccordionItem>
@@ -400,7 +413,7 @@ export default function KpKundliDashboardView({
                   </AccordionTrigger>
                   <AccordionContent className="pb-8 pt-2">
                     <div className="text-indigo-100/80 leading-relaxed text-base space-y-4 whitespace-pre-wrap">
-                      {chartData.wealth || "No wealth data available."}
+                      {renderSafe(chartData.wealth, "No wealth data available.")}
                     </div>
                   </AccordionContent>
                 </AccordionItem>
@@ -419,7 +432,7 @@ export default function KpKundliDashboardView({
                   </AccordionTrigger>
                   <AccordionContent className="pb-8 pt-2">
                     <div className="text-indigo-100/80 leading-relaxed text-base space-y-4 whitespace-pre-wrap">
-                      {chartData.relationships || "No relationship data available."}
+                      {renderSafe(chartData.relationships, "No relationship data available.")}
                     </div>
                   </AccordionContent>
                 </AccordionItem>
@@ -438,7 +451,7 @@ export default function KpKundliDashboardView({
                   </AccordionTrigger>
                   <AccordionContent className="pb-8 pt-2">
                     <div className="text-indigo-100/80 leading-relaxed text-base space-y-4 whitespace-pre-wrap">
-                      {chartData.health || "No health data available."}
+                      {renderSafe(chartData.health, "No health data available.")}
                     </div>
                   </AccordionContent>
                 </AccordionItem>
@@ -457,7 +470,7 @@ export default function KpKundliDashboardView({
                   </AccordionTrigger>
                   <AccordionContent className="pb-8 pt-2">
                     <div className="text-cyan-50/90 leading-relaxed text-base md:text-lg space-y-6 whitespace-pre-wrap font-light">
-                      {chartData.fullLife || "Full life overview is not available."}
+                      {renderSafe(chartData.fullLife, "Full life overview is not available.")}
                     </div>
                   </AccordionContent>
                 </AccordionItem>
@@ -476,7 +489,7 @@ export default function KpKundliDashboardView({
                   </AccordionTrigger>
                   <AccordionContent className="pb-8 pt-2">
                     <div className="text-indigo-50/90 leading-relaxed text-base md:text-lg space-y-6 whitespace-pre-wrap font-light">
-                      {chartData.breakthroughs || "Timeline of major breakthroughs is not available."}
+                      {renderSafe(chartData.breakthroughs, "Timeline of major breakthroughs is not available.")}
                     </div>
                   </AccordionContent>
                 </AccordionItem>
