@@ -318,7 +318,7 @@ Return ONLY a valid JSON object with these exact keys:
         return null;
       })();
 
-      aiJson = await withTimeout(aiPromise, 8000, null);
+      aiJson = await withTimeout(aiPromise, 45000, null);
 
 
       if (aiJson) {

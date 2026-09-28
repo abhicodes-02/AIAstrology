@@ -337,7 +337,7 @@ Return ONLY a valid JSON object matching this exact schema. DO NOT output a shor
         return null;
       })();
       
-      const parsedAi = await withTimeout(aiPromise, 8000, null);
+      const parsedAi = await withTimeout(aiPromise, 45000, null);
       if (parsedAi) {
         readingData = { ...readingData, ...parsedAi };
       }
