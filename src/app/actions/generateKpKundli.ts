@@ -16,6 +16,14 @@ import {
   NAKSHATRAS
 } from "@/lib/kpAstrology";
 
+
+const withTimeout = <T>(promise: Promise<T>, ms: number, fallback: T): Promise<T> => {
+  return Promise.race([
+    promise,
+    new Promise<T>((resolve) => setTimeout(() => resolve(fallback), ms))
+  ]);
+};
+
 export async function fetchAIKpKundliData(name: string, dob: string, tob: string, pob: string) {
   // 1. Geocode location
   let lat = 22.5726;
@@ -304,28 +312,34 @@ Return ONLY a valid JSON object matching this exact schema. DO NOT output a shor
         "gemini-2.5-pro"
       ];
 
-      for (const modelName of modelsToTry) {
-        try {
-          const response = await ai.models.generateContent({
-            model: modelName,
-            contents: prompt,
-            config: {
-              temperature: 0.7,
-              responseMimeType: "application/json",
-              maxOutputTokens: 8192,
-            },
-          });
-
-          if (response.text) {
-            const cleaned = response.text.replace(/```json\n?|```/g, "").trim();
-            const parsed = JSON.parse(cleaned);
-            readingData = { ...readingData, ...parsed };
-            break;
+      // AI Generation wrapped in a strict 8-second timeout to prevent Vercel 504 crashes
+      const aiPromise = (async () => {
+        for (const modelName of modelsToTry) {
+          try {
+            const response = await ai.models.generateContent({
+              model: modelName,
+              contents: prompt,
+              config: {
+                temperature: 0.7,
+                responseMimeType: "application/json",
+              }
+            });
+            if (response.text) {
+              const cleaned = response.text.replace(/```json/g, "").replace(/```/g, "").trim();
+              const parsed = JSON.parse(cleaned);
+              return parsed;
+            }
+          } catch (err: any) {
+            console.warn(`[Model: ${modelName}] KP AI failed:`, err.message);
+            // Don't wait on fallback loops if we are racing the clock, just continue immediately
           }
-        } catch (err: any) {
-          console.warn(`[Model: ${modelName}] KP AI failed:`, err.message);
-          await new Promise(r => setTimeout(r, 1000));
         }
+        return null;
+      })();
+      
+      const parsedAi = await withTimeout(aiPromise, 8000, null);
+      if (parsedAi) {
+        readingData = { ...readingData, ...parsedAi };
       }
     } catch (err) {
       console.error("KP AI Generation completely failed:", err);

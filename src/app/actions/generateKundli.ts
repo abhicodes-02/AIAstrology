@@ -4,6 +4,14 @@ import * as celestine from "celestine";
 import { GoogleGenAI } from "@google/genai";
 import { getAccurateTimezone } from "@/lib/geoUtils";
 
+
+const withTimeout = <T>(promise: Promise<T>, ms: number, fallback: T): Promise<T> => {
+  return Promise.race([
+    promise,
+    new Promise<T>((resolve) => setTimeout(() => resolve(fallback), ms))
+  ]);
+};
+
 export async function fetchAIKundliData(name: string, dob: string, tob: string, pob: string) {
   // 1. Geocode the location
   let lat = 22.5726;
@@ -290,26 +298,28 @@ Return ONLY a valid JSON object with these exact keys:
         "gemini-2.5-pro"
       ];
       
-      for (const modelName of fallbackModels) {
-        if (aiJson) break; // Stop if we already got successful data
-        
-        try {
-          const response = await ai.models.generateContent({
-            model: modelName,
-            contents: prompt,
-            config: { responseMimeType: "application/json" }
-          });
-          if (response.text) {
-            const cleanedText = response.text.replace(/```json\n?|```/g, '').trim();
-            aiJson = JSON.parse(cleanedText);
-            break; // Success, break the loop
+      
+      const aiPromise = (async () => {
+        for (const modelName of fallbackModels) {
+          try {
+            const response = await ai.models.generateContent({
+              model: modelName,
+              contents: prompt,
+              config: { responseMimeType: "application/json" }
+            });
+            if (response.text) {
+              const cleanedText = response.text.replace(/\`\`\`json\n?|\`\`\`/g, '').trim();
+              return JSON.parse(cleanedText);
+            }
+          } catch (err: any) {
+            console.warn(`[Model: ${modelName}] AI generation failed. Error:`, err.message);
           }
-        } catch (err: any) {
-          console.warn(`[Model: ${modelName}] AI generation failed. Error:`, err.message);
-          // Wait 1.5 seconds before trying the next model to avoid spamming the API
-          await new Promise(resolve => setTimeout(resolve, 1500));
         }
-      }
+        return null;
+      })();
+
+      aiJson = await withTimeout(aiPromise, 8000, null);
+
 
       if (aiJson) {
         chartData.reading = aiJson.reading;
