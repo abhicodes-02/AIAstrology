@@ -22,6 +22,8 @@ export interface KpSubLordInfo {
   nakshatraPada: number;
   starLord: string;
   subLord: string;
+  isIndependent?: boolean;
+  occupantCount?: number;
   subSubLord?: string;
 }
 
@@ -36,6 +38,8 @@ export interface KpCusp {
   nakshatraName: string;
   starLord: string;
   subLord: string;
+  isIndependent?: boolean;
+  occupantCount?: number;
 }
 
 export interface KpPlanet {
@@ -51,8 +55,11 @@ export interface KpPlanet {
   nakshatraPada: number;
   starLord: string;
   subLord: string;
+  isIndependent?: boolean;
+  occupantCount?: number;
   houseOccupied: number;
   isRetrograde: boolean;
+  isUntenanted?: boolean;
 }
 
 export interface KpSignificatorRow {
@@ -153,6 +160,8 @@ interface SubSegment {
   nakshatraIndex: number;
   starLord: string;
   subLord: string;
+  isIndependent?: boolean;
+  occupantCount?: number;
 }
 
 let subSegmentsCache: SubSegment[] | null = null;

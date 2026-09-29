@@ -557,6 +557,7 @@ export default function KpKundliDashboardView({
                         <th className="py-2.5 px-3">Sign Lord</th>
                         <th className="py-2.5 px-3">Star Lord (NL)</th>
                         <th className="py-2.5 px-3 font-bold text-amber-300">Sub Lord (CSL)</th>
+                        <th className="py-2.5 px-3 text-pink-300">Independent</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-white/5">
@@ -586,6 +587,7 @@ export default function KpKundliDashboardView({
                         <th className="py-2.5 px-3">House (KP)</th>
                         <th className="py-2.5 px-3">Star Lord</th>
                         <th className="py-2.5 px-3 font-bold text-emerald-300">Sub Lord</th>
+                        <th className="py-2.5 px-3 text-fuchsia-300">Untenanted</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-white/5">

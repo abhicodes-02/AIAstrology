@@ -172,7 +172,41 @@ export async function fetchAIKpKundliData(name: string, dob: string, tob: string
     }
   }
 
-  // 4. Build 4-Fold Significators (A, B, C, D)
+  
+    // --- POST PROCESS: CALCULATE UNTENANTED PLANETS & INDEPENDENT HOUSES ---
+    // 1. Calculate Untenanted Planets
+    // A planet is untenanted if no other planet is situated in its Nakshatra (Star).
+    kpPlanets.forEach(p => {
+      // Find if ANY planet has this planet's name as its starLord
+      // Note: p.name might be "Jupiter", but starLord might be "Jup". Let's use vedicName or match carefully.
+      // starLord in kpAstrology is usually "Sun", "Moon", "Mars", "Rah", "Jup", "Sat", "Mer", "Ket", "Ven".
+      // Let's create a map of vedicNames used by starLord
+      const isTenanted = kpPlanets.some(otherP => otherP.starLord === p.name.substring(0, 3) || otherP.starLord === p.name);
+      p.isUntenanted = !isTenanted;
+    });
+
+    // 2. Calculate Occupant Count for Houses
+    cusps.forEach(cusp => {
+      const occupants = kpPlanets.filter(p => p.houseOccupied === cusp.houseNumber);
+      cusp.occupantCount = occupants.length;
+    });
+
+    // 3. Calculate Independent Houses
+    // Condition: House must be empty (0 occupants) AND its signLord must be an Untenanted planet.
+    cusps.forEach(cusp => {
+      // Find the planet that is the signLord
+      // Note: cusp.signLord is usually full name like "Sun", "Moon", "Mars", "Jupiter"
+      const lordPlanet = kpPlanets.find(p => p.name === cusp.signLord || p.vedicName === cusp.signLord);
+      if (lordPlanet) {
+        cusp.isIndependent = (cusp.occupantCount === 0) && (lordPlanet.isUntenanted === true);
+      } else {
+        cusp.isIndependent = false;
+      }
+    });
+    // -----------------------------------------------------------------------
+
+    // 4. Build 4-Fold Significators (A, B, C, D)
+
   const { planetSignificators, houseSignificators } = buildKpSignificators(kpPlanets, cusps);
 
   // 5. Ruling Planets (RP) at moment of birth/query
@@ -281,7 +315,8 @@ Apply STRICT KP Astrology principles:
 4. Career: Analyze 10th Cuspal Sub-Lord (CSL) linking to houses 2, 6, 10, 11 (success) vs 5, 8, 12 (setbacks).
 5. Marriage/Relationships: Analyze 7th CSL linking to 2, 7, 11 (harmony) vs 1, 6, 10 (separation/delay).
 6. Health: 1st CSL vs 6, 8, 12.
-7. Past, Present, Future: For each section, deeply analyze the karmic past (what they were), the present challenges/strengths (what they are), and the destined trajectory (what they will become).
+7. INDEPENDENT HOUSES: If any houses are marked as "isIndependent: true", they are extremely powerful because they are empty and their lord is untenanted. Emphasize that the results of this house will manifest rapidly and decisively during its Dasha, completely unobstructed by other planets.
+8. Past, Present, Future: For each section, deeply analyze the karmic past (what they were), the present challenges/strengths (what they are), and the destined trajectory (what they will become)., deeply analyze the karmic past (what they were), the present challenges/strengths (what they are), and the destined trajectory (what they will become).
 
 CRITICAL MATHEMATICAL DATE CALCULATION RULE:
 The user was born in the year ${year}.
@@ -322,7 +357,7 @@ Return ONLY a valid JSON object matching this exact schema. Write in clear langu
               model: modelName,
               contents: prompt,
               config: {
-                temperature: 0.7,
+                temperature: 0.2,
                 responseMimeType: "application/json",
               }
             });
