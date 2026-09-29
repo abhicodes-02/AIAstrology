@@ -94,7 +94,7 @@ export async function fetchAIVarshaphalData(name: string, dob: string, tob: stri
           const response = await ai.models.generateContent({
             model: modelName,
             contents: prompt,
-            config: { responseMimeType: "application/json" }
+            config: { temperature: 0.2, responseMimeType: "application/json" }
           });
           if (response.text) {
             const cleanedText = response.text.replace(/```json\n?|```/g, '').trim();

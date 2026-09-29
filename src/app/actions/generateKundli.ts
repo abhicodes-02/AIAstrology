@@ -307,7 +307,7 @@ Write in clear language that anyone can easily understand, but make it EXTREMELY
             const response = await ai.models.generateContent({
               model: modelName,
               contents: prompt,
-              config: { responseMimeType: "application/json" }
+              config: { temperature: 0.2, responseMimeType: "application/json" }
             });
             if (response.text) {
               const cleanedText = response.text.replace(/\`\`\`json\n?|\`\`\`/g, '').trim();
