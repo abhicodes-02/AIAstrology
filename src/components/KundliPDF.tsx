@@ -297,6 +297,44 @@ export const KundliPDF = ({ chartData, name, dob, tob, pob }: any) => {
             </View>
           </View>
 
+          
+          {chartData.dashaData && (
+            <View style={styles.section} break>
+              <Text style={styles.sectionTitle}>Vimshottari Dasha (120-Year Timeline)</Text>
+              
+              {chartData.dashaData.currentMahadasha && (
+                <View style={{ marginBottom: 10, padding: 8, backgroundColor: '#FFF0D4', borderStyle: 'solid', borderColor: '#8B0000', borderWidth: 1 }}>
+                  <Text style={{ fontSize: 10, fontWeight: 'bold', color: '#8B0000' }}>
+                    Currently Running: {chartData.dashaData.currentMahadasha.planet} Mahadasha & {chartData.dashaData.currentAntardasha?.planet} Antardasha
+                  </Text>
+                  <Text style={{ fontSize: 9, color: '#333' }}>
+                    Current Antardasha ends on {new Date(chartData.dashaData.currentAntardasha?.end).toLocaleDateString('en-US', { day: 'numeric', month: 'long', year: 'numeric' })}
+                  </Text>
+                </View>
+              )}
+
+              <View style={styles.table}>
+                <View style={[styles.tableRow, styles.tableHeader]}>
+                  <View style={{...styles.tableCol, width: '25%'}}><Text style={styles.tableHeaderCell}>Mahadasha Planet</Text></View>
+                  <View style={{...styles.tableCol, width: '25%'}}><Text style={styles.tableHeaderCell}>Duration</Text></View>
+                  <View style={{...styles.tableCol, width: '25%'}}><Text style={styles.tableHeaderCell}>Start Date</Text></View>
+                  <View style={{...styles.tableCol, width: '25%', borderRightWidth: 0}}><Text style={styles.tableHeaderCell}>End Date</Text></View>
+                </View>
+                {chartData.dashaData.mahadashas.map((md: any, i: number) => {
+                  const isCurrent = chartData.dashaData.currentMahadasha?.planet === md.planet;
+                  return (
+                    <View style={{...styles.tableRow, backgroundColor: isCurrent ? '#FFF0D4' : 'transparent'}} key={i}>
+                      <View style={{...styles.tableCol, width: '25%'}}><Text style={{...styles.tableCell, fontWeight: isCurrent ? 'bold' : 'normal', color: isCurrent ? '#8B0000' : '#333'}}>{md.planet}</Text></View>
+                      <View style={{...styles.tableCol, width: '25%'}}><Text style={styles.tableCell}>{md.duration} Years</Text></View>
+                      <View style={{...styles.tableCol, width: '25%'}}><Text style={styles.tableCell}>{new Date(md.start).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}</Text></View>
+                      <View style={{...styles.tableCol, width: '25%', borderRightWidth: 0}}><Text style={styles.tableCell}>{new Date(md.end).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}</Text></View>
+                    </View>
+                  )
+                })}
+              </View>
+            </View>
+          )}
+
           {/* Dosha Analysis (Newly Added) */}
           {chartData.doshas && chartData.doshas.length > 0 && (
             <View style={styles.section}>

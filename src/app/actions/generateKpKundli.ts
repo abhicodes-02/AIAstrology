@@ -1,6 +1,7 @@
 "use server";
 
 import * as celestine from "celestine";
+import { calculateVimshottariDasha } from "@/lib/dasha";
 import { GoogleGenAI } from "@google/genai";
 import { getAccurateTimezone } from "@/lib/geoUtils";
 import {
@@ -166,8 +167,15 @@ export async function fetchAIKpKundliData(name: string, dob: string, tob: string
   const tithiNumber = tithiIndex <= 15 ? tithiIndex : tithiIndex - 15;
   const tithi = `${paksha} Paksha, Tithi ${tithiNumber}`;
 
-  let yogaDeg = siderealMoon + siderealSun;
-  if (yogaDeg >= 360) yogaDeg -= 360;
+      let yogaDeg = siderealMoon + siderealSun;
+    if (yogaDeg >= 360) yogaDeg -= 360;
+
+    // --- VIMSHOTTARI DASHA (KP DBA TIMING) ---
+    const dashaData = calculateVimshottariDasha(siderealMoon, dob);
+    const dashaContext = dashaData.currentMahadasha ? 
+      `Current Dasha (DBA): Mahadasha Lord is ${dashaData.currentMahadasha.planet}, Antardasha (Bhukti) Lord is ${dashaData.currentAntardasha?.planet}. Use these Dasha lords along with their KP significators to predict current events.` : 
+      'Dasha timeline completed.';
+
   const yogaIndex = Math.floor(yogaDeg / (360 / 27));
   const yogas = ["Vishkumbha", "Priti", "Ayushman", "Saubhagya", "Shobhana", "Atiganda", "Sukarma", "Dhriti", "Shula", "Ganda", "Vriddhi", "Dhruva", "Vyaghata", "Harshana", "Vajra", "Siddhi", "Vyatipata", "Variyana", "Parigha", "Shiva", "Siddha", "Sadhya", "Shubha", "Shukla", "Brahma", "Indra", "Vaidhriti"];
   const yoga = yogas[yogaIndex];
@@ -317,7 +325,7 @@ export async function fetchAIKpKundliData(name: string, dob: string, tob: string
     nakshatra: moonPlanet?.nakshatraName || "Rohini", nakshatraPada: moonPlanet?.nakshatraPada || 1, nakshatraLord: moonPlanet?.starLord || "Moon",
     tithi, yoga, karana,
     ayanamsaVal: `KP New (${formatDMS(kpAyanamsa)})`, kpAyanamsa: formatDMS(kpAyanamsa),
-    ascendantCusp: ascCusp, moonInfo: moonPlanet, cusps, planets: kpPlanets, planetSignificators, houseSignificators, rulingPlanets, bpHouses,
+    ascendantCusp: ascCusp, dashaData, moonInfo: moonPlanet, cusps, planets: kpPlanets, planetSignificators, houseSignificators, rulingPlanets, bpHouses,
     ...readingData
   };
 }
