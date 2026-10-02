@@ -70,7 +70,11 @@ export async function fetchAIVarshaphalData(name: string, dob: string, tob: stri
     try {
       const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
       const prompt = `Act as an expert Vedic Astrologer. A user named ${name} was born on ${dob} in ${pob}. Their Sidereal Sun is in ${sunSign}. 
-Generate a deeply detailed Varshaphal (Solar Return Annual Forecast) for their current year of life, incorporating transits and planetary returns.`;
+  Generate a deeply detailed Varshaphal (Solar Return Annual Forecast) for their current year of life, incorporating transits and planetary returns.
+  
+  CRITICAL RULES:
+  1. MASSIVE DETAIL REQUIRED: For the overall yearly prediction and EVERY SINGLE MONTH, you MUST write at least 150-200 words per section.
+  2. Dive deeply into the transit dynamics, psychological shifts, career hurdles, and relationship developments for each month.`;
       
       const fallbackModels = [
           "gemini-3.5-flash-lite",

@@ -245,15 +245,16 @@ export async function fetchAIKundliData(name: string, dob: string, tob: string, 
     try {
       const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
       const prompt = `Act as a master traditional Vedic Astrologer. Provide an unvarnished, psychologically deep, and karmically realistic reading for ${name}.
-- Lagna: ${ascendantName}
-- Moon: ${signs[Math.floor(siderealMoon / 30)]} in${nakshatra}
-- D-1 Houses: ${JSON.stringify(d1Houses)}
-- D-9 Navamsa Houses: ${JSON.stringify(d9Houses)}
-
-CRITICAL RULES:
-1. Do not sugarcoat. Detail real struggles, doshas, delays, and flaws alongside blessings.
-2. For any AGE mentioned, mathematically calculate the exact year as (${year} + Age).
-3. Do NOT include doshas in the JSON (we calculate that via pure math).`;
+  - Lagna: ${ascendantName}
+  - Moon: ${signs[Math.floor(siderealMoon / 30)]} in ${nakshatra}
+  - D-1 Houses: ${JSON.stringify(d1Houses)}
+  - D-9 Navamsa Houses: ${JSON.stringify(d9Houses)}
+  
+  CRITICAL RULES:
+  1. Do not sugarcoat. Detail real struggles, doshas, delays, and flaws alongside blessings.
+  2. For any AGE mentioned, mathematically calculate the exact year as (${year} + Age).
+  3. Do NOT include doshas in the JSON (we calculate that via pure math).
+  4. MASSIVE DETAIL REQUIRED: For EVERY SINGLE FIELD, you MUST write at least 300-400 words. Dive incredibly deep into the psychological, astrological, and predictive specifics. Break down exactly how the D-1 and D-9 charts interact, predicting highly specific life outcomes.`;
       
       const fallbackModels = [
           "gemini-3.5-flash-lite",

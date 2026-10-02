@@ -184,14 +184,17 @@ export async function fetchAIKpKundliData(name: string, dob: string, tob: string
     try {
       const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
       const prompt = `Act as a world-renowned Grand Master of Krishnamurti Paddhati (KP) Astrology.
-Analyze this exact KP Chart for ${name} born in ${year}:
-- Asc CSL: ${ascCusp.subLord}
-- Moon CSL: ${moonPlanet?.subLord}
-- 10th CSL (Career): ${cusps[9]?.subLord}
-- 7th CSL (Marriage): ${cusps[6]?.subLord}
-- 2nd/11th CSL (Wealth): ${cusps[1]?.subLord} / ${cusps[10]?.subLord}
-
-Apply STRICT KP Rules. Do NOT invent dates that don't match the formula (Birth Year + Age = Event Year).`;
+  Analyze this exact KP Chart for ${name} born in ${year}:
+  - Asc CSL: ${ascCusp.subLord}
+  - Moon CSL: ${moonPlanet?.subLord}
+  - 10th CSL (Career): ${cusps[9]?.subLord}
+  - 7th CSL (Marriage): ${cusps[6]?.subLord}
+  - 2nd/11th CSL (Wealth): ${cusps[1]?.subLord} / ${cusps[10]?.subLord}
+  
+  CRITICAL RULES:
+  1. INDEPENDENT HOUSES: If a house is empty and its lord is untenanted, it is extremely powerful. Mention this if applicable.
+  2. MATHEMATICS: Do NOT invent dates that don't match the formula (Birth Year + Age = Event Year).
+  3. MASSIVE DETAIL REQUIRED: For EVERY SINGLE FIELD (reading, education, family, career, wealth, relationships, health, fullLife, breakthroughs), you MUST write at least 300-400 words. Dive incredibly deep into the psychological, astrological, and predictive specifics. Do not give short summaries. Expand deeply on exact timelines, sub-lords, star-lords, and karmic destiny.`;
 
       const fallbackModels = [
           "gemini-3.5-flash-lite",
