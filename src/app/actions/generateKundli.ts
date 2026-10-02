@@ -104,7 +104,6 @@ export async function fetchAIKundliData(name: string, dob: string, tob: string, 
   const nadi = nadis[nakshatraIndex];
   
   // Paya (based on Moon placement from Ascendant)
-  const ascSign = Math.floor(ascSidereal / 30);
   let moonHouseFromAsc = (moonSignIdx - ascSign) + 1;
   if (moonHouseFromAsc <= 0) moonHouseFromAsc += 12;
   let paya = "Silver";
@@ -176,7 +175,6 @@ export async function fetchAIKundliData(name: string, dob: string, tob: string, 
   const nakshatraPada = Math.floor(degInNak / (360 / 108)) + 1;
 
   const sunSignIdx = Math.floor(siderealSun / 30);
-  const moonSignIdx = Math.floor(siderealMoon / 30);
 
   const sunNavamsa = signs[Math.floor(siderealSun / (360 / 108)) % 12];
   const moonNavamsa = signs[Math.floor(siderealMoon / (360 / 108)) % 12];
