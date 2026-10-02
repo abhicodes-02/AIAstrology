@@ -293,7 +293,7 @@ export async function fetchAIKundliData(name: string, dob: string, tob: string, 
           }
         });
             
-            const response = await withTimeout(aiPromise, 14000, null);
+            const response = await withTimeout(aiPromise, 45000, null);
             if (response && response.text) {
               aiJson = JSON.parse(response.text);
               break;

@@ -236,7 +236,7 @@ export async function fetchAIKpKundliData(name: string, dob: string, tob: string
           }
         });
             
-            const response = await withTimeout(aiPromise, 14000, null);
+            const response = await withTimeout(aiPromise, 45000, null);
             if (response && response.text) {
               aiJson = JSON.parse(response.text);
               break;
@@ -251,8 +251,9 @@ export async function fetchAIKpKundliData(name: string, dob: string, tob: string
         } else {
           throw new Error("All fallback AI models failed or timed out.");
         }
-    } catch (err) {
+    } catch (err: any) {
       console.error("KP AI Generation completely failed:", err);
+      readingData.reading = `[AI ERROR] AI generation failed: ${err?.message || 'Unknown error'}. Please refresh to try again.`;
     }
   }
 
