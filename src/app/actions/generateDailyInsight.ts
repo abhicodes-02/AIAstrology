@@ -121,6 +121,15 @@ export async function fetchAIDailyInsightData(
     console.warn("[DailyInsight] sweph-wasm not available for transit ayanamsa, using fallback.");
   }
 
+  const allTransits = transitChart.planets.map((p: any) => {
+    if (["Uranus", "Neptune", "Pluto", "Chiron", "Sirius"].includes(p.name)) return null;
+    let shortName = p.name === "North Node" ? "Rahu" : p.name === "South Node" ? "Ketu" : p.name;
+    const pSidereal = getSidereal(p.longitude, currentAyanamsa);
+    const pSignIndex = Math.floor(pSidereal / 30);
+    const houseFromMoon = ((pSignIndex - moonSignIndex + 12) % 12) + 1;
+    return `${shortName} in ${houseFromMoon}th House`;
+  }).filter(Boolean).join(", ");
+
   const transitMoon = transitChart.planets.find((p: any) => p.name === "Moon");
   const siderealTransitMoon = transitMoon ? getSidereal(transitMoon.longitude, currentAyanamsa) : 0;
   const transitMoonSignIndex = Math.floor(siderealTransitMoon / 30);
@@ -152,6 +161,7 @@ export async function fetchAIDailyInsightData(
 - Current Date: ${dateFormatted}
 - Transit Moon Sign: ${transitMoonSign} in ${transitNakshatra} Nakshatra
 - Transit Moon House (from Natal Moon): ${transitHouseFromMoon}th House
+- ALL PLANETARY TRANSITS (from Natal Moon): ${allTransits}
 
 Generate a deeply personalized daily reading explaining how this specific ${transitHouseFromMoon}th house transit impacts their day.
 
