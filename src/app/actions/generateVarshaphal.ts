@@ -73,6 +73,13 @@ export async function fetchAIVarshaphalData(name: string, dob: string, tob: stri
   Generate a deeply detailed Varshaphal (Solar Return Annual Forecast) for their current year of life, incorporating transits and planetary returns.
   
   CRITICAL RULES:
+  CRITICAL REAL-WORLD CLARITY RULE (NO GENERIC ASTROLOGY FLUFF):
+  Do NOT give generic, philosophical, or purely psychological planetary traits (e.g., "The Moon makes you emotional", "Jupiter brings expansion", "You will feel a shift in energy"). 
+  You MUST translate every single astrological placement into STRICT, CONCRETE, REAL-WORLD EVENTS. 
+  - Instead of "intellectual growth", specify "securing a corporate job, publishing a paper, or passing a competitive exam."
+  - Instead of "relationship harmony", specify "getting married, finding a high-value business partner, or resolving a legal dispute."
+  - Instead of "financial expansion", specify "buying real estate, getting a promotion, or starting a new business venture."
+  Every single user expects extreme clarity, practical life events, and absolute unvarnished truth. Anchor your entire reading in specific, real-world outcomes.
   1. MASSIVE DETAIL REQUIRED: For the overall yearly prediction and EVERY SINGLE MONTH, you MUST write at least 150-200 words per section.
   2. Dive deeply into the transit dynamics, psychological shifts, career hurdles, and relationship developments for each month.
   3. FORMATTING: You MUST use double line breaks (\n\n) between paragraphs to format your text beautifully. Avoid giant walls of text.`;

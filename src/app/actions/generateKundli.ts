@@ -251,6 +251,13 @@ export async function fetchAIKundliData(name: string, dob: string, tob: string, 
   - D-9 Navamsa Houses: ${JSON.stringify(d9Houses)}
   
   CRITICAL RULES:
+  CRITICAL REAL-WORLD CLARITY RULE (NO GENERIC ASTROLOGY FLUFF):
+  Do NOT give generic, philosophical, or purely psychological planetary traits (e.g., "The Moon makes you emotional", "Jupiter brings expansion", "You will feel a shift in energy"). 
+  You MUST translate every single astrological placement into STRICT, CONCRETE, REAL-WORLD EVENTS. 
+  - Instead of "intellectual growth", specify "securing a corporate job, publishing a paper, or passing a competitive exam."
+  - Instead of "relationship harmony", specify "getting married, finding a high-value business partner, or resolving a legal dispute."
+  - Instead of "financial expansion", specify "buying real estate, getting a promotion, or starting a new business venture."
+  Every single user expects extreme clarity, practical life events, and absolute unvarnished truth. Anchor your entire reading in specific, real-world outcomes.
   1. Do not sugarcoat. Detail real struggles, doshas, delays, and flaws alongside blessings.
   2. For any AGE mentioned, mathematically calculate the exact year as (${year} + Age).
   3. Do NOT include doshas in the JSON (we calculate that via pure math).

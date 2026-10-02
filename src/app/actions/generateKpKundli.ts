@@ -192,6 +192,13 @@ export async function fetchAIKpKundliData(name: string, dob: string, tob: string
   - 2nd/11th CSL (Wealth): ${cusps[1]?.subLord} / ${cusps[10]?.subLord}
   
     CRITICAL RULES FOR ZERO VARIANCE:
+  CRITICAL REAL-WORLD CLARITY RULE (NO GENERIC ASTROLOGY FLUFF):
+  Do NOT give generic, philosophical, or purely psychological planetary traits (e.g., "The Moon makes you emotional", "Jupiter brings expansion", "You will feel a shift in energy"). 
+  You MUST translate every single astrological placement into STRICT, CONCRETE, REAL-WORLD EVENTS. 
+  - Instead of "intellectual growth", specify "securing a corporate job, publishing a paper, or passing a competitive exam."
+  - Instead of "relationship harmony", specify "getting married, finding a high-value business partner, or resolving a legal dispute."
+  - Instead of "financial expansion", specify "buying real estate, getting a promotion, or starting a new business venture."
+  Every single user expects extreme clarity, practical life events, and absolute unvarnished truth. Anchor your entire reading in specific, real-world outcomes.
   1. INDEPENDENT HOUSES: If a house is empty and its lord is untenanted, it is extremely powerful.
   2. STRICT BREAKTHROUGHS MATHEMATICS: You MUST NOT perform any math or calculations yourself. Breakthroughs ONLY happen at the exact Vedic Planetary Maturity Age of the CSLs (Sub-Lords). 
      You MUST use EXACTLY this pre-calculated table for the breakthrough years based on the birth year:

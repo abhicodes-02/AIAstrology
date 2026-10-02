@@ -153,7 +153,15 @@ export async function fetchAIDailyInsightData(
 - Transit Moon Sign: ${transitMoonSign} in ${transitNakshatra} Nakshatra
 - Transit Moon House (from Natal Moon): ${transitHouseFromMoon}th House
 
-Generate a deeply personalized daily reading explaining how this specific ${transitHouseFromMoon}th house transit impacts their day.`;
+Generate a deeply personalized daily reading explaining how this specific ${transitHouseFromMoon}th house transit impacts their day.
+
+  CRITICAL REAL-WORLD CLARITY RULE (NO GENERIC ASTROLOGY FLUFF):
+  Do NOT give generic, philosophical, or purely psychological planetary traits (e.g., "The Moon makes you emotional", "Jupiter brings expansion", "You will feel a shift in energy"). 
+  You MUST translate every single astrological placement into STRICT, CONCRETE, REAL-WORLD EVENTS. 
+  - Instead of "intellectual growth", specify "securing a corporate job, publishing a paper, or passing a competitive exam."
+  - Instead of "relationship harmony", specify "getting married, finding a high-value business partner, or resolving a legal dispute."
+  - Instead of "financial expansion", specify "buying real estate, getting a promotion, or starting a new business venture."
+  Every single user expects extreme clarity, practical life events, and absolute unvarnished truth. Anchor your entire reading in specific, real-world outcomes.`;
 
       const fallbackModels = [
           "gemini-3.5-flash-lite",
