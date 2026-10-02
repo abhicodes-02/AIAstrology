@@ -44,6 +44,8 @@ export async function fetchAIKpKundliData(name: string, dob: string, tob: string
 
   const [year, month, day] = dob.split("-").map(Number);
   const [hour, minute] = tob.split(":").map(Number);
+  const birthDateObj = new Date(year, month - 1, day);
+  const monthName = birthDateObj.toLocaleString("en-US", { month: "long" });
   const timezone = await getAccurateTimezone(lat, lon, countryCode, pob);
 
   const birth = { year, month, day, hour, minute, latitude: lat, longitude: lon, timezone };
