@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import { Sparkles, ArrowLeft, Sun, Moon, CalendarDays, Briefcase, Heart, Star, Download, Loader2, Compass } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { toJpeg } from "html-to-image";
 
@@ -30,6 +30,10 @@ export default function VarshaphalDashboardView({
   const router = useRouter();
   const searchParams = useSearchParams();
   const [isNavigating, setIsNavigating] = useState(false);
+
+  useEffect(() => {
+    setIsNavigating(false);
+  }, [targetYear, data]);
 
   const currentYear = new Date().getFullYear();
   
