@@ -84,6 +84,35 @@ export async function fetchAIKundliData(name: string, dob: string, tob: string, 
   const ascSign = Math.floor(ascSidereal / 30);
   const ascendantName = signs[ascSign];
 
+
+  // Nakshatra Advanced Details (Ashtakoot)
+  const ganas = ["Deva", "Manushya", "Rakshasa", "Manushya", "Deva", "Rakshasa", "Deva", "Deva", "Rakshasa", "Rakshasa", "Manushya", "Manushya", "Deva", "Rakshasa", "Deva", "Rakshasa", "Deva", "Rakshasa", "Rakshasa", "Manushya", "Manushya", "Deva", "Rakshasa", "Rakshasa", "Manushya", "Manushya", "Deva"];
+  const yonis = ["Ashwa", "Gaja", "Mesha", "Sarpa", "Sarpa", "Shvan", "Marjara", "Mesha", "Marjara", "Mushaka", "Mushaka", "Gau", "Mahisha", "Vyaghra", "Mahisha", "Vyaghra", "Mriga", "Mriga", "Shvan", "Vanara", "Nakula", "Vanara", "Simha", "Ashwa", "Simha", "Gau", "Gaja"];
+  const nadis = ["Adi", "Madhya", "Antya", "Antya", "Madhya", "Adi", "Adi", "Madhya", "Antya", "Antya", "Madhya", "Adi", "Adi", "Madhya", "Antya", "Antya", "Madhya", "Adi", "Adi", "Madhya", "Antya", "Antya", "Madhya", "Adi", "Adi", "Madhya", "Antya"];
+  
+  // Varna based on Moon Sign
+  const varnaArr = ["Kshatriya", "Vaishya", "Shudra", "Brahmin", "Kshatriya", "Vaishya", "Shudra", "Brahmin", "Kshatriya", "Vaishya", "Shudra", "Brahmin"];
+  const moonSignIdx = Math.floor(siderealMoon / 30);
+  const varna = varnaArr[moonSignIdx];
+  const vashyaArr = ["Chatushpada", "Chatushpada", "Dvipada", "Jalachar", "Chatushpada", "Dvipada", "Dvipada", "Keeta", "Chatushpada", "Jalachar", "Dvipada", "Jalachar"];
+  const vashya = vashyaArr[moonSignIdx];
+  const tatvaArr = ["Fire", "Earth", "Air", "Water", "Fire", "Earth", "Air", "Water", "Fire", "Earth", "Air", "Water"];
+  const tatva = tatvaArr[moonSignIdx];
+
+  const gana = ganas[nakshatraIndex];
+  const yoni = yonis[nakshatraIndex];
+  const nadi = nadis[nakshatraIndex];
+  
+  // Paya (based on Moon placement from Ascendant)
+  const ascSign = Math.floor(ascSidereal / 30);
+  let moonHouseFromAsc = (moonSignIdx - ascSign) + 1;
+  if (moonHouseFromAsc <= 0) moonHouseFromAsc += 12;
+  let paya = "Silver";
+  if ([1, 6, 11].includes(moonHouseFromAsc)) paya = "Gold";
+  else if ([2, 5, 9].includes(moonHouseFromAsc)) paya = "Silver";
+  else if ([3, 7, 10].includes(moonHouseFromAsc)) paya = "Copper";
+  else paya = "Iron";
+
   // Map Planets to D-1 (Lagna) and D-9 (Navamsa) Houses
   const d1Houses: Record<number, string[]> = { 1: [], 2: [], 3: [], 4: [], 5: [], 6: [], 7: [], 8: [], 9: [], 10: [], 11: [], 12: [] };
   const d9Houses: Record<number, string[]> = { 1: [], 2: [], 3: [], 4: [], 5: [], 6: [], 7: [], 8: [], 9: [], 10: [], 11: [], 12: [] };
