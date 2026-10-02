@@ -554,6 +554,7 @@ export async function fetchAIKundliData(name: string, dob: string, tob: string, 
 
         if (aiJson) {
           chartData.reading = aiJson.reading;
+        chartData.education = aiJson.education;
         chartData.career = aiJson.career;
         chartData.relationships = aiJson.relationships;
         chartData.health = aiJson.health;
