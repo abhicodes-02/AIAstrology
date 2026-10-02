@@ -116,8 +116,28 @@ export async function fetchAIKundliData(name: string, dob: string, tob: string, 
   // Map Planets to D-1 (Lagna) and D-9 (Navamsa) Houses
   const d1Houses: Record<number, string[]> = { 1: [], 2: [], 3: [], 4: [], 5: [], 6: [], 7: [], 8: [], 9: [], 10: [], 11: [], 12: [] };
   const d9Houses: Record<number, string[]> = { 1: [], 2: [], 3: [], 4: [], 5: [], 6: [], 7: [], 8: [], 9: [], 10: [], 11: [], 12: [] };
+  const d10Houses: Record<number, string[]> = { 1: [], 2: [], 3: [], 4: [], 5: [], 6: [], 7: [], 8: [], 9: [], 10: [], 11: [], 12: [] };
+  const d24Houses: Record<number, string[]> = { 1: [], 2: [], 3: [], 4: [], 5: [], 6: [], 7: [], 8: [], 9: [], 10: [], 11: [], 12: [] };
+  
+  function getDasamsaSign(siderealLon: number): number {
+    const sign = Math.floor(siderealLon / 30);
+    const degree = siderealLon % 30;
+    const dasamsaIdx = Math.floor(degree / 3);
+    return sign % 2 === 0 ? (sign + dasamsaIdx) % 12 : (sign + 8 + dasamsaIdx) % 12;
+  }
+  
+  function getD24Sign(siderealLon: number): number {
+    const sign = Math.floor(siderealLon / 30);
+    const degree = siderealLon % 30;
+    const d24Idx = Math.floor(degree / 1.25);
+    return sign % 2 === 0 ? (4 + d24Idx) % 12 : (3 + d24Idx) % 12;
+  }
+
 
   const ascNavamsaSign = Math.floor(ascSidereal / (30/9)) % 12;
+  const ascD10Sign = getDasamsaSign(ascSidereal);
+  const ascD24Sign = getD24Sign(ascSidereal);
+
 
   const planetaryBodies: any[] = [...chart.planets];
   if (chart.nodes && chart.nodes.length >= 2) {
@@ -445,7 +465,13 @@ export async function fetchAIKundliData(name: string, dob: string, tob: string, 
     - Lagna: ${ascendantName}
   - Moon: ${signs[Math.floor(siderealMoon / 30)]} in ${nakshatra}
   - D-1 Houses: ${JSON.stringify(d1Houses)}
-  - D-9 Navamsa Houses: ${JSON.stringify(d9Houses)}
+  - D-9 Navamsa Houses (Marriage/Soul): ${JSON.stringify(d9Houses)}
+    - D-10 Dasamsa Houses (Career/Profession): ${JSON.stringify(d10Houses)}
+    - D-24 Chaturvimsamsa Houses (Education/Intellect): ${JSON.stringify(d24Houses)}
+    
+    IMPORTANT VARGA RULES FOR AI:
+    - For Career/Power predictions, STRICTLY prioritize D-10 Dasamsa over D-1.
+    - For Education/Learning predictions, STRICTLY prioritize D-24 Chaturvimsamsa over D-1.
   
   CRITICAL RULES:
   CRITICAL REAL-WORLD CLARITY RULE (NO GENERIC ASTROLOGY FLUFF):
