@@ -462,6 +462,7 @@ export async function fetchAIKundliData(name: string, dob: string, tob: string, 
     karana, gana, varna, yoni, nadi, vashya, tatva, paya,
     ayanamsaVal: `Lahiri (True) ${ayanamsa.toFixed(4)}°`,
     reading: `[AI BUSY] Welcome ${name}. The AI is analyzing your chart.`,
+    education: `[AI BUSY] Generating insights...`,
     career: `[AI BUSY] Generating insights...`,
     relationships: `[AI BUSY] Generating insights...`,
     health: `[AI BUSY] Generating insights...`,
@@ -531,13 +532,14 @@ export async function fetchAIKundliData(name: string, dob: string, tob: string, 
             type: "OBJECT",
             properties: {
               reading: { type: "STRING", description: "Deeply realistic core personality analysis." },
+                education: { type: "STRING", description: "Academic performance, intelligence, and higher studies based on D24 chart." },
               career: { type: "STRING", description: "Professional journey, roadblocks, and peaks." },
               relationships: { type: "STRING", description: "Romantic/marital fate, emotional friction." },
               health: { type: "STRING", description: "Unvarnished health vulnerabilities." },
               wealth: { type: "STRING", description: "Realistic financial blueprint and drains." },
               fullLife: { type: "STRING", description: "Ultimate life path and major Dasha turning points." }
               },
-              required: ["reading", "career", "relationships", "health", "wealth", "fullLife"]
+              required: ["reading", "education", "career", "relationships", "health", "wealth", "fullLife"]
             }
           }
         });
