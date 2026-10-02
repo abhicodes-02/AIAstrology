@@ -154,6 +154,36 @@ export async function fetchAIKpKundliData(name: string, dob: string, tob: string
   const moonPlanet = kpPlanets.find(p => p.name === "Moon");
   const sunPlanet = kpPlanets.find(p => p.name === "Sun");
 
+
+  // MATHEMATICAL TITHI, YOGA, KARANA
+  const siderealMoon = moonPlanet ? moonPlanet.longitude : 0;
+  const siderealSun = sunPlanet ? sunPlanet.longitude : 0;
+  
+  let tithiDeg = siderealMoon - siderealSun;
+  if (tithiDeg < 0) tithiDeg += 360;
+  const tithiIndex = Math.floor(tithiDeg / 12) + 1;
+  const paksha = tithiIndex <= 15 ? "Shukla" : "Krishna";
+  const tithiNumber = tithiIndex <= 15 ? tithiIndex : tithiIndex - 15;
+  const tithi = `${paksha} Paksha, Tithi ${tithiNumber}`;
+
+  let yogaDeg = siderealMoon + siderealSun;
+  if (yogaDeg >= 360) yogaDeg -= 360;
+  const yogaIndex = Math.floor(yogaDeg / (360 / 27));
+  const yogas = ["Vishkumbha", "Priti", "Ayushman", "Saubhagya", "Shobhana", "Atiganda", "Sukarma", "Dhriti", "Shula", "Ganda", "Vriddhi", "Dhruva", "Vyaghata", "Harshana", "Vajra", "Siddhi", "Vyatipata", "Variyana", "Parigha", "Shiva", "Siddha", "Sadhya", "Shubha", "Shukla", "Brahma", "Indra", "Vaidhriti"];
+  const yoga = yogas[yogaIndex];
+
+  const movableKaranas = ["Bava", "Balava", "Kaulava", "Taitila", "Garaja", "Vanija", "Vishti (Bhadra)"];
+  let karana = "";
+  const karanaNum = Math.floor(tithiDeg / 6) + 1;
+  if (karanaNum === 1) karana = "Kintughna";
+  else if (karanaNum >= 58) {
+    if (karanaNum === 58) karana = "Shakuni";
+    else if (karanaNum === 59) karana = "Chatushpada";
+    else karana = "Naga";
+  } else {
+    karana = movableKaranas[(karanaNum - 2) % 7];
+  }
+
   const rulingPlanets = {
     ascendantSignLord: ascCusp.signLord,
     ascendantStarLord: ascCusp.starLord,
@@ -285,7 +315,7 @@ export async function fetchAIKpKundliData(name: string, dob: string, tob: string
     moonSign: `${moonPlanet?.signName} (${moonPlanet?.degFormatted})`, moonSignLord: moonPlanet?.signLord, moonSubLord: moonPlanet?.subLord,
     sunSign: `${sunPlanet?.signName} (${sunPlanet?.degFormatted})`, sunSignLord: sunPlanet?.signLord, sunSubLord: sunPlanet?.subLord,
     nakshatra: moonPlanet?.nakshatraName || "Rohini", nakshatraPada: moonPlanet?.nakshatraPada || 1, nakshatraLord: moonPlanet?.starLord || "Moon",
-    tithi: "N/A", yoga: "N/A", karana: "N/A",
+    tithi, yoga, karana,
     ayanamsaVal: `KP New (${formatDMS(kpAyanamsa)})`, kpAyanamsa: formatDMS(kpAyanamsa),
     ascendantCusp: ascCusp, moonInfo: moonPlanet, cusps, planets: kpPlanets, planetSignificators, houseSignificators, rulingPlanets, bpHouses,
     ...readingData
