@@ -114,11 +114,52 @@ export default function VarshaphalDashboardView({
           animate={{ opacity: 1, y: 0 }}
           className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 mb-12 border-b border-white/5 pb-8"
         >
-          <div>
-            <Link href={`/kundli?name=${encodeURIComponent(name)}&dob=${dob}&tob=${encodeURIComponent(tob)}&pob=${encodeURIComponent(pob)}`} className="group inline-flex items-center gap-2 text-yellow-400 hover:text-yellow-300 transition-all text-sm font-medium mb-6 bg-yellow-500/10 px-4 py-2 rounded-full border border-yellow-500/20 hover:border-yellow-500/40">
-              <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" /> 
-              Back to Dashboard
-            </Link>
+          <div className="w-full relative">
+              <div className="flex flex-col md:flex-row justify-between items-start w-full gap-4 mb-6">
+                <Link href={`/kundli?name=${encodeURIComponent(name)}&dob=${dob}&tob=${encodeURIComponent(tob)}&pob=${encodeURIComponent(pob)}`} className="group inline-flex items-center gap-2 text-yellow-400 hover:text-yellow-300 transition-all text-sm font-medium bg-yellow-500/10 px-4 py-2 rounded-full border border-yellow-500/20 hover:border-yellow-500/40">
+                  <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" /> 
+                  Back to Dashboard
+                </Link>
+
+                <div className="flex bg-slate-900/80 p-1 rounded-xl border border-yellow-500/20 shadow-lg backdrop-blur-md">
+                  <Button 
+                    variant={targetYear === currentYear - 1 ? "default" : "ghost"} 
+                    size="sm"
+                    onClick={() => handleYearChange(currentYear - 1)}
+                    disabled={isNavigating}
+                    className={targetYear === currentYear - 1 ? "bg-gradient-to-r from-yellow-600 to-orange-600 text-white shadow-md hover:from-yellow-500 hover:to-orange-500" : "text-slate-400 hover:text-yellow-400"}
+                  >
+                    Past Year ({currentYear - 1})
+                  </Button>
+                  <Button 
+                    variant={targetYear === currentYear ? "default" : "ghost"} 
+                    size="sm"
+                    onClick={() => handleYearChange(currentYear)}
+                    disabled={isNavigating}
+                    className={targetYear === currentYear ? "bg-gradient-to-r from-yellow-600 to-orange-600 text-white shadow-md hover:from-yellow-500 hover:to-orange-500" : "text-slate-400 hover:text-yellow-400"}
+                  >
+                    Present Year ({currentYear})
+                  </Button>
+                  <Button 
+                    variant={targetYear === currentYear + 1 ? "default" : "ghost"} 
+                    size="sm"
+                    onClick={() => handleYearChange(currentYear + 1)}
+                    disabled={isNavigating}
+                    className={targetYear === currentYear + 1 ? "bg-gradient-to-r from-yellow-600 to-orange-600 text-white shadow-md hover:from-yellow-500 hover:to-orange-500" : "text-slate-400 hover:text-yellow-400"}
+                  >
+                    Future Year ({currentYear + 1})
+                  </Button>
+                </div>
+              </div>
+
+              {isNavigating && (
+                <div className="absolute inset-0 z-50 flex items-center justify-center bg-slate-950/70 backdrop-blur-sm rounded-2xl w-full h-full">
+                  <div className="flex flex-col items-center bg-slate-900 border border-yellow-500/30 p-6 rounded-2xl shadow-[0_0_40px_rgba(250,204,21,0.15)]">
+                    <Loader2 className="w-10 h-10 text-yellow-500 animate-spin mb-4" />
+                    <p className="text-yellow-200 font-medium animate-pulse">Calculating Solar Return for {targetYear}...</p>
+                  </div>
+                </div>
+              )}
             <h1 className="text-4xl md:text-6xl font-bold font-space text-transparent bg-clip-text bg-gradient-to-r from-yellow-100 via-orange-300 to-yellow-500 tracking-tight drop-shadow-[0_0_20px_rgba(250,204,21,0.2)]">
               Solar Return
             </h1>
