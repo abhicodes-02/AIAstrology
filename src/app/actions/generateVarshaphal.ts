@@ -100,7 +100,9 @@ export async function fetchAIVarshaphalData(name: string, dob: string, tob: stri
   - Sun Sign: ${sunSign}
   - Planetary Houses: ${JSON.stringify(d1Houses)}
   
-  Calculate their current age (Current Year - Birth Year). Use this exact natal chart to map the current planetary transits over their natal houses for their current year of life. 
+  CRITICAL TIME ANCHOR: The CURRENT REAL-TIME DATE is ${new Date().toISOString().split('T')[0]}. The current year is ${new Date().getFullYear()}.
+  You MUST generate the Varshaphal strictly starting from their birthday in the current year (${new Date().getFullYear()}) to their birthday in the next year (${new Date().getFullYear() + 1}). 
+  Calculate their exact current age (Current Year - Birth Year). Do NOT generate predictions for 2024 or 2025. You must map the planetary transits for the upcoming 12 months starting from their current solar return. 
   Generate a deeply detailed Varshaphal (Solar Return Annual Forecast) for their current year of life, incorporating transits and planetary returns.
   
   CRITICAL RULES:
