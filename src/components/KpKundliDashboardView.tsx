@@ -28,7 +28,6 @@ import EastIndianChart from "@/components/EastIndianChart";
 import { Button } from "@/components/ui/button";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { useRef, useState } from "react";
-import { toJpeg } from "html-to-image";
 
 export default function KpKundliDashboardView({
   chartData,
@@ -65,55 +64,43 @@ export default function KpKundliDashboardView({
   const handleDownloadPDF = async () => {
     setIsDownloading(true);
     try {
-      const d1El = document.getElementById("kp-bhava-chart");
-      const d9El = document.getElementById("kp-rashi-chart");
-      let d1Image = null;
-      let d9Image = null;
-
-      if (d1El) d1Image = await toJpeg(d1El, { quality: 1, backgroundColor: "#0F1123" });
-      if (d9El) d9Image = await toJpeg(d9El, { quality: 1, backgroundColor: "#0F1123" });
-
       const { pdf } = await import("@react-pdf/renderer");
-      const { KundliPDF } = await import("@/components/KundliPDF");
+      const { KpKundliPDF } = await import("@/components/KpKundliPDF");
 
       const blob = await pdf(
-        <KundliPDF
+        <KpKundliPDF
           chartData={chartData}
           name={name}
           dob={dob}
           tob={tob}
           pob={pob}
-          d1Image={d1Image}
-          d9Image={d9Image}
         />
       ).toBlob();
-
+      
       const url = URL.createObjectURL(blob);
-      const link = document.createElement("a");
+      const link = document.createElement('a');
       link.href = url;
-      link.download = `KP_Kundli_${name.replace(/\s+/g, "_")}.pdf`;
+      link.download = `KpKundli_${name.replace(/\s+/g, '_')}.pdf`;
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
       URL.revokeObjectURL(url);
     } catch (error) {
-      console.error("Error generating KP PDF", error);
+      console.error("Failed to generate PDF:", error);
+      alert("Failed to generate PDF. Please try again.");
     } finally {
       setIsDownloading(false);
     }
   };
 
-  const containerVariants: any = {
+  const containerVariants = {
     hidden: { opacity: 0 },
-    show: {
-      opacity: 1,
-      transition: { staggerChildren: 0.1 },
-    },
+    visible: { opacity: 1, transition: { staggerChildren: 0.1 } }
   };
 
-  const itemVariants: any = {
+  const itemVariants = {
     hidden: { opacity: 0, y: 20 },
-    show: { opacity: 1, y: 0, transition: { type: "spring" as const, stiffness: 100 } },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.6 } }
   };
 
   return (
