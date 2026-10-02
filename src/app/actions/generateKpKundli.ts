@@ -223,7 +223,8 @@ export async function fetchAIKpKundliData(name: string, dob: string, tob: string
       const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
       const prompt = `Act as a world-renowned Grand Master of Krishnamurti Paddhati (KP) Astrology.
   Analyze this exact KP Chart for ${name} born in ${year}:
-  - Asc CSL: ${ascCusp.subLord}
+  - VIMSHOTTARI DBA TIMING (CURRENT): ${dashaContext}
+    - Asc CSL: ${ascCusp.subLord}
   - Moon CSL: ${moonPlanet?.subLord}
   - 10th CSL (Career): ${cusps[9]?.subLord}
   - 7th CSL (Marriage): ${cusps[6]?.subLord}

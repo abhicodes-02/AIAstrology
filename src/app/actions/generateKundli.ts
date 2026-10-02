@@ -293,7 +293,8 @@ export async function fetchAIKundliData(name: string, dob: string, tob: string, 
     try {
       const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
       const prompt = `Act as a master traditional Vedic Astrologer. Provide an unvarnished, psychologically deep, and karmically realistic reading for ${name}.
-  - Lagna: ${ascendantName}
+  - VIMSHOTTARI DASHA TIMING (CURRENT): ${dashaContext}
+    - Lagna: ${ascendantName}
   - Moon: ${signs[Math.floor(siderealMoon / 30)]} in ${nakshatra}
   - D-1 Houses: ${JSON.stringify(d1Houses)}
   - D-9 Navamsa Houses: ${JSON.stringify(d9Houses)}
