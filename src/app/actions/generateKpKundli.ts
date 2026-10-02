@@ -191,10 +191,12 @@ export async function fetchAIKpKundliData(name: string, dob: string, tob: string
   - 7th CSL (Marriage): ${cusps[6]?.subLord}
   - 2nd/11th CSL (Wealth): ${cusps[1]?.subLord} / ${cusps[10]?.subLord}
   
-  CRITICAL RULES:
-  1. INDEPENDENT HOUSES: If a house is empty and its lord is untenanted, it is extremely powerful. Mention this if applicable.
-  2. MATHEMATICS: Do NOT invent dates that don't match the formula (Birth Year + Age = Event Year).
-  3. MASSIVE DETAIL REQUIRED: For EVERY SINGLE FIELD (reading, education, family, career, wealth, relationships, health, fullLife, breakthroughs), you MUST write at least 300-400 words. Dive incredibly deep into the psychological, astrological, and predictive specifics. Do not give short summaries. Expand deeply on exact timelines, sub-lords, star-lords, and karmic destiny.`;
+    CRITICAL RULES FOR ZERO VARIANCE:
+  1. INDEPENDENT HOUSES: If a house is empty and its lord is untenanted, it is extremely powerful.
+  2. STRICT BREAKTHROUGHS MATHEMATICS: You MUST NOT hallucinate random ages for breakthroughs. Breakthroughs ONLY happen at the exact Vedic Planetary Maturity Age of the 10th CSL (Career), 11th CSL (Gains), and Ascendant CSL. 
+     Use EXACTLY this table: Jupiter=16, Sun=22, Moon=24, Venus=25, Mars=28, Mercury=32, Saturn=36, Rahu=42, Ketu=48. 
+     Calculate Event Year = (Birth Year + Maturity Age).
+  3. MASSIVE DETAIL: Write at least 300 words for EVERY SINGLE FIELD (including breakthroughs). Tie the maturity ages to the specific psychological and material fruits of those sub-lords.`;
 
       const fallbackModels = [
           "gemini-3.5-flash-lite",
