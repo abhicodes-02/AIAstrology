@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import { motion } from "framer-motion";
 
 
 export interface ChartPlanet {
@@ -81,7 +82,7 @@ const EastIndianChart: React.FC<EastIndianChartProps> = ({
 
           return (
             <g key={sign.id} className="fill-transparent hover:fill-amber-900/40 transition-colors duration-200 cursor-pointer">
-              <polygon points={sign.points} stroke="none" />
+              <motion.polygon initial={{ pathLength: 0, opacity: 0 }} animate={{ pathLength: 1, opacity: 1 }} transition={{ duration: 1.5, delay: 0.2 }} points={sign.points} stroke="none" />
               
               {/* Ascendant Marker (Vedic) */}
               {!isKp && sign.id === lagnaSignIndex && (
@@ -135,7 +136,7 @@ const EastIndianChart: React.FC<EastIndianChartProps> = ({
         {centerSubtitle && (
           <text x={1.5*u} y={showOm ? 1.85*u : 1.65*u} textAnchor="middle" className="fill-indigo-300 text-[10px] font-medium uppercase" stroke="none">{centerSubtitle}</text>
         )}
-      </svg>
+      </motion.svg>
     </div>
   );
 };

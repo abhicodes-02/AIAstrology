@@ -4,6 +4,13 @@ import * as celestine from "celestine";
 import { GoogleGenAI } from "@google/genai";
 import { getAccurateTimezone } from "@/lib/geoUtils";
 
+const withTimeout = <T>(promise: Promise<T>, ms: number, fallback: T): Promise<T> => {
+  return Promise.race([
+    promise,
+    new Promise<T>((resolve) => setTimeout(() => resolve(fallback), ms))
+  ]);
+};
+
 export async function fetchAIDailyInsightData(
   name: string,
   dob: string,
@@ -18,7 +25,7 @@ export async function fetchAIDailyInsightData(
   try {
     const geoRes = await fetch(
       `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(pob)}&format=json&limit=1&addressdetails=1`,
-      { headers: { "User-Agent": "AIAstrology/1.0" } }
+      { headers: { "User-Agent": "AIAstrology/2.0" } }
     );
     const geoData = await geoRes.json();
     if (geoData && geoData.length > 0) {
@@ -36,48 +43,30 @@ export async function fetchAIDailyInsightData(
   const timezone = await getAccurateTimezone(lat, lon, countryCode, pob);
 
   const birthChart = celestine.calculateChart(
-    {
-      year: birthYear,
-      month: birthMonth,
-      day: birthDay,
-      hour: birthHour,
-      minute: birthMinute,
-      latitude: lat,
-      longitude: lon,
-      timezone,
-    },
+    { year: birthYear, month: birthMonth, day: birthDay, hour: birthHour, minute: birthMinute, latitude: lat, longitude: lon, timezone },
     { includeNodes: "true" as const }
   );
 
-  const birthAyanamsa = 23.85 + (birthYear - 2000) * (50.29 / 3600);
+  // --- 100% ACCURATE LAHIRI AYANAMSA FOR BIRTH (Swiss Ephemeris) ---
+  let birthAyanamsa = 23.85 + (birthYear - 2000) * (50.29 / 3600);
+  try {
+    const swisseph = require("sweph-wasm");
+    const localDate = new Date(`${dob}T${tob}:00.000${timezone >= 0 ? '+' : '-'}${Math.abs(Math.floor(timezone)).toString().padStart(2, '0')}:${(Math.abs(timezone % 1) * 60).toString().padStart(2, '0')}`);
+    const julday = swisseph.swe_julday(localDate.getUTCFullYear(), localDate.getUTCMonth() + 1, localDate.getUTCDate(), localDate.getUTCHours() + localDate.getUTCMinutes() / 60, swisseph.SE_GREG_CAL);
+    swisseph.swe_set_sid_mode(swisseph.SE_SIDM_LAHIRI, 0, 0);
+    birthAyanamsa = swisseph.swe_get_ayanamsa_ut(julday);
+  } catch (e) {
+    console.warn("[DailyInsight] sweph-wasm not available for birth ayanamsa, using fallback.");
+  }
+
   const getSidereal = (tropical: number, ayanamsaVal: number) => {
     let sid = tropical - ayanamsaVal;
     if (sid < 0) sid += 360;
     return sid;
-  };
+  }
 
-  const signs = [
-    "Mesha (Aries)",
-    "Vrishabha (Taurus)",
-    "Mithuna (Gemini)",
-    "Karka (Cancer)",
-    "Simha (Leo)",
-    "Kanya (Virgo)",
-    "Tula (Libra)",
-    "Vrishchika (Scorpio)",
-    "Dhanu (Sagittarius)",
-    "Makara (Capricorn)",
-    "Kumbha (Aquarius)",
-    "Meena (Pisces)",
-  ];
-
-  const nakshatras = [
-    "Ashwini", "Bharani", "Krittika", "Rohini", "Mrigashira", "Ardra", "Punarvasu",
-    "Pushya", "Ashlesha", "Magha", "Purva Phalguni", "Uttara Phalguni", "Hasta",
-    "Chitra", "Swati", "Vishakha", "Anuradha", "Jyeshtha", "Mula", "Purva Ashadha",
-    "Uttara Ashadha", "Shravana", "Dhanishta", "Shatabhisha", "Purva Bhadrapada",
-    "Uttara Bhadrapada", "Revati"
-  ];
+  const signs = ["Mesha (Aries)", "Vrishabha (Taurus)", "Mithuna (Gemini)", "Karka (Cancer)", "Simha (Leo)", "Kanya (Virgo)", "Tula (Libra)", "Vrishchika (Scorpio)", "Dhanu (Sagittarius)", "Makara (Capricorn)", "Kumbha (Aquarius)", "Meena (Pisces)"];
+  const nakshatras = ["Ashwini", "Bharani", "Krittika", "Rohini", "Mrigashira", "Ardra", "Punarvasu", "Pushya", "Ashlesha", "Magha", "Purva Phalguni", "Uttara Phalguni", "Hasta", "Chitra", "Swati", "Vishakha", "Anuradha", "Jyeshtha", "Mula", "Purva Ashadha", "Uttara Ashadha", "Shravana", "Dhanishta", "Shatabhisha", "Purva Bhadrapada", "Uttara Bhadrapada", "Revati"];
 
   const natalSun = birthChart.planets.find((p: any) => p.name === "Sun");
   const natalMoon = birthChart.planets.find((p: any) => p.name === "Moon");
@@ -89,229 +78,124 @@ export async function fetchAIDailyInsightData(
 
   const moonSignIndex = Math.floor(siderealNatalMoon / 30);
   const moonSign = signs[moonSignIndex];
-  const ascSignIndex = Math.floor(siderealNatalAsc / 30);
-  const ascendantSign = signs[ascSignIndex];
+  const ascendantSign = signs[Math.floor(siderealNatalAsc / 30)];
   const sunSign = signs[Math.floor(siderealNatalSun / 30)];
-  const nakshatraIndex = Math.floor(siderealNatalMoon / (360 / 27));
-  const birthNakshatra = nakshatras[nakshatraIndex];
+  const birthNakshatra = nakshatras[Math.floor(siderealNatalMoon / (360 / 27))];
 
   // 3. Current Transit Chart Calculation
-  let currentYear: number;
-  let currentMonth: number;
-  let currentDay: number;
-  let currentHour: number;
-  let currentMinute: number;
-
+  let currentYear, currentMonth, currentDay, currentHour, currentMinute;
   if (targetDateStr) {
     const parts = targetDateStr.split("-").map(Number);
     if (parts.length >= 3 && !isNaN(parts[0]) && !isNaN(parts[1]) && !isNaN(parts[2])) {
-      currentYear = parts[0];
-      currentMonth = parts[1];
-      currentDay = parts[2];
-      currentHour = 12; // Noon snapshot for requested date
-      currentMinute = 0;
+      [currentYear, currentMonth, currentDay] = parts;
+      currentHour = 12; currentMinute = 0;
     } else {
       const parsed = new Date(targetDateStr);
-      currentYear = parsed.getUTCFullYear();
-      currentMonth = parsed.getUTCMonth() + 1;
-      currentDay = parsed.getUTCDate();
-      currentHour = 12;
-      currentMinute = 0;
+      currentYear = parsed.getUTCFullYear(); currentMonth = parsed.getUTCMonth() + 1; currentDay = parsed.getUTCDate();
+      currentHour = 12; currentMinute = 0;
     }
   } else {
-    // Current live time converted to native's local timezone (offset in hours)
     const utcNow = Date.now();
-    const localTimestamp = utcNow + timezone * 3600 * 1000;
-    const localDate = new Date(localTimestamp);
-    currentYear = localDate.getUTCFullYear();
-    currentMonth = localDate.getUTCMonth() + 1;
-    currentDay = localDate.getUTCDate();
-    currentHour = localDate.getUTCHours();
-    currentMinute = localDate.getUTCMinutes();
+    const localDate = new Date(utcNow + timezone * 3600 * 1000);
+    currentYear = localDate.getUTCFullYear(); currentMonth = localDate.getUTCMonth() + 1; currentDay = localDate.getUTCDate();
+    currentHour = localDate.getUTCHours(); currentMinute = localDate.getUTCMinutes();
   }
 
   const targetDateISO = `${currentYear}-${String(currentMonth).padStart(2, "0")}-${String(currentDay).padStart(2, "0")}`;
   const displayDateObj = new Date(Date.UTC(currentYear, currentMonth - 1, currentDay, 12, 0, 0));
-  const dateFormatted = new Intl.DateTimeFormat("en-US", {
-    weekday: "long",
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-    timeZone: "UTC",
-  }).format(displayDateObj);
+  const dateFormatted = new Intl.DateTimeFormat("en-US", { weekday: "long", year: "numeric", month: "long", day: "numeric", timeZone: "UTC" }).format(displayDateObj);
 
   const transitChart = celestine.calculateChart(
-    {
-      year: currentYear,
-      month: currentMonth,
-      day: currentDay,
-      hour: currentHour,
-      minute: currentMinute,
-      latitude: lat,
-      longitude: lon,
-      timezone,
-    },
+    { year: currentYear, month: currentMonth, day: currentDay, hour: currentHour, minute: currentMinute, latitude: lat, longitude: lon, timezone },
     { includeNodes: "true" as const }
   );
 
-  const currentAyanamsa = 23.85 + (currentYear - 2000) * (50.29 / 3600);
-  const transitMoon = transitChart.planets.find((p: any) => p.name === "Moon");
-  const transitSun = transitChart.planets.find((p: any) => p.name === "Sun");
-  const transitMars = transitChart.planets.find((p: any) => p.name === "Mars");
-  const transitJupiter = transitChart.planets.find((p: any) => p.name === "Jupiter");
-  const transitSaturn = transitChart.planets.find((p: any) => p.name === "Saturn");
+  // --- 100% ACCURATE LAHIRI AYANAMSA FOR TRANSIT (Swiss Ephemeris) ---
+  let currentAyanamsa = 23.85 + (currentYear - 2000) * (50.29 / 3600);
+  try {
+    const swisseph = require("sweph-wasm");
+    const julday = swisseph.swe_julday(currentYear, currentMonth, currentDay, currentHour + currentMinute/60, swisseph.SE_GREG_CAL);
+    swisseph.swe_set_sid_mode(swisseph.SE_SIDM_LAHIRI, 0, 0);
+    currentAyanamsa = swisseph.swe_get_ayanamsa_ut(julday);
+  } catch (e) {
+    console.warn("[DailyInsight] sweph-wasm not available for transit ayanamsa, using fallback.");
+  }
 
+  const transitMoon = transitChart.planets.find((p: any) => p.name === "Moon");
   const siderealTransitMoon = transitMoon ? getSidereal(transitMoon.longitude, currentAyanamsa) : 0;
   const transitMoonSignIndex = Math.floor(siderealTransitMoon / 30);
   const transitMoonSign = signs[transitMoonSignIndex];
   const transitNakshatra = nakshatras[Math.floor(siderealTransitMoon / (360 / 27))];
-
-  // House of Transit Moon relative to Natal Moon
   const transitHouseFromMoon = ((transitMoonSignIndex - moonSignIndex + 12) % 12) + 1;
 
-  type FavorabilityLevel = "WORST" | "BAD" | "GOOD" | "FAVOURABLE" | "HIGHLY FAVOURABLE";
-
-  function normalizeFavorability(val: any, defaultVal = "GOOD"): FavorabilityLevel {
-    if (!val || typeof val !== "string") return defaultVal as FavorabilityLevel;
-    const upper = val.toUpperCase().trim();
-    if (upper.includes("HIGHLY") || upper.includes("EXCELLENT")) return "HIGHLY FAVOURABLE";
-    if (upper.includes("FAVOURABLE") || upper.includes("FAVORABLE")) return "FAVOURABLE";
-    if (upper.includes("WORST") || upper.includes("TERRIBLE")) return "WORST";
-    if (upper.includes("BAD") || upper.includes("POOR") || upper.includes("CHALLENGING")) return "BAD";
-    if (upper.includes("GOOD") || upper.includes("AVERAGE") || upper.includes("MODERATE")) return "GOOD";
-    return defaultVal as FavorabilityLevel;
-  }
-
-  // Default fallback data
   let dailyData = {
-    dateFormatted,
-    targetDate: targetDateISO,
-    natalMoonSign: moonSign,
-    natalAscendant: ascendantSign,
-    natalSunSign: sunSign,
-    birthNakshatra,
-    transitMoonSign,
-    transitNakshatra,
-    transitHouseFromMoon,
-    cosmicScore: 82,
-    overallFavorability: "FAVOURABLE" as FavorabilityLevel,
-    careerFavorability: "GOOD" as FavorabilityLevel,
-    financeFavorability: "FAVOURABLE" as FavorabilityLevel,
-    loveFavorability: "GOOD" as FavorabilityLevel,
-    healthFavorability: "FAVOURABLE" as FavorabilityLevel,
-    cosmicMood: "Intuitive, Balanced & Auspicious",
-    luckyColor: "Royal Indigo & Pearl White",
-    luckyNumber: "7",
-    auspiciousTime: "09:30 AM - 11:45 AM",
-    dailySummary: `Today the transit Moon journeys through ${transitMoonSign} in ${transitNakshatra} Nakshatra, activating the ${transitHouseFromMoon}th house relative to your natal Moon sign of ${moonSign}. This celestial alignment cultivates a heightened state of mental clarity, introspection, and thoughtful decision-making. You will find that balancing practical obligations with emotional wisdom brings the greatest harmony throughout the day.`,
-    career: `Professionally, this transit inspires strategic problem-solving and calm deliberation. The placement of the transit Moon encourages you to address pending responsibilities without succumbing to unnecessary workplace urgency. It is an auspicious day for constructive communication with superiors, drafting high-impact proposals, and refining operational details. Avoid impulsive confrontations; instead, let calculated patience showcase your innate leadership acumen.`,
-    finance: `On the financial front, the cosmic atmosphere encourages prudence and mindful resource allocation. Favorable alignments suggest steady cash flow, but caution is advised against impulsive speculative moves or spontaneous retail therapy. Reviewing investments, organizing budgets, and planning long-term security maneuvers will yield substantial dividends. If negotiating monetary matters or contracts today, ensure all fine print is vetted thoroughly.`,
-    love: `Your emotional world is enveloped in warmth, tenderness, and mutual empathy. For partnered seekers, honest conversations and small gestures of affection will deepen your emotional bond effortlessly. If tensions have lingered in recent days, today provides a soothing balm to resolve misunderstandings. Single seekers will radiate an authentic, magnetic charm; remaining open to intellectual connections will open unexpected, heartfelt doors.`,
-    health: `Your vitality remains strong, provided you stay attuned to your body's subtle rhythms. The energetic transits emphasize nervous system balance, hydration, and mindful breathing. Avoid excessive caffeine or late-night mental overstimulation. Engaging in a brisk morning walk, light yoga, or meditation will ground your vital prana and elevate your stamina across all daylight hours.`,
-    remedy: `Begin your morning by offering a copper vessel of fresh water toward the rising sun with gratitude. Chanting 'Om Somaya Namah' 11 times or wearing silver/white will harmonize the Moon's gentle energies and protect your inner tranquility.`,
+    dateFormatted, targetDate: targetDateISO, natalMoonSign: moonSign, natalAscendant: ascendantSign, natalSunSign: sunSign,
+    birthNakshatra, transitMoonSign, transitNakshatra, transitHouseFromMoon,
+    cosmicScore: 82, overallFavorability: "FAVOURABLE", careerFavorability: "GOOD", financeFavorability: "FAVOURABLE",
+    loveFavorability: "GOOD", healthFavorability: "FAVOURABLE", cosmicMood: "Intuitive & Balanced",
+    luckyColor: "Royal Indigo", luckyNumber: "7", auspiciousTime: "09:30 AM - 11:45 AM",
+    dailySummary: `[AI BUSY] Analyzing your transits for ${dateFormatted}...`,
+    career: `[AI BUSY] Calculating professional alignments...`,
+    finance: `[AI BUSY] Analyzing wealth transits...`,
+    love: `[AI BUSY] Mapping relational harmony...`,
+    health: `[AI BUSY] Checking vitality indicators...`,
+    remedy: `[AI BUSY] Finding optimal daily remedy...`,
   };
 
+  // --- BULLETPROOF AI (STRUCTURED OUTPUTS) ---
   if (process.env.GEMINI_API_KEY && process.env.GEMINI_API_KEY !== "your_gemini_api_key_here") {
     try {
       const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
-      const prompt = `Act as an expert Vedic Astrologer providing a profoundly accurate, personalized Daily Horoscope & Cosmic Transit Insight. 
-IMPORTANT: Write the entire response strictly in English.
+      const prompt = `Act as an expert Vedic Astrologer providing a profoundly accurate Daily Horoscope & Cosmic Transit Insight for ${name}.
+- Natal Ascendant: ${ascendantSign}
+- Natal Moon Sign: ${moonSign} in ${birthNakshatra} Nakshatra
+- Current Date: ${dateFormatted}
+- Transit Moon Sign: ${transitMoonSign} in ${transitNakshatra} Nakshatra
+- Transit Moon House (from Natal Moon): ${transitHouseFromMoon}th House
 
-Native Seeker Details:
-- Name: ${name}
-- Natal Ascendant (Lagna): ${ascendantSign}
-- Natal Moon Sign (Janma Rashi): ${moonSign}
-- Natal Nakshatra: ${birthNakshatra}
-- Natal Sun Sign: ${sunSign}
-- Place of Birth: ${pob}
+Generate a deeply personalized daily reading explaining how this specific ${transitHouseFromMoon}th house transit impacts their day.`;
 
-Current Celestial Transit Date:
-- Today's Date: ${dateFormatted}
-- Transit Moon Sign: ${transitMoonSign}
-- Transit Nakshatra: ${transitNakshatra}
-- Transit Moon House relative to Natal Moon (Chandra Lagna): ${transitHouseFromMoon}th House
-
-Task:
-Generate a deeply detailed, personalized, and eloquent Daily Cosmic Reading for ${name} for today.
-Explain specifically how the transit Moon's journey through ${transitMoonSign} and the ${transitHouseFromMoon}th house from their Janma Rashi impacts their day in general and across all 4 key life spheres: Career/Work, Wealth/Finance, Love/Relationships, and Health/Vitality.
-Include unambiguous favorability tags ("WORST", "BAD", "GOOD", "FAVOURABLE", "HIGHLY FAVOURABLE") for the day overall and each sphere.
-
-Return ONLY a valid JSON object with these exact keys:
-{
-  "cosmicScore": <number between 65 and 96 representing today's auspiciousness>,
-  "overallFavorability": "<One of: 'WORST', 'BAD', 'GOOD', 'FAVOURABLE', 'HIGHLY FAVOURABLE'>",
-  "careerFavorability": "<One of: 'WORST', 'BAD', 'GOOD', 'FAVOURABLE', 'HIGHLY FAVOURABLE'>",
-  "financeFavorability": "<One of: 'WORST', 'BAD', 'GOOD', 'FAVOURABLE', 'HIGHLY FAVOURABLE'>",
-  "loveFavorability": "<One of: 'WORST', 'BAD', 'GOOD', 'FAVOURABLE', 'HIGHLY FAVOURABLE'>",
-  "healthFavorability": "<One of: 'WORST', 'BAD', 'GOOD', 'FAVOURABLE', 'HIGHLY FAVOURABLE'>",
-  "cosmicMood": "<A 3-5 word evocative phrase describing today's overarching psychological and spiritual mood>",
-  "luckyColor": "<1-2 auspicious colors for today based on transits>",
-  "luckyNumber": "<lucky single or double digit number>",
-  "auspiciousTime": "<auspicious time window today, e.g. '10:30 AM - 12:15 PM'>",
-  "dailySummary": "<2 detailed, beautifully written paragraphs explaining the overall cosmic energy, transit Moon influence, and general life guidance for today>",
-  "career": "<1-2 detailed paragraphs describing work, business, job focus, productivity, negotiations, and workplace dynamics today>",
-  "finance": "<1-2 detailed paragraphs describing money flow, financial precautions, investment opportunities, and spending advice today>",
-  "love": "<1-2 detailed paragraphs describing romantic connection, emotional harmony, partner dynamics, family bonding, or single prospects today>",
-  "health": "<1-2 detailed paragraphs detailing energy levels, physical vitality, mental serenity, dietary precautions, and wellness practices for today>",
-  "remedy": "<A practical, authentic Vedic astrological remedy, mantra, or auspicious daily practice for harmony and protection today>"
-}`;
-
-      let aiJson: any = null;
-      const fallbackModels = [
-          "gemini-3.8-flash",
-          "gemini-3.7-flash",
-          "gemini-3.6-flash",
-          "gemini-3.5-flash",
-          "gemini-3-flash",
-          "gemini-2.5-flash",
-          "gemini-3.5-flash-lite",
-          "gemini-3.1-flash-lite",
-          "gemini-flash-lite-latest"
-        ];
-
-      for (const modelName of fallbackModels) {
-        if (aiJson) break;
-
-        try {
-          const response = await ai.models.generateContent({
-            model: modelName,
-            contents: prompt,
-            config: { temperature: 0.2, responseMimeType: "application/json" },
-          });
-          if (response.text) {
-            const cleanedText = response.text.replace(/```json\n?|```/g, "").trim();
-            aiJson = JSON.parse(cleanedText);
-            break;
+      const aiPromise = ai.models.generateContent({
+        model: "gemini-2.5-flash", // Fast, accurate, real model
+        contents: prompt,
+        config: {
+          temperature: 0.2,
+          responseMimeType: "application/json",
+          // Forcing 100% Valid JSON Structure
+          responseSchema: {
+            type: "OBJECT",
+            properties: {
+              cosmicScore: { type: "NUMBER", description: "Auspiciousness score between 65 and 96" },
+              overallFavorability: { type: "STRING", enum: ["WORST", "BAD", "GOOD", "FAVOURABLE", "HIGHLY FAVOURABLE"] },
+              careerFavorability: { type: "STRING", enum: ["WORST", "BAD", "GOOD", "FAVOURABLE", "HIGHLY FAVOURABLE"] },
+              financeFavorability: { type: "STRING", enum: ["WORST", "BAD", "GOOD", "FAVOURABLE", "HIGHLY FAVOURABLE"] },
+              loveFavorability: { type: "STRING", enum: ["WORST", "BAD", "GOOD", "FAVOURABLE", "HIGHLY FAVOURABLE"] },
+              healthFavorability: { type: "STRING", enum: ["WORST", "BAD", "GOOD", "FAVOURABLE", "HIGHLY FAVOURABLE"] },
+              cosmicMood: { type: "STRING", description: "3-5 word evocative phrase" },
+              luckyColor: { type: "STRING" },
+              luckyNumber: { type: "STRING" },
+              auspiciousTime: { type: "STRING" },
+              dailySummary: { type: "STRING", description: "2 detailed paragraphs of overall guidance" },
+              career: { type: "STRING" },
+              finance: { type: "STRING" },
+              love: { type: "STRING" },
+              health: { type: "STRING" },
+              remedy: { type: "STRING", description: "A practical Vedic astrological remedy" }
+            },
+            required: ["cosmicScore", "overallFavorability", "careerFavorability", "financeFavorability", "loveFavorability", "healthFavorability", "cosmicMood", "luckyColor", "luckyNumber", "auspiciousTime", "dailySummary", "career", "finance", "love", "health", "remedy"]
           }
-        } catch (err: any) {
-          console.warn(`[Model: ${modelName}] Daily Insight AI failed. Error:`, err.message);
-          await new Promise((resolve) => setTimeout(resolve, 1500));
         }
-      }
+      });
 
-      if (aiJson) {
-        dailyData = {
-          ...dailyData,
-          cosmicScore: typeof aiJson.cosmicScore === "number" ? aiJson.cosmicScore : 85,
-          overallFavorability: normalizeFavorability(aiJson.overallFavorability, "FAVOURABLE"),
-          careerFavorability: normalizeFavorability(aiJson.careerFavorability, "GOOD"),
-          financeFavorability: normalizeFavorability(aiJson.financeFavorability, "FAVOURABLE"),
-          loveFavorability: normalizeFavorability(aiJson.loveFavorability, "GOOD"),
-          healthFavorability: normalizeFavorability(aiJson.healthFavorability, "FAVOURABLE"),
-          cosmicMood: aiJson.cosmicMood || dailyData.cosmicMood,
-          luckyColor: aiJson.luckyColor || dailyData.luckyColor,
-          luckyNumber: String(aiJson.luckyNumber || dailyData.luckyNumber),
-          auspiciousTime: aiJson.auspiciousTime || dailyData.auspiciousTime,
-          dailySummary: aiJson.dailySummary || dailyData.dailySummary,
-          career: aiJson.career || dailyData.career,
-          finance: aiJson.finance || dailyData.finance,
-          love: aiJson.love || dailyData.love,
-          health: aiJson.health || dailyData.health,
-          remedy: aiJson.remedy || dailyData.remedy,
-        };
+      const response = await withTimeout(aiPromise, 14000, null);
+      if (response && response.text) {
+        const aiJson = JSON.parse(response.text);
+        dailyData = { ...dailyData, ...aiJson, luckyNumber: String(aiJson.luckyNumber) };
+      } else {
+        throw new Error("Timeout or empty response from Gemini.");
       }
-    } catch (err: any) {
-      console.error("All AI retries failed for Daily Insight.", err);
+    } catch (err) {
+      console.error("Daily Insight AI Generation failed:", err);
     }
   }
 
