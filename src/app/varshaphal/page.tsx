@@ -3,6 +3,7 @@ import Link from "next/link";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { fetchAIVarshaphalData } from "@/app/actions/generateVarshaphal";
 import VarshaphalDashboardView from "@/components/VarshaphalDashboardView";
+import { Suspense } from "react";
 
 export const dynamic = "force-dynamic";
 export const maxDuration = 60;
@@ -35,14 +36,16 @@ export default async function VarshaphalPage({
   }
 
   return (
-    <VarshaphalDashboardView 
-      data={data} 
-      name={name} 
-      dob={dob} 
-      tob={tob} 
-      pob={pob} 
-      targetYear={targetYear}
-    />
+    <Suspense fallback={<div className="min-h-screen bg-slate-950 flex items-center justify-center"><p className="text-yellow-500">Loading Solar Return...</p></div>}>
+      <VarshaphalDashboardView 
+        data={data} 
+        name={name} 
+        dob={dob} 
+        tob={tob} 
+        pob={pob} 
+        targetYear={targetYear}
+      />
+    </Suspense>
   );
 }
 

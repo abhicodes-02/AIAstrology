@@ -27,6 +27,18 @@ export default function VarshaphalDashboardView({
   const printRef = useRef<HTMLDivElement>(null);
 
   const [isDownloading, setIsDownloading] = useState(false);
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const [isNavigating, setIsNavigating] = useState(false);
+
+  const currentYear = new Date().getFullYear();
+  
+  const handleYearChange = (year: number) => {
+    setIsNavigating(true);
+    const params = new URLSearchParams(searchParams.toString());
+    params.set('targetYear', year.toString());
+    router.push(`?${params.toString()}`);
+  };
 
   const renderSafe = (data: any, fallback: string) => {
     if (!data) return fallback;
