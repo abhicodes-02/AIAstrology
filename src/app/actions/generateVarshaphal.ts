@@ -108,6 +108,12 @@ export async function fetchAIVarshaphalData(name: string, dob: string, tob: stri
   Generate a deeply detailed Varshaphal (Solar Return Annual Forecast) for their current year of life, incorporating transits and planetary returns.
   
   CRITICAL RULES:
+  LANGUAGE & TONE RULE (CRITICAL):
+  You MUST write the entire reading in VERY SIMPLE, EVERYDAY, EASY-TO-UNDERSTAND ENGLISH (6th-grade reading level). 
+  - DO NOT use complex vocabulary, Shakespearean words, or heavy astrological jargon (e.g., avoid words like "portends", "auspicious", "malefic", "beneficence", "trajectory", "amalgamation").
+  - Talk to the user like a friendly, modern mentor explaining things over coffee.
+  - Keep sentences short and direct.
+  
   CRITICAL REAL-WORLD CLARITY RULE (NO GENERIC ASTROLOGY FLUFF):
   Do NOT give generic, philosophical, or purely psychological planetary traits (e.g., "The Moon makes you emotional", "Jupiter brings expansion", "You will feel a shift in energy"). 
   You MUST translate every single astrological placement into STRICT, CONCRETE, REAL-WORLD EVENTS. 
