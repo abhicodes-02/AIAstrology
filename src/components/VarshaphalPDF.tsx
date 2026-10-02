@@ -139,7 +139,7 @@ const styles = StyleSheet.create({
   }
 });
 
-export const VarshaphalPDF = ({ data, name, dob, tob, pob }: any) => {
+export const VarshaphalPDF = ({ data, name, dob, tob, pob, targetYear }: any) => {
   const monthlyData = Array.isArray(data.monthlyPredictions) 
     ? data.monthlyPredictions 
     : [{ month: "Overview", prediction: typeof data.monthlyPredictions === 'string' ? data.monthlyPredictions : "Data unavailable." }];
@@ -153,7 +153,7 @@ export const VarshaphalPDF = ({ data, name, dob, tob, pob }: any) => {
         <View style={styles.pageBorder}>
           <View style={styles.headerCenter}>
             <Text style={styles.omText}>ॐ</Text>
-            <Text style={styles.mainTitle}>Varshaphal (Solar Return)</Text>
+            <Text style={styles.mainTitle}>Varshaphal {targetYear ? `(${targetYear}-${targetYear+1})` : '(Solar Return)'}</Text>
             <Text style={styles.subtitle}>Name: {name}</Text>
             <Text style={styles.subtitle}>DOB: {dob} | Time: {tob}</Text>
             <Text style={styles.subtitle}>Location: {pob}</Text>

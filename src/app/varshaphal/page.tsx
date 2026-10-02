@@ -18,10 +18,14 @@ export default async function VarshaphalPage({
   const dob = typeof params.dob === 'string' ? params.dob : '2000-01-01';
   const tob = typeof params.tob === 'string' ? params.tob : '12:00';
   const pob = typeof params.pob === 'string' ? params.pob : 'New York';
+  
+  const currentYear = new Date().getFullYear();
+  const targetYearStr = typeof params.targetYear === 'string' ? params.targetYear : String(currentYear);
+  const targetYear = parseInt(targetYearStr, 10) || currentYear;
 
   let data;
   try {
-    data = await fetchAIVarshaphalData(name, dob, tob, pob);
+    data = await fetchAIVarshaphalData(name, dob, tob, pob, targetYear);
   } catch (error) {
     console.error("Failed to load varshaphal data:", error);
     data = {
@@ -37,6 +41,7 @@ export default async function VarshaphalPage({
       dob={dob} 
       tob={tob} 
       pob={pob} 
+      targetYear={targetYear}
     />
   );
 }

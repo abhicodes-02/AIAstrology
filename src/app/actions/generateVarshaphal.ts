@@ -10,7 +10,7 @@ const withTimeout = <T>(promise: Promise<T>, ms: number, fallback: T): Promise<T
   ]);
 };
 
-export async function fetchAIVarshaphalData(name: string, dob: string, tob: string, pob: string) {
+export async function fetchAIVarshaphalData(name: string, dob: string, tob: string, pob: string, targetYear?: number) {
   // 1. Geocode the location
   let lat = 0;
   let lon = 0;

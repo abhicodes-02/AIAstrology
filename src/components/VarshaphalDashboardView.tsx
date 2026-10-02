@@ -5,6 +5,7 @@ import { Sparkles, ArrowLeft, Sun, Moon, CalendarDays, Briefcase, Heart, Star, D
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { useRef, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { toJpeg } from "html-to-image";
 
 
@@ -13,13 +14,15 @@ export default function VarshaphalDashboardView({
   name, 
   dob, 
   tob, 
-  pob 
+  pob,
+  targetYear
 }: { 
   data: any; 
   name: string; 
   dob: string; 
   tob: string; 
-  pob: string; 
+  pob: string;
+  targetYear: number;
 }) {
   const printRef = useRef<HTMLDivElement>(null);
 
