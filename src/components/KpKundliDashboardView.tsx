@@ -94,12 +94,12 @@ export default function KpKundliDashboardView({
   };
 
   const containerVariants = {
-    hidden: { opacity: 0 },
+    hidden: { opacity: 1 },
     visible: { opacity: 1, transition: { staggerChildren: 0.1 } }
   };
 
   const itemVariants = {
-    hidden: { opacity: 0, y: 20 },
+    hidden: { opacity: 1, y: 0 },
     visible: { opacity: 1, y: 0, transition: { duration: 0.6 } }
   };
 
@@ -350,12 +350,12 @@ export default function KpKundliDashboardView({
                             {chartData.dashaData.currentMahadasha.planet} <span className="text-indigo-400 font-light">&</span> {chartData.dashaData.currentAntardasha?.planet || '...'}
                           </h4>
                           <p className="text-slate-300">
-                            Mahadasha (Dasha) ends: <span className="text-white font-medium">{new Date(chartData.dashaData.currentMahadasha.end).toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}</span>
+                            Mahadasha (Dasha) ends: <span className="text-white font-medium" suppressHydrationWarning>{new Date(chartData.dashaData.currentMahadasha.end).toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}</span>
                           </p>
                         </div>
                         <div className="text-left md:text-right">
                           <p className="text-sm text-slate-400">Antardasha (Bhukti) ends</p>
-                          <p className="text-xl font-bold text-indigo-300">
+                          <p className="text-xl font-bold text-indigo-300" suppressHydrationWarning>
                             {chartData.dashaData.currentAntardasha ? new Date(chartData.dashaData.currentAntardasha.end).toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' }) : 'N/A'}
                           </p>
                         </div>
@@ -384,10 +384,10 @@ export default function KpKundliDashboardView({
                                   </div>
                                 </div>
                                 <div className="text-right">
-                                  <p className={`text-sm font-medium ${isCurrent ? 'text-indigo-300' : 'text-slate-300'}`}>
+                                  <p className={`text-sm font-medium ${isCurrent ? 'text-indigo-300' : 'text-slate-300'}`} suppressHydrationWarning>
                                     {new Date(md.start).getFullYear()} - {new Date(md.end).getFullYear()}
                                   </p>
-                                  <p className="text-xs text-slate-500">{new Date(md.start).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}</p>
+                                  <p className="text-xs text-slate-500" suppressHydrationWarning>{new Date(md.start).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}</p>
                                 </div>
                               </div>
                             );
