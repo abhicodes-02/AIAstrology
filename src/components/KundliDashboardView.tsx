@@ -319,6 +319,39 @@ export default function KundliDashboardView({
                   <p className="text-[10px] text-indigo-300/50 uppercase tracking-wider mb-0.5">Ayanamsa</p>
                   <p className="font-medium text-xs text-indigo-100">{chartData.ayanamsaVal || "Lahiri"}</p>
                 </div>
+
+                {chartData.gana && (
+                  <>
+                    <div className="bg-white/[0.02] p-3 rounded-2xl border border-emerald-500/10">
+                      <p className="text-[10px] text-emerald-300/50 uppercase tracking-wider mb-0.5">Gana</p>
+                      <p className="font-medium text-xs text-emerald-100">{chartData.gana}</p>
+                    </div>
+                    <div className="bg-white/[0.02] p-3 rounded-2xl border border-emerald-500/10">
+                      <p className="text-[10px] text-emerald-300/50 uppercase tracking-wider mb-0.5">Varna</p>
+                      <p className="font-medium text-xs text-emerald-100">{chartData.varna}</p>
+                    </div>
+                    <div className="bg-white/[0.02] p-3 rounded-2xl border border-emerald-500/10">
+                      <p className="text-[10px] text-emerald-300/50 uppercase tracking-wider mb-0.5">Yoni</p>
+                      <p className="font-medium text-xs text-emerald-100">{chartData.yoni}</p>
+                    </div>
+                    <div className="bg-white/[0.02] p-3 rounded-2xl border border-emerald-500/10">
+                      <p className="text-[10px] text-emerald-300/50 uppercase tracking-wider mb-0.5">Nadi</p>
+                      <p className="font-medium text-xs text-emerald-100">{chartData.nadi}</p>
+                    </div>
+                    <div className="bg-white/[0.02] p-3 rounded-2xl border border-emerald-500/10">
+                      <p className="text-[10px] text-emerald-300/50 uppercase tracking-wider mb-0.5">Vashya</p>
+                      <p className="font-medium text-xs text-emerald-100">{chartData.vashya}</p>
+                    </div>
+                    <div className="bg-white/[0.02] p-3 rounded-2xl border border-teal-500/10">
+                      <p className="text-[10px] text-teal-300/50 uppercase tracking-wider mb-0.5">Paya (Wealth Metal)</p>
+                      <p className="font-medium text-xs text-teal-100">{chartData.paya}</p>
+                    </div>
+                    <div className="bg-white/[0.02] p-3 rounded-2xl border border-teal-500/10">
+                      <p className="text-[10px] text-teal-300/50 uppercase tracking-wider mb-0.5">Tatva (Element)</p>
+                      <p className="font-medium text-xs text-teal-100">{chartData.tatva}</p>
+                    </div>
+                  </>
+                )}
               </div>
             </motion.div>
 
