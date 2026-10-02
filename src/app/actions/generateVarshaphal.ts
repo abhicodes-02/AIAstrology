@@ -58,6 +58,30 @@ export async function fetchAIVarshaphalData(name: string, dob: string, tob: stri
   const signs = ["Aries", "Taurus", "Gemini", "Cancer", "Leo", "Virgo", "Libra", "Scorpio", "Sagittarius", "Capricorn", "Aquarius", "Pisces"];
   const sunSign = signs[Math.floor(siderealSun / 30)];
 
+  // Natal Core Calculations for Varshaphal
+  const moonData = (chart as any).planets?.find((b: any) => b.name === "Moon");
+  const siderealMoon = moonData ? getSidereal(moonData.longitude) : 0;
+  const moonSign = signs[Math.floor(siderealMoon / 30)];
+  
+  const ascSidereal = getSidereal(chart.angles.ascendant.longitude);
+  const ascSignIdx = Math.floor(ascSidereal / 30);
+  const ascendantName = signs[ascSignIdx];
+
+  const d1Houses: Record<number, string[]> = { 1: [], 2: [], 3: [], 4: [], 5: [], 6: [], 7: [], 8: [], 9: [], 10: [], 11: [], 12: [] };
+  const planetsData = (chart as any).planets || [];
+  planetsData.forEach((planet: any) => {
+    if (["Uranus", "Neptune", "Pluto", "Chiron", "Sirius"].includes(planet.name)) return;
+    let shortName = planet.name;
+    if (planet.name === "North Node") shortName = "Rahu";
+    if (planet.name === "South Node") shortName = "Ketu";
+    
+    const pSidereal = getSidereal(planet.longitude);
+    const pSign = Math.floor(pSidereal / 30);
+    let d1House = pSign - ascSignIdx + 1;
+    if (d1House <= 0) d1House += 12;
+    d1Houses[d1House].push(shortName);
+  });
+
   let varshaphalData: any = {
     varshaphal: `[AI BUSY] Analyzing your Solar Return (Varshaphal) for the upcoming year...`,
     monthlyPredictions: [
@@ -69,7 +93,14 @@ export async function fetchAIVarshaphalData(name: string, dob: string, tob: stri
   if (process.env.GEMINI_API_KEY && process.env.GEMINI_API_KEY !== "your_gemini_api_key_here") {
     try {
       const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
-      const prompt = `Act as an expert Vedic Astrologer. A user named ${name} was born on ${dob} in ${pob}. Their Sidereal Sun is in ${sunSign}. 
+      const prompt = `Act as an expert Vedic Astrologer. A user named ${name} was born on ${dob} in ${pob}. 
+  Here is their exact Natal Chart (D-1) data:
+  - Ascendant (Lagna): ${ascendantName}
+  - Moon Sign: ${moonSign}
+  - Sun Sign: ${sunSign}
+  - Planetary Houses: ${JSON.stringify(d1Houses)}
+  
+  Calculate their current age (Current Year - Birth Year). Use this exact natal chart to map the current planetary transits over their natal houses for their current year of life. 
   Generate a deeply detailed Varshaphal (Solar Return Annual Forecast) for their current year of life, incorporating transits and planetary returns.
   
   CRITICAL RULES:

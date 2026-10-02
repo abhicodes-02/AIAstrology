@@ -205,7 +205,7 @@ Generate a deeply personalized daily reading explaining how this specific ${tran
               health: { type: "STRING" },
               remedy: { type: "STRING", description: "A practical Vedic astrological remedy" }
               },
-              required: ["cosmicScore", "theme", "prediction", "career", "love", "health", "remedy"]
+              required: ["cosmicScore", "overallFavorability", "careerFavorability", "financeFavorability", "loveFavorability", "healthFavorability", "cosmicMood", "luckyColor", "luckyNumber", "auspiciousTime", "dailySummary", "career", "finance", "love", "health", "remedy"]
             }
           }
         });
