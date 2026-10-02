@@ -93,6 +93,8 @@ export async function fetchAIVarshaphalData(name: string, dob: string, tob: stri
   if (process.env.GEMINI_API_KEY && process.env.GEMINI_API_KEY !== "your_gemini_api_key_here") {
     try {
       const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+      const yearToGenerate = targetYear || new Date().getFullYear();
+      const nextYear = yearToGenerate + 1;
       const prompt = `Act as an expert Vedic Astrologer. A user named ${name} was born on ${dob} in ${pob}. 
   Here is their exact Natal Chart (D-1) data:
   - Ascendant (Lagna): ${ascendantName}
@@ -100,9 +102,9 @@ export async function fetchAIVarshaphalData(name: string, dob: string, tob: stri
   - Sun Sign: ${sunSign}
   - Planetary Houses: ${JSON.stringify(d1Houses)}
   
-  CRITICAL TIME ANCHOR: The CURRENT REAL-TIME DATE is ${new Date().toISOString().split('T')[0]}. The current year is ${new Date().getFullYear()}.
-  You MUST generate the Varshaphal strictly starting from their birthday in the current year (${new Date().getFullYear()}) to their birthday in the next year (${new Date().getFullYear() + 1}). 
-  Calculate their exact current age (Current Year - Birth Year). Do NOT generate predictions for 2024 or 2025. You must map the planetary transits for the upcoming 12 months starting from their current solar return. 
+  CRITICAL TIME ANCHOR: The USER HAS EXPLICITLY REQUESTED THE VARSHAPHAL FOR THE YEAR ${yearToGenerate}.
+  You MUST generate the Varshaphal strictly starting from their birthday in the year ${yearToGenerate} to their birthday in the year ${nextYear}. 
+  Calculate their exact age for the year ${yearToGenerate} (${yearToGenerate} - Birth Year). Do NOT generate predictions for any other years. You must map the planetary transits for the 12 months starting from their solar return in ${yearToGenerate}. 
   Generate a deeply detailed Varshaphal (Solar Return Annual Forecast) for their current year of life, incorporating transits and planetary returns.
   
   CRITICAL RULES:
