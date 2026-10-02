@@ -72,10 +72,25 @@ export async function fetchAIVarshaphalData(name: string, dob: string, tob: stri
       const prompt = `Act as an expert Vedic Astrologer. A user named ${name} was born on ${dob} in ${pob}. Their Sidereal Sun is in ${sunSign}. 
 Generate a deeply detailed Varshaphal (Solar Return Annual Forecast) for their current year of life, incorporating transits and planetary returns.`;
       
-      const aiPromise = ai.models.generateContent({
-        model: "gemini-2.5-flash", // Fast, accurate, real model
-        contents: prompt,
-        config: { 
+      const fallbackModels = [
+          "gemini-3.8-flash",
+          "gemini-3.7-flash",
+          "gemini-3.6-flash",
+          "gemini-3.5-flash",
+          "gemini-3-flash",
+          "gemini-2.5-flash",
+          "gemini-3.5-flash-lite",
+          "gemini-3.1-flash-lite",
+          "gemini-flash-lite-latest"
+        ];
+        
+        let aiJson = null;
+        for (const modelName of fallbackModels) {
+          try {
+            const aiPromise = ai.models.generateContent({
+              model: modelName,
+              contents: prompt,
+              config: { 
           temperature: 0.2,
           responseMimeType: "application/json",
           // Forcing 100% Valid JSON Structure for 12 months
@@ -93,24 +108,32 @@ Generate a deeply detailed Varshaphal (Solar Return Annual Forecast) for their c
                     prediction: { type: "STRING", description: "Detailed transit impact for this month" },
                     career: { type: "STRING" },
                     relationships: { type: "STRING" }
-                  },
-                  required: ["month", "theme", "prediction", "career", "relationships"]
+                    },
+                    required: ["month", "theme", "prediction", "career", "relationships"]
+                  }
                 }
-              }
-            },
-            required: ["varshaphal", "monthlyPredictions"]
+              },
+              required: ["varshaphal", "monthlyPredictions"]
+            }
+          }
+        });
+            
+            const response = await withTimeout(aiPromise, 14000, null);
+            if (response && response.text) {
+              aiJson = JSON.parse(response.text);
+              break;
+            }
+          } catch (err: any) {
+            console.warn(`[Model ${modelName}] failed. Trying next...`);
           }
         }
-      });
 
-      const response = await withTimeout(aiPromise, 14000, null);
-      if (response && response.text) {
-        const aiJson = JSON.parse(response.text);
-        varshaphalData.varshaphal = aiJson.varshaphal;
+        if (aiJson) {
+          varshaphalData.varshaphal = aiJson.varshaphal;
         varshaphalData.monthlyPredictions = aiJson.monthlyPredictions;
-      } else {
-        throw new Error("Timeout or empty response from Gemini.");
-      }
+        } else {
+          throw new Error("All fallback AI models failed or timed out.");
+        }
     } catch (err: any) {
       console.error("Varshaphal AI Generation failed:", err);
       varshaphalData.varshaphal = `[AI ERROR] The AI generation failed: ${err?.message || 'Unknown error'}. Please try again later.`;

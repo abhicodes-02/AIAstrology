@@ -255,10 +255,25 @@ CRITICAL RULES:
 2. For any AGE mentioned, mathematically calculate the exact year as (${year} + Age).
 3. Do NOT include doshas in the JSON (we calculate that via pure math).`;
       
-      const aiPromise = ai.models.generateContent({
-        model: "gemini-2.5-flash", // Strictly using the real, fast model
-        contents: prompt,
-        config: { 
+      const fallbackModels = [
+          "gemini-3.8-flash",
+          "gemini-3.7-flash",
+          "gemini-3.6-flash",
+          "gemini-3.5-flash",
+          "gemini-3-flash",
+          "gemini-2.5-flash",
+          "gemini-3.5-flash-lite",
+          "gemini-3.1-flash-lite",
+          "gemini-flash-lite-latest"
+        ];
+        
+        let aiJson = null;
+        for (const modelName of fallbackModels) {
+          try {
+            const aiPromise = ai.models.generateContent({
+              model: modelName,
+              contents: prompt,
+              config: { 
           temperature: 0.2, 
           responseMimeType: "application/json",
           // Forcing 100% Valid JSON Structure
@@ -271,25 +286,32 @@ CRITICAL RULES:
               health: { type: "STRING", description: "Unvarnished health vulnerabilities." },
               wealth: { type: "STRING", description: "Realistic financial blueprint and drains." },
               fullLife: { type: "STRING", description: "Ultimate life path and major Dasha turning points." }
-            },
-            required: ["reading", "career", "relationships", "health", "wealth", "fullLife"]
+              },
+              required: ["reading", "career", "relationships", "health", "wealth", "fullLife"]
+            }
+          }
+        });
+            
+            const response = await withTimeout(aiPromise, 14000, null);
+            if (response && response.text) {
+              aiJson = JSON.parse(response.text);
+              break;
+            }
+          } catch (err: any) {
+            console.warn(`[Model ${modelName}] failed. Trying next...`);
           }
         }
-      });
 
-      const response = await withTimeout(aiPromise, 14000, null);
-
-      if (response && response.text) {
-        const aiJson = JSON.parse(response.text);
-        chartData.reading = aiJson.reading;
+        if (aiJson) {
+          chartData.reading = aiJson.reading;
         chartData.career = aiJson.career;
         chartData.relationships = aiJson.relationships;
         chartData.health = aiJson.health;
         chartData.wealth = aiJson.wealth;
         chartData.fullLife = aiJson.fullLife;
-      } else {
-        throw new Error("Timeout or empty response from Gemini.");
-      }
+        } else {
+          throw new Error("All fallback AI models failed or timed out.");
+        }
     } catch (err: any) {
       console.error("AI Generation failed:", err);
       chartData.reading = `[AI ERROR] Failed during API call: ${err?.message || 'Unknown error'}.`;

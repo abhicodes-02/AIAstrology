@@ -193,10 +193,25 @@ Analyze this exact KP Chart for ${name} born in ${year}:
 
 Apply STRICT KP Rules. Do NOT invent dates that don't match the formula (Birth Year + Age = Event Year).`;
 
-      const aiPromise = ai.models.generateContent({
-        model: "gemini-2.5-flash", // Strictly using the real, fast model
-        contents: prompt,
-        config: {
+      const fallbackModels = [
+          "gemini-3.8-flash",
+          "gemini-3.7-flash",
+          "gemini-3.6-flash",
+          "gemini-3.5-flash",
+          "gemini-3-flash",
+          "gemini-2.5-flash",
+          "gemini-3.5-flash-lite",
+          "gemini-3.1-flash-lite",
+          "gemini-flash-lite-latest"
+        ];
+        
+        let aiJson = null;
+        for (const modelName of fallbackModels) {
+          try {
+            const aiPromise = ai.models.generateContent({
+              model: modelName,
+              contents: prompt,
+              config: {
           temperature: 0.2,
           responseMimeType: "application/json",
           // Forcing 100% Valid JSON Structure
@@ -212,18 +227,27 @@ Apply STRICT KP Rules. Do NOT invent dates that don't match the formula (Birth Y
               health: { type: "STRING" },
               fullLife: { type: "STRING" },
               breakthroughs: { type: "STRING" }
-            },
-            required: ["reading", "education", "family", "career", "wealth", "relationships", "health", "fullLife", "breakthroughs"]
+              },
+              required: ["reading", "education", "family", "career", "wealth", "relationships", "health", "fullLife", "breakthroughs"]
+            }
+          }
+        });
+            
+            const response = await withTimeout(aiPromise, 14000, null);
+            if (response && response.text) {
+              aiJson = JSON.parse(response.text);
+              break;
+            }
+          } catch (err: any) {
+            console.warn(`[Model ${modelName}] failed. Trying next...`);
           }
         }
-      });
 
-      const response = await withTimeout(aiPromise, 14000, null);
-      if (response && response.text) {
-        readingData = { ...readingData, ...JSON.parse(response.text) };
-      } else {
-        throw new Error("Timeout or empty response from Gemini.");
-      }
+        if (aiJson) {
+          readingData = { ...readingData, ...aiJson };
+        } else {
+          throw new Error("All fallback AI models failed or timed out.");
+        }
     } catch (err) {
       console.error("KP AI Generation completely failed:", err);
     }

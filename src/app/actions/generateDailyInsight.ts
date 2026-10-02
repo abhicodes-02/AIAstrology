@@ -155,10 +155,25 @@ export async function fetchAIDailyInsightData(
 
 Generate a deeply personalized daily reading explaining how this specific ${transitHouseFromMoon}th house transit impacts their day.`;
 
-      const aiPromise = ai.models.generateContent({
-        model: "gemini-2.5-flash", // Fast, accurate, real model
-        contents: prompt,
-        config: {
+      const fallbackModels = [
+          "gemini-3.8-flash",
+          "gemini-3.7-flash",
+          "gemini-3.6-flash",
+          "gemini-3.5-flash",
+          "gemini-3-flash",
+          "gemini-2.5-flash",
+          "gemini-3.5-flash-lite",
+          "gemini-3.1-flash-lite",
+          "gemini-flash-lite-latest"
+        ];
+        
+        let aiJson = null;
+        for (const modelName of fallbackModels) {
+          try {
+            const aiPromise = ai.models.generateContent({
+              model: modelName,
+              contents: prompt,
+              config: {
           temperature: 0.2,
           responseMimeType: "application/json",
           // Forcing 100% Valid JSON Structure
@@ -181,19 +196,27 @@ Generate a deeply personalized daily reading explaining how this specific ${tran
               love: { type: "STRING" },
               health: { type: "STRING" },
               remedy: { type: "STRING", description: "A practical Vedic astrological remedy" }
-            },
-            required: ["cosmicScore", "overallFavorability", "careerFavorability", "financeFavorability", "loveFavorability", "healthFavorability", "cosmicMood", "luckyColor", "luckyNumber", "auspiciousTime", "dailySummary", "career", "finance", "love", "health", "remedy"]
+              },
+              required: ["cosmicScore", "theme", "prediction", "career", "love", "health", "remedy"]
+            }
+          }
+        });
+            
+            const response = await withTimeout(aiPromise, 14000, null);
+            if (response && response.text) {
+              aiJson = JSON.parse(response.text);
+              break;
+            }
+          } catch (err: any) {
+            console.warn(`[Model ${modelName}] failed. Trying next...`);
           }
         }
-      });
 
-      const response = await withTimeout(aiPromise, 14000, null);
-      if (response && response.text) {
-        const aiJson = JSON.parse(response.text);
-        dailyData = { ...dailyData, ...aiJson, luckyNumber: String(aiJson.luckyNumber) };
-      } else {
-        throw new Error("Timeout or empty response from Gemini.");
-      }
+        if (aiJson) {
+          dailyData = { ...dailyData, ...aiJson, luckyNumber: String(aiJson.luckyNumber) };
+        } else {
+          throw new Error("All fallback AI models failed or timed out.");
+        }
     } catch (err) {
       console.error("Daily Insight AI Generation failed:", err);
     }
