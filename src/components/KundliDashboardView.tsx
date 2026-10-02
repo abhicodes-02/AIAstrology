@@ -7,7 +7,6 @@ import EastIndianChart from "@/components/EastIndianChart";
 import { Button } from "@/components/ui/button";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { useRef, useState } from "react";
-import { toJpeg } from "html-to-image";
 
 
 export default function KundliDashboardView({ 
@@ -50,8 +49,6 @@ export default function KundliDashboardView({
       let d1Image = null;
       let d9Image = null;
 
-      if (d1El) d1Image = await toJpeg(d1El, { quality: 1, backgroundColor: '#FFFCF5' });
-      if (d9El) d9Image = await toJpeg(d9El, { quality: 1, backgroundColor: '#FFFCF5' });
 
       // Dynamically import react-pdf to avoid SSR issues
       const { pdf } = await import('@react-pdf/renderer');
@@ -571,27 +568,7 @@ export default function KundliDashboardView({
         </motion.div>
       </div>
 
-      {/* Hidden Light Theme Charts for PDF Capture */}
-      <div style={{ position: 'absolute', left: '-9999px', top: '-9999px' }}>
-        <div id="d1-chart-pdf" style={{ width: '600px', height: '600px', backgroundColor: '#FFFCF5' }}>
-          <EastIndianChart 
-            planets={d1Planets} 
-            cusps={[]} 
-            centerTitle="Lagna 1" 
-            showOm={true} 
-            theme="light"
-          />
-        </div>
-        <div id="d9-chart-pdf" style={{ width: '600px', height: '600px', backgroundColor: '#FFFCF5' }}>
-          <EastIndianChart 
-            planets={d9Planets} 
-            cusps={[]} 
-            centerTitle="Navamsa 9" 
-            showOm={true} 
-            theme="light"
-          />
-        </div>
-      </div>
+
     </div>
   );
 }
