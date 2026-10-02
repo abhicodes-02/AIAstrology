@@ -196,7 +196,8 @@ export async function fetchAIKpKundliData(name: string, dob: string, tob: string
   2. STRICT BREAKTHROUGHS MATHEMATICS: You MUST NOT hallucinate random ages for breakthroughs. Breakthroughs ONLY happen at the exact Vedic Planetary Maturity Age of the 10th CSL (Career), 11th CSL (Gains), and Ascendant CSL. 
      Use EXACTLY this table: Jupiter=16, Sun=22, Moon=24, Venus=25, Mars=28, Mercury=32, Saturn=36, Rahu=42, Ketu=48. 
      Calculate Event Year = (Birth Year + Maturity Age).
-  3. MASSIVE DETAIL: Write at least 300 words for EVERY SINGLE FIELD (including breakthroughs). Tie the maturity ages to the specific psychological and material fruits of those sub-lords.`;
+  3. MASSIVE DETAIL: Write at least 300 words for EVERY SINGLE FIELD (including breakthroughs). Tie the maturity ages to the specific psychological and material fruits of those sub-lords.
+  4. LIST FORMAT FOR BREAKTHROUGHS: You MUST format the Major Breakthroughs section strictly as a bulleted or numbered list. For each major life event, clearly state the Exact Year, the Planetary Trigger, and provide a highly detailed, extensive explanation of what will happen and why.`;
 
       const fallbackModels = [
           "gemini-3.5-flash-lite",
