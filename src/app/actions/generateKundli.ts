@@ -3,6 +3,7 @@
 import * as celestine from "celestine";
 import { GoogleGenAI, Type } from "@google/genai";
 import { getAccurateTimezone } from "@/lib/geoUtils";
+import { calculateVimshottariDasha } from "@/lib/dasha";
 
 const withTimeout = <T>(promise: Promise<T>, ms: number, fallback: T): Promise<T> => {
   return Promise.race([
@@ -247,8 +248,15 @@ export async function fetchAIKundliData(name: string, dob: string, tob: string, 
       degreeStr: degreeStr
     };
   });
-  const chartData = {
+  
+    const dashaData = calculateVimshottariDasha(siderealMoon, dob);
+    const dashaContext = dashaData.currentMahadasha ? 
+      `Currently running Mahadasha: ${dashaData.currentMahadasha.planet} (Ends: ${dashaData.currentMahadasha.end}). Currently running Antardasha: ${dashaData.currentAntardasha?.planet} (Ends: ${dashaData.currentAntardasha?.end}).` : 
+      'Dasha timeline completed.';
+      
+    const chartData = {
     planetsData: processedPlanetsData,
+      dashaData: dashaData,
     lagnaDegreeStr: `${Math.floor(ascSidereal % 30)}°`,
     d1AscSignIndex: ascSign + 1,
     d9AscSignIndex: ascNavamsaSign + 1,
