@@ -228,7 +228,7 @@ export async function fetchAIKundliData(name: string, dob: string, tob: string, 
 
       // 2. Jupiter aspect (simplification: if Jupiter is in same house, 5th, 7th, 9th from it)
       const jupObj = chart.planets.find((p: any) => p.name === "Jupiter");
-      if (jupObj) {
+      if (jupObj && marsObj) {
         const jupSign = Math.floor(getSidereal(jupObj.longitude) / 30);
         const marsSign = Math.floor(getSidereal(marsObj.longitude) / 30);
         let dist = (marsSign - jupSign + 12) % 12; // distance in signs
