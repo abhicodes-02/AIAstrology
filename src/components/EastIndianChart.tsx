@@ -26,6 +26,7 @@ interface EastIndianChartProps {
   centerSubtitle?: string;
   showOm?: boolean;
   isKp?: boolean;
+  theme?: 'dark' | 'light';
 }
 
 const EastIndianChart: React.FC<EastIndianChartProps> = ({ 
@@ -36,7 +37,8 @@ const EastIndianChart: React.FC<EastIndianChartProps> = ({
   centerTitle,
   centerSubtitle,
   showOm = false,
-  isKp = false
+  isKp = false,
+  theme = 'dark'
 }) => {
   const u = 100;
   const size = 300;
@@ -86,27 +88,27 @@ const EastIndianChart: React.FC<EastIndianChartProps> = ({
               
               {/* Ascendant Marker (Vedic) */}
               {!isKp && sign.id === lagnaSignIndex && (
-                <text x={sign.cx} y={sign.cy - 16} textAnchor="middle" className="fill-amber-400 text-[12px] font-bold" stroke="none">
+                <text x={sign.cx} y={sign.cy - 16} textAnchor="middle" className={theme === "light" ? "fill-red-700 text-[12px] font-bold" : "fill-amber-400 text-[12px] font-bold"} stroke="none">
                   Asc
                 </text>
               )}
               
               {/* KP Cusps */}
               {isKp && signCusps.map((cusp, idx) => (
-                <text key={`cusp-${idx}`} x={sign.cx} y={sign.cy - 12 + (idx * 10)} textAnchor="middle" className="fill-red-400/80 text-[10px] font-bold tracking-wider" stroke="none">
+                <text key={`cusp-${idx}`} x={sign.cx} y={sign.cy - 12 + (idx * 10)} textAnchor="middle" className={theme === "light" ? "fill-red-600 text-[10px] font-bold tracking-wider" : "fill-red-400/80 text-[10px] font-bold tracking-wider"} stroke="none">
                   {romanNumerals[cusp.houseNumber]}
                 </text>
               ))}
               
               {/* Planets */}
               {signPlanets.length > 0 && (
-                <text x={sign.cx} y={sign.cy + ((!isKp && sign.id === lagnaSignIndex) || (isKp && signCusps.length > 0) ? 6 : -4)} textAnchor="middle" className={`${isKp ? 'fill-blue-300' : 'fill-indigo-100'} text-[14px] font-bold tracking-wide`} stroke="none">
+                <text x={sign.cx} y={sign.cy + ((!isKp && sign.id === lagnaSignIndex) || (isKp && signCusps.length > 0) ? 6 : -4)} textAnchor="middle" className={theme === "light" ? "fill-black text-[14px] font-bold tracking-wide" : `${isKp ? "fill-blue-300" : "fill-indigo-100"} text-[14px] font-bold tracking-wide`} stroke="none">
                   {signPlanets.map(p => `${p.name.substring(0,2)}${p.isRetrograde ? "(R)" : ""}`.trim()).join(" ")}
                 </text>
               )}
 
               {/* Sign Number */}
-              <text x={sign.cx} y={sign.cy + 22} textAnchor="middle" className="fill-amber-600/50 text-[9px]" stroke="none">
+              <text x={sign.cx} y={sign.cy + 22} textAnchor="middle" className={theme === "light" ? "fill-red-800/60 text-[9px]" : "fill-amber-600/50 text-[9px]"} stroke="none">
                 {sign.id}
               </text>
             </g>
@@ -128,13 +130,13 @@ const EastIndianChart: React.FC<EastIndianChartProps> = ({
 
         {/* Center Box Info */}
         {showOm && (
-          <text x={1.5*u} y={1.45*u} textAnchor="middle" className="fill-amber-600 text-[32px] font-serif" stroke="none">ॐ</text>
+          <text x={1.5*u} y={1.45*u} textAnchor="middle" className={theme === "light" ? "fill-red-700 text-[32px] font-serif" : "fill-amber-600 text-[32px] font-serif"} stroke="none">ॐ</text>
         )}
         {centerTitle && (
-          <text x={1.5*u} y={showOm ? 1.7*u : 1.45*u} textAnchor="middle" className="fill-amber-300 text-[12px] font-bold uppercase" stroke="none">{centerTitle}</text>
+          <text x={1.5*u} y={showOm ? 1.7*u : 1.45*u} textAnchor="middle" className={theme === "light" ? "fill-red-800 text-[12px] font-bold uppercase" : "fill-amber-300 text-[12px] font-bold uppercase"} stroke="none">{centerTitle}</text>
         )}
         {centerSubtitle && (
-          <text x={1.5*u} y={showOm ? 1.85*u : 1.65*u} textAnchor="middle" className="fill-indigo-300 text-[10px] font-medium uppercase" stroke="none">{centerSubtitle}</text>
+          <text x={1.5*u} y={showOm ? 1.85*u : 1.65*u} textAnchor="middle" className={theme === "light" ? "fill-black text-[10px] font-medium uppercase" : "fill-indigo-300 text-[10px] font-medium uppercase"} stroke="none">{centerSubtitle}</text>
         )}
       </motion.svg>
     </div>

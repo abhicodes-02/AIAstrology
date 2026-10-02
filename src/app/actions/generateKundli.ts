@@ -149,6 +149,8 @@ export async function fetchAIKundliData(name: string, dob: string, tob: string, 
     d9Houses[d9House].push(shortName + (planet.isRetrograde ? "Rx" : ""));
 
     planetsData.push({
+      name: name,
+      longitude: planet.longitude,
       shortName,
       d1SignIndex: pSign + 1,
       d9SignIndex: pNavamsaSign + 1,
