@@ -193,12 +193,20 @@ export async function fetchAIKpKundliData(name: string, dob: string, tob: string
   
     CRITICAL RULES FOR ZERO VARIANCE:
   1. INDEPENDENT HOUSES: If a house is empty and its lord is untenanted, it is extremely powerful.
-  2. STRICT BREAKTHROUGHS MATHEMATICS: You MUST NOT hallucinate random ages for breakthroughs. Breakthroughs ONLY happen at the exact Vedic Planetary Maturity Age of the CSLs (Sub-Lords) for the 1st, 2nd, 5th, 7th, 9th, 10th, and 11th houses. 
-     Use EXACTLY this table: Jupiter=16, Sun=22, Moon=24, Venus=25, Mars=28, Mercury=32, Saturn=36, Rahu=42, Ketu=48. 
-     Calculate Event Year = (Birth Year + Maturity Age). 
-     CRITICAL: You MUST list ALL positive breakthroughs in chronological order, especially focusing on the ones occurring in their 20s (Ages 22, 24, 25, 28) if those planets rule the mentioned houses.
+  2. STRICT BREAKTHROUGHS MATHEMATICS: You MUST NOT perform any math or calculations yourself. Breakthroughs ONLY happen at the exact Vedic Planetary Maturity Age of the CSLs (Sub-Lords) for the 1st, 2nd, 5th, 7th, 9th, 10th, and 11th houses. 
+     You MUST use EXACTLY this pre-calculated table for the breakthrough years based on the birth year:
+     - Jupiter: Year ${year + 16} (Age 16)
+     - Sun: Year ${year + 22} (Age 22)
+     - Moon: Year ${year + 24} (Age 24)
+     - Venus: Year ${year + 25} (Age 25)
+     - Mars: Year ${year + 28} (Age 28)
+     - Mercury: Year ${year + 32} (Age 32)
+     - Saturn: Year ${year + 36} (Age 36)
+     - Rahu: Year ${year + 42} (Age 42)
+     - Ketu: Year ${year + 48} (Age 48)
+     CRITICAL: Just copy the Exact Year from the table above. Do not show your math. You MUST list ALL positive breakthroughs in chronological order, especially focusing on the ones occurring in their 20s if those planets rule the mentioned houses.
   3. MASSIVE DETAIL: Write at least 300 words for EVERY SINGLE FIELD (including breakthroughs). Tie the maturity ages to the specific psychological and material fruits of those sub-lords.
-  4. LIST FORMAT FOR BREAKTHROUGHS: You MUST format the Major Breakthroughs section strictly as a bulleted or numbered list. For each major life event, clearly state the Exact Year, the Planetary Trigger, and provide a highly detailed, extensive explanation of what will happen and why.`;
+  4. LIST FORMAT FOR BREAKTHROUGHS: You MUST format the Major Breakthroughs section strictly as a bulleted or numbered list. For each major life event, clearly state the Exact Year, the Planetary Trigger, and provide a highly detailed, extensive explanation of what will happen and why without ever showing your math.`;
 
       const fallbackModels = [
           "gemini-3.5-flash-lite",
