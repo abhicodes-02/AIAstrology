@@ -74,7 +74,8 @@ export async function fetchAIVarshaphalData(name: string, dob: string, tob: stri
   
   CRITICAL RULES:
   1. MASSIVE DETAIL REQUIRED: For the overall yearly prediction and EVERY SINGLE MONTH, you MUST write at least 150-200 words per section.
-  2. Dive deeply into the transit dynamics, psychological shifts, career hurdles, and relationship developments for each month.`;
+  2. Dive deeply into the transit dynamics, psychological shifts, career hurdles, and relationship developments for each month.
+  3. FORMATTING: You MUST use double line breaks (\n\n) between paragraphs to format your text beautifully. Avoid giant walls of text.`;
       
       const fallbackModels = [
           "gemini-3.5-flash-lite",

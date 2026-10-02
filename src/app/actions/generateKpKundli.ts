@@ -206,7 +206,7 @@ export async function fetchAIKpKundliData(name: string, dob: string, tob: string
      - Ketu: Year ${year + 48} (Age 48)
      CRITICAL: Just copy the Exact Year from the table above. Do not show your math. You MUST list ALL positive breakthroughs in chronological order, especially focusing on the ones occurring in their 20s if those planets rule the mentioned houses.
   3. MASSIVE DETAIL: Write at least 300 words for EVERY SINGLE FIELD (including breakthroughs). Tie the maturity ages to the specific psychological and material fruits of those sub-lords.
-  4. LIST FORMAT FOR BREAKTHROUGHS: You MUST format the Major Breakthroughs section strictly as a bulleted or numbered list. For each major life event, clearly state the Exact Year, the Planetary Trigger, and provide a highly detailed, extensive explanation of what will happen and why without ever showing your math.`;
+  4. LIST FORMAT FOR BREAKTHROUGHS: You MUST format the Major Breakthroughs section strictly as a bulleted or numbered list. CRITICAL: You MUST separate each list item with double line breaks (\n\n) so they are physically separated on different lines. Do not combine them into a single paragraph. For each major life event, clearly state the Exact Year, the Planetary Trigger, and provide a highly detailed, extensive explanation of what will happen and why without ever showing your math.`;
 
       const fallbackModels = [
           "gemini-3.5-flash-lite",
