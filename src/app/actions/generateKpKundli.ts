@@ -289,9 +289,10 @@ export async function fetchAIKpKundliData(name: string, dob: string, tob: string
               relationships: { type: "STRING" },
               health: { type: "STRING" },
               fullLife: { type: "STRING" },
-              breakthroughs: { type: "STRING" }
+              breakthroughs: { type: "STRING" },
+              physicalAppearance: { type: "STRING", description: "Detailed physical appearance and bodily persona based on 1st CSL." }
               },
-              required: ["reading", "education", "family", "career", "wealth", "relationships", "health", "fullLife", "breakthroughs"]
+              required: ["reading", "education", "family", "career", "wealth", "relationships", "health", "fullLife", "breakthroughs", "physicalAppearance"]
             }
           }
         });
