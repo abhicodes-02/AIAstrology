@@ -281,8 +281,6 @@ export function buildKpSignificators(
   planetSignificators: KpSignificatorRow[];
   houseSignificators: KpHouseSignificator[];
 } {
-  // 1. Determine which houses are owned by which planet
-  // In KP, a planet owns a house if its sign is at the beginning of the cusp
   const housesOwnedByPlanet: Record<string, number[]> = {
     Sun: [], Moon: [], Mars: [], Mercury: [], Jupiter: [], Venus: [], Saturn: [], Rahu: [], Ketu: []
   };
@@ -294,60 +292,73 @@ export function buildKpSignificators(
     }
   });
 
-  // Map planet by name for fast lookup
   const planetMap = new Map<string, KpPlanet>();
   planets.forEach(p => planetMap.set(p.name, p));
+
+  // --- KP NODE AGENCY LOGIC ---
+  // Rahu and Ketu steal the house ownership (Level C/D) of their Sign Lord and conjunct planets
+  const getAgentHouses = (nodeName: string): number[] => {
+    const node = planetMap.get(nodeName);
+    if (!node) return [];
+    let stolenHouses = new Set<number>();
+    
+    // 1. Sign Lord Agency
+    if (node.signLord && housesOwnedByPlanet[node.signLord]) {
+      housesOwnedByPlanet[node.signLord].forEach(h => stolenHouses.add(h));
+    }
+    
+    // 2. Conjunction Agency (Planets in same sign)
+    planets.forEach(p => {
+      if (p.name !== nodeName && p.name !== "Rahu" && p.name !== "Ketu" && p.signIndex === node.signIndex) {
+        if (housesOwnedByPlanet[p.name]) {
+          housesOwnedByPlanet[p.name].forEach(h => stolenHouses.add(h));
+        }
+      }
+    });
+    
+    return Array.from(stolenHouses).sort((a, b) => a - b);
+  };
+
+  housesOwnedByPlanet["Rahu"] = getAgentHouses("Rahu");
+  housesOwnedByPlanet["Ketu"] = getAgentHouses("Ketu");
+  // -----------------------------
 
   const planetSignificators: KpSignificatorRow[] = [];
 
   for (const p of planets) {
     const starLordPlanet = planetMap.get(p.starLord);
 
-    // Level A: House occupied by star lord
     const levelA: number[] = starLordPlanet ? [starLordPlanet.houseOccupied] : [];
-
-    // Level B: House occupied by planet itself
     const levelB: number[] = [p.houseOccupied];
-
-    // Level C: Houses owned by star lord
     const levelC: number[] = housesOwnedByPlanet[p.starLord] ? [...housesOwnedByPlanet[p.starLord]] : [];
-
-    // Level D: Houses owned by planet itself
     const levelD: number[] = housesOwnedByPlanet[p.name] ? [...housesOwnedByPlanet[p.name]] : [];
 
     planetSignificators.push({
       planet: p.name,
-      levelA,
-      levelB,
-      levelC,
-      levelD
+      levelA: Array.from(new Set(levelA)),
+      levelB: Array.from(new Set(levelB)),
+      levelC: Array.from(new Set(levelC)),
+      levelD: Array.from(new Set(levelD))
     });
   }
 
-  // Build House Significator table (Inverted view)
   const houseSignificators: KpHouseSignificator[] = [];
+  for (let i = 1; i <= 12; i++) {
+    const sigForHouse: KpHouseSignificator = {
+      house: i, planetsInStarOfOccupants: [], occupants: [], planetsInStarOfLords: [], houseLord: []
+    };
 
-  for (let h = 1; h <= 12; h++) {
-    const levelAPlanets: string[] = [];
-    const levelBPlanets: string[] = [];
-    const levelCPlanets: string[] = [];
-    const levelDPlanets: string[] = [];
-
-    planetSignificators.forEach(sig => {
-      if (sig.levelA.includes(h)) levelAPlanets.push(sig.planet);
-      if (sig.levelB.includes(h)) levelBPlanets.push(sig.planet);
-      if (sig.levelC.includes(h)) levelCPlanets.push(sig.planet);
-      if (sig.levelD.includes(h)) levelDPlanets.push(sig.planet);
+    planetSignificators.forEach(ps => {
+      if (ps.levelA.includes(i)) sigForHouse.planetsInStarOfOccupants.push(ps.planet);
+      if (ps.levelB.includes(i)) sigForHouse.occupants.push(ps.planet);
+      if (ps.levelC.includes(i)) sigForHouse.planetsInStarOfLords.push(ps.planet);
+      if (ps.levelD.includes(i)) sigForHouse.houseLord.push(ps.planet);
     });
 
-    houseSignificators.push({
-      house: h,
-      planetsInStarOfOccupants: Array.from(new Set(levelAPlanets)),
-      occupants: Array.from(new Set(levelBPlanets)),
-      planetsInStarOfLords: Array.from(new Set(levelCPlanets)),
-      houseLord: Array.from(new Set(levelDPlanets))
-    });
+    houseSignificators.push(sigForHouse);
   }
 
   return { planetSignificators, houseSignificators };
 }
+
+
