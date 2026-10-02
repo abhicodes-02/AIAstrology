@@ -477,6 +477,79 @@ export default function KundliDashboardView({
                 </p>
               </div>
             </motion.div>
+              {/* VIMSHOTTARI DASHA TIMELINE */}
+              {chartData.dashaData && (
+                <motion.div variants={itemVariants} className="mb-12 bg-white/[0.02] border border-white/5 rounded-3xl p-6 md:p-10 backdrop-blur-2xl shadow-2xl relative overflow-hidden group">
+                  <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/5 to-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                  
+                  <div className="flex items-center gap-4 mb-8">
+                    <div className="w-12 h-12 rounded-xl bg-indigo-500/20 flex items-center justify-center border border-indigo-500/30">
+                      <Calendar className="w-6 h-6 text-indigo-400" />
+                    </div>
+                    <div>
+                      <h3 className="text-2xl font-space font-semibold tracking-wide text-indigo-100">Vimshottari Dasha</h3>
+                      <p className="text-slate-400 mt-1">120-Year Planetary Timeline</p>
+                    </div>
+                  </div>
+
+                  {chartData.dashaData.currentMahadasha ? (
+                    <div className="bg-white/[0.03] rounded-2xl p-6 border border-indigo-500/20 mb-8 relative overflow-hidden">
+                      <p className="text-sm text-indigo-300 font-medium tracking-wide uppercase mb-2">Currently Running</p>
+                      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
+                        <div>
+                          <h4 className="text-3xl md:text-4xl font-bold text-white mb-2">
+                            {chartData.dashaData.currentMahadasha.planet} <span className="text-indigo-400 font-light">&</span> {chartData.dashaData.currentAntardasha?.planet || '...'}
+                          </h4>
+                          <p className="text-slate-300">
+                            Mahadasha ends: <span className="text-white font-medium">{new Date(chartData.dashaData.currentMahadasha.end).toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}</span>
+                          </p>
+                        </div>
+                        <div className="text-left md:text-right">
+                          <p className="text-sm text-slate-400">Current Antardasha ends</p>
+                          <p className="text-xl font-bold text-indigo-300">
+                            {chartData.dashaData.currentAntardasha ? new Date(chartData.dashaData.currentAntardasha.end).toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' }) : 'N/A'}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  ) : null}
+
+                  <Accordion className="w-full space-y-4">
+                    <AccordionItem value="timeline" className="border-white/10">
+                      <AccordionTrigger className="text-indigo-200 hover:text-white hover:no-underline">
+                        View Full 120-Year Mahadasha Timeline
+                      </AccordionTrigger>
+                      <AccordionContent>
+                        <div className="pt-4 grid gap-3">
+                          {chartData.dashaData.mahadashas.map((md: any, idx: number) => {
+                            const isCurrent = chartData.dashaData.currentMahadasha?.planet === md.planet;
+                            return (
+                              <div key={idx} className={`flex items-center justify-between p-4 rounded-xl border ${isCurrent ? 'bg-indigo-500/20 border-indigo-500/50' : 'bg-white/5 border-white/5'}`}>
+                                <div className="flex items-center gap-4">
+                                  <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-lg ${isCurrent ? 'bg-indigo-500 text-white' : 'bg-slate-800 text-slate-400'}`}>
+                                    {md.planet.substring(0, 2)}
+                                  </div>
+                                  <div>
+                                    <h5 className={`font-bold text-lg ${isCurrent ? 'text-indigo-200' : 'text-slate-200'}`}>{md.planet} Mahadasha</h5>
+                                    <p className="text-xs text-slate-400">{md.duration} Years</p>
+                                  </div>
+                                </div>
+                                <div className="text-right">
+                                  <p className={`text-sm font-medium ${isCurrent ? 'text-indigo-300' : 'text-slate-300'}`}>
+                                    {new Date(md.start).getFullYear()} - {new Date(md.end).getFullYear()}
+                                  </p>
+                                  <p className="text-xs text-slate-500">{new Date(md.start).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}</p>
+                                </div>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </AccordionContent>
+                    </AccordionItem>
+                  </Accordion>
+                </motion.div>
+              )}
+
 
             {/* Massive Collapsable Sections for Life Areas */}
             <motion.div variants={itemVariants} className="bg-white/[0.02] border border-white/5 rounded-3xl p-6 md:p-8 backdrop-blur-2xl shadow-2xl">

@@ -29,7 +29,7 @@ export async function fetchAIKpKundliData(name: string, dob: string, tob: string
   let lon = 88.3639;
   let countryCode = "in";
   try {
-    const geoRes = await fetch(`[https://nominatim.openstreetmap.org/search?q=$](https://nominatim.openstreetmap.org/search?q=$){encodeURIComponent(pob)}&format=json&limit=1&addressdetails=1`, { 
+    const geoRes = await fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(pob)}&format=json&limit=1&addressdetails=1`, { 
       headers: { "User-Agent": "AIAstrology/2.0" } 
     });
     const geoData = await geoRes.json();
