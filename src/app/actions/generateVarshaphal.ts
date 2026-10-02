@@ -56,6 +56,7 @@ export async function fetchAIVarshaphalData(name: string, dob: string, tob: stri
   const sunData = (chart as any).planets?.find((b: any) => b.name === "Sun");
   const siderealSun = sunData ? getSidereal(sunData.longitude) : 0;
   const signs = ["Aries", "Taurus", "Gemini", "Cancer", "Leo", "Virgo", "Libra", "Scorpio", "Sagittarius", "Capricorn", "Aquarius", "Pisces"];
+const signLords = ["Mars", "Venus", "Mercury", "Moon", "Sun", "Mercury", "Venus", "Mars", "Jupiter", "Saturn", "Saturn", "Jupiter"];
   const sunSign = signs[Math.floor(siderealSun / 30)];
 
   // Natal Core Calculations for Varshaphal
@@ -93,7 +94,17 @@ export async function fetchAIVarshaphalData(name: string, dob: string, tob: stri
   if (process.env.GEMINI_API_KEY && process.env.GEMINI_API_KEY !== "your_gemini_api_key_here") {
     try {
       const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
-      const yearToGenerate = targetYear || new Date().getFullYear();
+            const yearToGenerate = targetYear || new Date().getFullYear();
+      const ageInYears = yearToGenerate - year;
+      
+      // Calculate Muntha (Tajik Progressed Ascendant)
+      const munthaSignIndex = (ascSignIdx + ageInYears) % 12;
+      const munthaSignName = signs[munthaSignIndex];
+      const munthaLord = signLords[munthaSignIndex];
+      
+      // Calculate where Muntha falls in the Natal Chart (from Lagna)
+      let munthaHouse = (munthaSignIndex - ascSignIdx + 12) % 12 + 1;
+
       const nextYear = yearToGenerate + 1;
       const prompt = `Act as an expert Vedic Astrologer. A user named ${name} was born on ${dob} in ${pob}. 
   Here is their exact Natal Chart (D-1) data:
