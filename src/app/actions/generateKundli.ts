@@ -469,9 +469,13 @@ export async function fetchAIKundliData(name: string, dob: string, tob: string, 
     - D-10 Dasamsa Houses (Career/Profession): ${JSON.stringify(d10Houses)}
     - D-24 Chaturvimsamsa Houses (Education/Intellect): ${JSON.stringify(d24Houses)}
     
-    IMPORTANT VARGA RULES FOR AI:
-    - For Career/Power predictions, STRICTLY prioritize D-10 Dasamsa over D-1.
-    - For Education/Learning predictions, STRICTLY prioritize D-24 Chaturvimsamsa over D-1.
+    IMPORTANT VARGA MAPPING RULES FOR AI SECTIONS:
+    To ensure 1000% accurate pinpoint predictions, you MUST isolate your analysis for each JSON section based on its specialized chart:
+    1. 'fullLife' (Ultimate Life Path): STRICTLY use the D-1 Lagna Chart.
+    2. 'relationships' (Love & Destiny): STRICTLY use the D-9 Navamsa Chart.
+    3. 'career' (Career & Power): STRICTLY use the D-10 Dasamsa Chart.
+    4. 'education' (Education & Intellect): STRICTLY use the D-24 Chaturvimsamsa Chart.
+    5. 'wealth' & 'health': Use D-1 focusing on 2nd/11th and 6th/8th houses respectively.
   
   CRITICAL RULES:
   CRITICAL REAL-WORLD CLARITY RULE (NO GENERIC ASTROLOGY FLUFF):
