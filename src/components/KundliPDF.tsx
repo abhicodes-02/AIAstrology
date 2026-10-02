@@ -3,125 +3,324 @@ import { Document, Page, Text, View, StyleSheet, Image } from '@react-pdf/render
 
 const styles = StyleSheet.create({
   page: {
-    padding: 40,
-    backgroundColor: '#020205',
-    color: '#E0E7FF',
-    fontFamily: 'Helvetica',
-  },
-  header: {
-    marginBottom: 30,
-    borderBottom: '1px solid #3730A3',
-    paddingBottom: 20,
-  },
-  title: {
-    fontSize: 28,
-    color: '#818CF8',
-    marginBottom: 10,
-    fontWeight: 'bold',
-  },
-  subtitle: {
-    fontSize: 12,
-    color: '#A5B4FC',
-    marginBottom: 5,
-  },
-  section: {
-    marginBottom: 25,
     padding: 15,
-    backgroundColor: '#0F1123',
-    borderRadius: 8,
-    border: '1px solid #312E81',
+    backgroundColor: '#FFFCF5', // Traditional light cream/yellowish tint
+    fontFamily: 'Times-Roman',
   },
-  heading: {
-    fontSize: 16,
-    color: '#C7D2FE',
-    marginBottom: 12,
-    fontWeight: 'bold',
-    textTransform: 'uppercase',
+
+  watermark: {
+    position: 'absolute',
+    top: '30%',
+    left: '25%',
+    opacity: 0.05,
+    fontSize: 300,
+    color: '#D35400',
+    zIndex: -1,
   },
-  text: {
-    fontSize: 11,
-    lineHeight: 1.6,
-    color: '#E0E7FF',
-  },
-  chartContainer: {
+  footer: {
+    position: 'absolute',
+    bottom: 30,
+    left: 30,
+    right: 30,
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginBottom: 30,
+    borderTop: '1px solid #F5C6A5',
+    paddingTop: 5,
   },
-  chartBox: {
-    width: '48%',
-    padding: 10,
-    backgroundColor: '#0F1123',
-    borderRadius: 8,
-    border: '1px solid #312E81',
+  footerText: {
+    fontSize: 8,
+    color: '#8B0000',
+  },
+  table: {
+    display: "flex",
+    width: "auto",
+    borderStyle: "solid",
+    borderColor: "#D35400",
+    borderWidth: 1,
+    marginTop: 10,
+    marginBottom: 10,
+  },
+  tableRow: {
+    margin: "auto",
+    flexDirection: "row"
+  },
+  tableHeader: {
+    backgroundColor: '#FFF0D4',
+  },
+  tableCol: {
+    width: "25%",
+    borderStyle: "solid",
+    borderColor: "#D35400",
+    borderWidth: 1,
+    borderLeftWidth: 0,
+    borderTopWidth: 0,
+  },
+  tableCell: {
+    margin: 4,
+    fontSize: 9,
+    textAlign: "center"
+  },
+  tableHeaderCell: {
+    margin: 4,
+    fontSize: 9,
+    fontWeight: "bold",
+    textAlign: "center",
+    color: '#8B0000'
+  },
+  pageBorder: {
+    border: '2px solid #8B0000', // Deep red/maroon traditional border
+    padding: 20,
+    flex: 1,
+  },
+  headerCenter: {
     alignItems: 'center',
+    marginBottom: 15,
+    borderBottom: '1px solid #8B0000',
+    paddingBottom: 15,
+  },
+  omText: {
+    fontSize: 22,
+    color: '#D35400',
+    marginBottom: 5,
+  },
+  mainTitle: {
+    fontSize: 24,
+    color: '#8B0000',
+    fontWeight: 'bold',
+    textTransform: 'uppercase',
+    letterSpacing: 2,
+    marginBottom: 10,
+  },
+  infoGrid: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: '100%',
+    marginTop: 5,
+  },
+  infoCol: {
+    width: '48%',
+  },
+  infoRow: {
+    flexDirection: 'row',
+    marginBottom: 4,
+  },
+  infoLabel: {
+    width: '35%',
+    fontSize: 10,
+    color: '#8B0000',
+    fontWeight: 'bold',
+  },
+  infoValue: {
+    width: '65%',
+    fontSize: 10,
+    color: '#333333',
+  },
+  chartsRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: 15,
+    marginBottom: 15,
+  },
+  chartContainer: {
+    width: '48%',
+    border: '1px solid #D35400',
+    padding: 5,
+    backgroundColor: '#FFFFFF',
   },
   chartTitle: {
-    fontSize: 14,
-    color: '#818CF8',
-    marginBottom: 10,
+    fontSize: 12,
+    textAlign: 'center',
+    color: '#8B0000',
+    marginBottom: 5,
     fontWeight: 'bold',
+    backgroundColor: '#FFF0D4',
+    paddingVertical: 3,
   },
   chartImage: {
     width: '100%',
-    height: 200,
+    height: 180,
     objectFit: 'contain',
+  },
+  section: {
+    marginTop: 8,
+    marginBottom: 8,
+  },
+  sectionTitle: {
+    fontSize: 14,
+    color: '#8B0000',
+    borderBottom: '1px solid #8B0000',
+    paddingBottom: 2,
+    marginBottom: 6,
+    fontWeight: 'bold',
+    backgroundColor: '#FFF0D4',
+    paddingLeft: 5,
+    paddingTop: 3,
+    textTransform: 'uppercase',
+  },
+  paragraph: {
+    fontSize: 11,
+    color: '#2C2C2C',
+    lineHeight: 1.5,
+    textAlign: 'justify',
+  },
+  doshaRow: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    marginTop: 5,
+  },
+  doshaBadgeYes: {
+    backgroundColor: '#FEE2E2',
+    color: '#991B1B',
+    padding: '4px 8px',
+    marginRight: 8,
+    marginBottom: 4,
+    fontSize: 9,
+    border: '1px solid #F87171',
+  },
+  doshaBadgeNo: {
+    backgroundColor: '#ECFCCB',
+    color: '#3F6212',
+    padding: '4px 8px',
+    marginRight: 8,
+    marginBottom: 4,
+    fontSize: 9,
+    border: '1px solid #BEF264',
   }
 });
 
-export const KundliPDF = ({ chartData, name, dob, tob, pob, d1Image, d9Image }: any) => (
-  <Document>
-    <Page size="A4" style={styles.page}>
-      <View style={styles.header}>
-        <Text style={styles.title}>Cosmic Blueprint</Text>
-        <Text style={styles.subtitle}>Name: {name}</Text>
-        <Text style={styles.subtitle}>DOB: {dob} | Time: {tob}</Text>
-        <Text style={styles.subtitle}>Ascendant: {chartData.ascendant} (D-9: {chartData.ascendantNavamsa?.split(' ')[0]}) | Moon: {chartData.moonSign} (D-9: {chartData.moonNavamsa?.split(' ')[0]})</Text>
-        <Text style={styles.subtitle}>Sun: {chartData.sunSign} (D-9: {chartData.sunNavamsa?.split(' ')[0]}) | Nakshatra: {chartData.nakshatra} {chartData.nakshatraPada ? `(Pada ${chartData.nakshatraPada})` : ""}</Text>
-        <Text style={styles.subtitle}>Tithi: {chartData.tithi} | Yoga: {chartData.yoga} | Karana: {chartData.karana} | Ayanamsa: {chartData.ayanamsaVal}</Text>
-      </View>
+export const KundliPDF = ({ chartData, name, dob, tob, pob, d1Image, d9Image }: any) => {
+  return (
+    <Document>
+      <Page size="A4" style={styles.page}>
+        <Text style={styles.watermark}>ॐ</Text>
+        <View style={styles.pageBorder}>
+          
+          {/* Header Section */}
+          <View style={styles.headerCenter}>
+            <Text style={styles.omText}>ॐ</Text>
+            <Text style={styles.mainTitle}>Janma Kundali</Text>
+            
+            <View style={styles.infoGrid}>
+              <View style={styles.infoCol}>
+                <View style={styles.infoRow}><Text style={styles.infoLabel}>Name:</Text><Text style={styles.infoValue}>{name}</Text></View>
+                <View style={styles.infoRow}><Text style={styles.infoLabel}>Date of Birth:</Text><Text style={styles.infoValue}>{dob}</Text></View>
+                <View style={styles.infoRow}><Text style={styles.infoLabel}>Time of Birth:</Text><Text style={styles.infoValue}>{tob}</Text></View>
+                <View style={styles.infoRow}><Text style={styles.infoLabel}>Place of Birth:</Text><Text style={styles.infoValue}>{pob}</Text></View>
+                <View style={styles.infoRow}><Text style={styles.infoLabel}>Ayanamsa:</Text><Text style={styles.infoValue}>{chartData.ayanamsaVal}</Text></View>
+              </View>
+              
+              <View style={styles.infoCol}>
+                <View style={styles.infoRow}><Text style={styles.infoLabel}>Ascendant:</Text><Text style={styles.infoValue}>{chartData.ascendant} (D-9: {chartData.ascendantNavamsa?.split(' ')[0]})</Text></View>
+                <View style={styles.infoRow}><Text style={styles.infoLabel}>Moon Sign:</Text><Text style={styles.infoValue}>{chartData.moonSign} (D-9: {chartData.moonNavamsa?.split(' ')[0]})</Text></View>
+                <View style={styles.infoRow}><Text style={styles.infoLabel}>Sun Sign:</Text><Text style={styles.infoValue}>{chartData.sunSign} (D-9: {chartData.sunNavamsa?.split(' ')[0]})</Text></View>
+                <View style={styles.infoRow}><Text style={styles.infoLabel}>Nakshatra:</Text><Text style={styles.infoValue}>{chartData.nakshatra} {chartData.nakshatraPada ? `(Pada ${chartData.nakshatraPada})` : ""}</Text></View>
+                <View style={styles.infoRow}><Text style={styles.infoLabel}>Panchang:</Text><Text style={styles.infoValue}>{chartData.tithi} | {chartData.yoga} | {chartData.karana}</Text></View>
+              </View>
+            </View>
 
-      <View style={styles.chartContainer}>
-        <View style={styles.chartBox}>
-          <Text style={styles.chartTitle}>Lagna Chart (D-1)</Text>
-          {d1Image && <Image src={d1Image} style={styles.chartImage} />}
+              {chartData.gana && (
+                <View style={{...styles.infoGrid, marginTop: 15, borderTop: '1px solid #F5C6A5', paddingTop: 10}}>
+                  <View style={styles.infoCol}>
+                    <View style={styles.infoRow}><Text style={styles.infoLabel}>Gana:</Text><Text style={styles.infoValue}>{chartData.gana}</Text></View>
+                    <View style={styles.infoRow}><Text style={styles.infoLabel}>Varna:</Text><Text style={styles.infoValue}>{chartData.varna}</Text></View>
+                    <View style={styles.infoRow}><Text style={styles.infoLabel}>Yoni:</Text><Text style={styles.infoValue}>{chartData.yoni}</Text></View>
+                  </View>
+                  <View style={styles.infoCol}>
+                    <View style={styles.infoRow}><Text style={styles.infoLabel}>Nadi:</Text><Text style={styles.infoValue}>{chartData.nadi}</Text></View>
+                    <View style={styles.infoRow}><Text style={styles.infoLabel}>Tatva:</Text><Text style={styles.infoValue}>{chartData.tatva}</Text></View>
+                    <View style={styles.infoRow}><Text style={styles.infoLabel}>Paya:</Text><Text style={styles.infoValue}>{chartData.paya}</Text></View>
+                  </View>
+                </View>
+              )}
+          </View>
+
+          {/* Charts Section */}
+          <View style={styles.chartsRow}>
+            <View style={styles.chartContainer}>
+              <Text style={styles.chartTitle}>Lagna Chart (D-1)</Text>
+              {d1Image ? <Image src={d1Image} style={styles.chartImage} /> : <Text style={{fontSize: 10, textAlign: 'center', marginTop: 80}}>Chart Loading...</Text>}
+            </View>
+            <View style={styles.chartContainer}>
+              <Text style={styles.chartTitle}>Navamsa Chart (D-9)</Text>
+              {d9Image ? <Image src={d9Image} style={styles.chartImage} /> : <Text style={{fontSize: 10, textAlign: 'center', marginTop: 80}}>Chart Loading...</Text>}
+            </View>
+          </View>
+
+          {/* Dosha Analysis (Newly Added) */}
+          {chartData.doshas && chartData.doshas.length > 0 && (
+            <View style={styles.section}>
+              <Text style={styles.sectionTitle}>Dosha Analysis</Text>
+              <View style={styles.doshaRow}>
+                {chartData.doshas.map((dosha: any, idx: number) => (
+                  <Text key={idx} style={dosha.present ? styles.doshaBadgeYes : styles.doshaBadgeNo}>
+                    {dosha.name}: {dosha.present ? "Present" : "Not Present"}
+                  </Text>
+                ))}
+              </View>
+            </View>
+          )}
+
+          
+          {/* Planetary Degrees Table */}
+          {chartData.planetsData && (
+            <View style={styles.section} break>
+              <Text style={styles.sectionTitle}>Planetary Positions</Text>
+              <View style={styles.table}>
+                <View style={[styles.tableRow, styles.tableHeader]}>
+                  <View style={styles.tableCol}><Text style={styles.tableHeaderCell}>Planet</Text></View>
+                  <View style={styles.tableCol}><Text style={styles.tableHeaderCell}>Sign</Text></View>
+                  <View style={styles.tableCol}><Text style={styles.tableHeaderCell}>Degree</Text></View>
+                  <View style={{...styles.tableCol, borderRightWidth: 0}}><Text style={styles.tableHeaderCell}>Retrograde</Text></View>
+                </View>
+                {chartData.planetsData.filter((p: any) => !["Uranus", "Neptune", "Pluto", "Chiron", "Sirius"].includes(p.name)).map((p: any, i: number) => (
+                  <View style={styles.tableRow} key={i}>
+                    <View style={styles.tableCol}><Text style={styles.tableCell}>{p.name === 'North Node' ? 'Rahu' : p.name === 'South Node' ? 'Ketu' : p.name}</Text></View>
+                    <View style={styles.tableCol}><Text style={styles.tableCell}>{p.signName || 'N/A'}</Text></View>
+                    <View style={styles.tableCol}><Text style={styles.tableCell}>{p.degreeStr || 'N/A'}</Text></View>
+                    <View style={{...styles.tableCol, borderRightWidth: 0}}><Text style={styles.tableCell}>{p.isRetrograde ? "Yes" : "No"}</Text></View>
+                  </View>
+                ))}
+              </View>
+            </View>
+          )}
+
+          {/* AI Readings Section */}
+          <View style={styles.section} wrap={false}>
+            <Text style={styles.sectionTitle}>Core Soul Urge</Text>
+            <Text style={styles.paragraph}>{chartData.reading}</Text>
+          </View>
+          
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>Career & Power</Text>
+            <Text style={styles.paragraph}>{chartData.career}</Text>
+          </View>
+          
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>Wealth & Finance</Text>
+            <Text style={styles.paragraph}>{chartData.wealth || "No wealth data available."}</Text>
+          </View>
+          
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>Love & Destiny</Text>
+            <Text style={styles.paragraph}>{chartData.relationships}</Text>
+          </View>
+          
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>Health & Vitality</Text>
+            <Text style={styles.paragraph}>{chartData.health || "No health data available."}</Text>
+          </View>
+          
+          <View style={styles.section} wrap={false}>
+            <Text style={styles.sectionTitle}>Ultimate Life Path</Text>
+            <Text style={styles.paragraph}>{chartData.fullLife || "Full life overview is not available."}</Text>
+          </View>
+
         </View>
-        <View style={styles.chartBox}>
-          <Text style={styles.chartTitle}>Navamsa Chart (D-9)</Text>
-          {d9Image && <Image src={d9Image} style={styles.chartImage} />}
+        <View style={styles.footer} fixed>
+          <Text style={styles.footerText}>Generated by AI Astrology Premium</Text>
+          <Text style={styles.footerText} render={({ pageNumber, totalPages }) => (`Page ${pageNumber} of ${totalPages}`)} />
         </View>
-      </View>
-
-      <View style={styles.section}>
-        <Text style={styles.heading}>Core Soul Urge</Text>
-        <Text style={styles.text}>{chartData.reading}</Text>
-      </View>
-      
-      <View style={styles.section}>
-        <Text style={styles.heading}>Career & Power</Text>
-        <Text style={styles.text}>{chartData.career}</Text>
-      </View>
-      
-      <View style={styles.section}>
-        <Text style={styles.heading}>Wealth & Finance</Text>
-        <Text style={styles.text}>{chartData.wealth || "No wealth data available."}</Text>
-      </View>
-      
-      <View style={styles.section}>
-        <Text style={styles.heading}>Love & Destiny</Text>
-        <Text style={styles.text}>{chartData.relationships}</Text>
-      </View>
-      
-      <View style={styles.section}>
-        <Text style={styles.heading}>Health & Vitality</Text>
-        <Text style={styles.text}>{chartData.health || "No health data available."}</Text>
-      </View>
-      
-      <View style={styles.section}>
-        <Text style={styles.heading}>Ultimate Life Path</Text>
-        <Text style={styles.text}>{chartData.fullLife || "Full life overview is not available."}</Text>
-      </View>
-    </Page>
-  </Document>
-);
-
+      </Page>
+    </Document>
+  );
+};

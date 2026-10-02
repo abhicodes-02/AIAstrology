@@ -234,8 +234,19 @@ export async function fetchAIKundliData(name: string, dob: string, tob: string, 
     { name: "Guru Chandal Dosha", present: hasGuruChandal }
   ];
 
+  const processedPlanetsData = planetsData.map((planet: any) => {
+    const pSidereal = getSidereal(planet.longitude);
+    const pSign = Math.floor(pSidereal / 30);
+    const degInSign = pSidereal % 30;
+    const degreeStr = `${Math.floor(degInSign)}° ${Math.floor((degInSign % 1) * 60)}'`;
+    return {
+      ...planet,
+      signName: signs[pSign],
+      degreeStr: degreeStr
+    };
+  });
   const chartData = {
-    planetsData,
+    planetsData: processedPlanetsData,
     lagnaDegreeStr: `${Math.floor(ascSidereal % 30)}°`,
     d1AscSignIndex: ascSign + 1,
     d9AscSignIndex: ascNavamsaSign + 1,

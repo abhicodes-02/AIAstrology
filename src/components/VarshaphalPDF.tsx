@@ -3,67 +3,139 @@ import { Document, Page, Text, View, StyleSheet } from '@react-pdf/renderer';
 
 const styles = StyleSheet.create({
   page: {
-    padding: 40,
-    backgroundColor: '#020205',
-    color: '#FEF08A', // yellow-200
-    fontFamily: 'Helvetica',
+    padding: 15,
+    backgroundColor: '#FFFCF5', // Traditional light cream/yellowish tint
+    fontFamily: 'Times-Roman',
   },
-  header: {
-    marginBottom: 30,
-    borderBottom: '1px solid #A16207', // yellow-700
-    paddingBottom: 20,
+
+  watermark: {
+    position: 'absolute',
+    top: '30%',
+    left: '25%',
+    opacity: 0.05,
+    fontSize: 300,
+    color: '#D35400',
+    zIndex: -1,
   },
-  title: {
-    fontSize: 28,
-    color: '#EAB308', // yellow-500
-    marginBottom: 10,
-    fontWeight: 'bold',
+  footer: {
+    position: 'absolute',
+    bottom: 30,
+    left: 30,
+    right: 30,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    borderTop: '1px solid #F5C6A5',
+    paddingTop: 5,
   },
-  subtitle: {
-    fontSize: 12,
-    color: '#FEF08A',
+  footerText: {
+    fontSize: 8,
+    color: '#8B0000',
+  },
+  pageBorder: {
+    border: '2px solid #8B0000', // Deep red/maroon traditional border
+    padding: 20,
+    flex: 1,
+  },
+  headerCenter: {
+    alignItems: 'center',
+    marginBottom: 15,
+    borderBottom: '1px solid #8B0000',
+    paddingBottom: 15,
+  },
+  omText: {
+    fontSize: 22,
+    color: '#D35400',
     marginBottom: 5,
   },
-  section: {
-    marginBottom: 20,
-    padding: 15,
-    backgroundColor: '#281504', // orange-950/40 approx
-    borderRadius: 8,
-    border: '1px solid #713F12',
-  },
-  heading: {
-    fontSize: 16,
-    color: '#FDE047', // yellow-300
-    marginBottom: 10,
+  mainTitle: {
+    fontSize: 22,
+    color: '#8B0000',
     fontWeight: 'bold',
     textTransform: 'uppercase',
+    letterSpacing: 2,
+    marginBottom: 10,
   },
-  text: {
+  subtitle: {
     fontSize: 11,
-    lineHeight: 1.6,
-    color: '#FEF08A',
+    color: '#333333',
+    marginBottom: 4,
   },
-  monthContainer: {
-    marginTop: 20,
+  section: {
+    marginTop: 10,
+    marginBottom: 10,
+  },
+  sectionTitle: {
+    fontSize: 14,
+    color: '#8B0000',
+    borderBottom: '1px solid #8B0000',
+    paddingBottom: 2,
+    marginBottom: 8,
+    fontWeight: 'bold',
+    backgroundColor: '#FFF0D4',
+    paddingLeft: 5,
+    paddingTop: 3,
+    textTransform: 'uppercase',
+  },
+  paragraph: {
+    fontSize: 11,
+    color: '#2C2C2C',
+    lineHeight: 1.5,
+    textAlign: 'justify',
   },
   monthBox: {
     marginBottom: 15,
-    padding: 15,
-    backgroundColor: '#1E1E24',
-    borderRadius: 8,
-    border: '1px solid #422006',
+    padding: 12,
+    backgroundColor: '#FFFFFF',
+    border: '1px solid #D35400',
+  },
+  monthHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    borderBottom: '1px solid #F5C6A5',
+    paddingBottom: 5,
+    marginBottom: 8,
   },
   monthTitle: {
-    fontSize: 14,
-    color: '#EAB308',
-    marginBottom: 5,
+    fontSize: 13,
+    color: '#8B0000',
     fontWeight: 'bold',
+    textTransform: 'uppercase',
   },
   monthTheme: {
     fontSize: 10,
-    color: '#FDE047',
-    marginBottom: 8,
+    color: '#D35400',
     fontStyle: 'italic',
+    paddingTop: 2,
+  },
+  subGrid: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: 10,
+    paddingTop: 8,
+    borderTop: '1px dashed #F5C6A5',
+  },
+  subCol: {
+    width: '48%',
+  },
+  subHeadingCareer: {
+    fontSize: 10,
+    color: '#0369A1', // Deep Blue for Career to stand out professionally
+    marginBottom: 4,
+    fontWeight: 'bold',
+    textTransform: 'uppercase',
+  },
+  subHeadingLove: {
+    fontSize: 10,
+    color: '#BE185D', // Deep Pink/Red for Relationships
+    marginBottom: 4,
+    fontWeight: 'bold',
+    textTransform: 'uppercase',
+  },
+  subText: {
+    fontSize: 10,
+    color: '#333333',
+    lineHeight: 1.4,
+    textAlign: 'justify',
   }
 });
 
@@ -74,50 +146,76 @@ export const VarshaphalPDF = ({ data, name, dob, tob, pob }: any) => {
 
   return (
     <Document>
+      {/* PAGE 1: Varshaphal Overview */}
       <Page size="A4" style={styles.page}>
-        <View style={styles.header}>
-          <Text style={styles.title}>Solar Return (Varshaphal)</Text>
-          <Text style={styles.subtitle}>Name: {name}</Text>
-          <Text style={styles.subtitle}>DOB: {dob} | Time: {tob}</Text>
-          <Text style={styles.subtitle}>Location: {pob}</Text>
-        </View>
+        <Text style={styles.watermark}>ॐ</Text>
+        <Text style={styles.watermark}>ॐ</Text>
+        <View style={styles.pageBorder}>
+          <View style={styles.headerCenter}>
+            <Text style={styles.omText}>ॐ</Text>
+            <Text style={styles.mainTitle}>Varshaphal (Solar Return)</Text>
+            <Text style={styles.subtitle}>Name: {name}</Text>
+            <Text style={styles.subtitle}>DOB: {dob} | Time: {tob}</Text>
+            <Text style={styles.subtitle}>Location: {pob}</Text>
+          </View>
 
-        <View style={styles.section}>
-          <Text style={styles.heading}>Annual Forecast Overview</Text>
-          <Text style={styles.text}>{data.varshaphal}</Text>
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>Annual Forecast Overview</Text>
+            <Text style={styles.paragraph}>{data.varshaphal}</Text>
+          </View>
+        </View>
+        <View style={styles.footer} fixed>
+          <Text style={styles.footerText}>Generated by AI Astrology Premium</Text>
+          <Text style={styles.footerText} render={({ pageNumber, totalPages }) => (`Page ${pageNumber} of ${totalPages}`)} />
+        </View>
+        <View style={styles.footer} fixed>
+          <Text style={styles.footerText}>Generated by AI Astrology Premium</Text>
+          <Text style={styles.footerText} render={({ pageNumber, totalPages }) => (`Page ${pageNumber} of ${totalPages}`)} />
         </View>
       </Page>
       
-      {/* Month by month break down in new page */}
+      {/* PAGE 2+: Month by Month Breakdown */}
       <Page size="A4" style={styles.page}>
-        <Text style={styles.title}>Monthly Predictions</Text>
-        
-        {monthlyData.map((month: any, i: number) => (
-          <View key={i} style={styles.monthBox} wrap={false}>
-            <Text style={styles.monthTitle}>{i + 1}. {month.month}</Text>
-            {month.theme && <Text style={styles.monthTheme}>Theme: {month.theme}</Text>}
-            <Text style={styles.text}>{month.prediction}</Text>
-            
-            {(month.career || month.relationships) && (
-              <View style={{ marginTop: 10, flexDirection: 'row', justifyContent: 'space-between' }}>
-                {month.career && (
-                  <View style={{ width: '48%' }}>
-                    <Text style={{ fontSize: 10, color: '#93C5FD', marginBottom: 3, fontWeight: 'bold' }}>Career</Text>
-                    <Text style={{ fontSize: 10, color: '#DBEAFE', lineHeight: 1.4 }}>{month.career}</Text>
-                  </View>
-                )}
-                {month.relationships && (
-                  <View style={{ width: '48%' }}>
-                    <Text style={{ fontSize: 10, color: '#F9A8D4', marginBottom: 3, fontWeight: 'bold' }}>Relationships</Text>
-                    <Text style={{ fontSize: 10, color: '#FCE7F3', lineHeight: 1.4 }}>{month.relationships}</Text>
-                  </View>
-                )}
-              </View>
-            )}
+        <Text style={styles.watermark}>ॐ</Text>
+        <View style={styles.pageBorder}>
+          <View style={styles.headerCenter}>
+            <Text style={styles.mainTitle}>Monthly Predictions</Text>
+            <Text style={styles.subtitle}>A detailed month-by-month cosmic guide</Text>
           </View>
-        ))}
+          
+          {monthlyData.map((month: any, i: number) => (
+            <View key={i} style={styles.monthBox} wrap={false}>
+              <View style={styles.monthHeader}>
+                <Text style={styles.monthTitle}>{i + 1}. {month.month}</Text>
+                {month.theme && <Text style={styles.monthTheme}>Theme: {month.theme}</Text>}
+              </View>
+              
+              <Text style={styles.paragraph}>{month.prediction}</Text>
+              
+              {(month.career || month.relationships) && (
+                <View style={styles.subGrid}>
+                  {month.career && (
+                    <View style={styles.subCol}>
+                      <Text style={styles.subHeadingCareer}>Career & Wealth</Text>
+                      <Text style={styles.subText}>{month.career}</Text>
+                    </View>
+                  )}
+                  {month.relationships && (
+                    <View style={styles.subCol}>
+                      <Text style={styles.subHeadingLove}>Love & Relationships</Text>
+                      <Text style={styles.subText}>{month.relationships}</Text>
+                    </View>
+                  )}
+                </View>
+              )}
+            </View>
+          ))}
+        </View>
+        <View style={styles.footer} fixed>
+          <Text style={styles.footerText}>Generated by AI Astrology Premium</Text>
+          <Text style={styles.footerText} render={({ pageNumber, totalPages }) => (`Page ${pageNumber} of ${totalPages}`)} />
+        </View>
       </Page>
     </Document>
   );
 };
-
