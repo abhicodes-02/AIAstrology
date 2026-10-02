@@ -40,7 +40,7 @@ export async function fetchAIKundliData(name: string, dob: string, tob: string, 
 
   // --- 100% ACCURATE LAHIRI AYANAMSA (Swiss Ephemeris Mathematical Polynomial) ---
     // Instead of relying on Vercel-breaking WASM files, we use the exact J2000 Julian century polynomial
-    const jd = celestine.time.toJulianDate(new Date(`${dob}T${tob}:00.000${timezone >= 0 ? '+' : '-'}${Math.abs(Math.floor(timezone)).toString().padStart(2, '0')}:${(Math.abs(timezone % 1) * 60).toString().padStart(2, '0')}`));
+    const jd = celestine.time.toJulianDate({ year, month, day, hour, minute, second: 0, timezone });
     const t = (jd - 2451545.0) / 36525.0; // Julian centuries since J2000.0
     // Lahiri Ayanamsa at J2000.0 is 23 degrees 51' 11" (approx 23.853056)
     // Precise polynomial for Chitra Paksha Ayanamsa:

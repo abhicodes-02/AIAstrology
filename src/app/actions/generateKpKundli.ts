@@ -51,20 +51,7 @@ export async function fetchAIKpKundliData(name: string, dob: string, tob: string
 
   // --- 100% ACCURATE KP AYANAMSA (Swiss Ephemeris & Precision Fallback) ---
   let kpAyanamsa = getKpAyanamsa(year, month, day); // User's math fallback
-  try {
-    const swisseph = require("sweph-wasm");
-    const localDate = new Date(`${dob}T${tob}:00.000${timezone >= 0 ? '+' : '-'}${Math.abs(Math.floor(timezone)).toString().padStart(2, '0')}:${(Math.abs(timezone % 1) * 60).toString().padStart(2, '0')}`);
-    const utcYear = localDate.getUTCFullYear();
-    const utcMonth = localDate.getUTCMonth() + 1;
-    const utcDay = localDate.getUTCDate();
-    const utcHour = localDate.getUTCHours() + localDate.getUTCMinutes() / 60;
-
-    const julday = swisseph.swe_julday(utcYear, utcMonth, utcDay, utcHour, swisseph.SE_GREG_CAL);
-    swisseph.swe_set_sid_mode(5, 0, 0); // 5 = SE_SIDM_KRISHNAMURTI
-    kpAyanamsa = swisseph.swe_get_ayanamsa_ut(julday);
-  } catch (err) {
-    console.warn("[KPEngine] sweph-wasm not available, using mathematical KP fallback.");
-  }
+  
 
   function getSidereal(tropical: number) {
     let sid = tropical - kpAyanamsa;

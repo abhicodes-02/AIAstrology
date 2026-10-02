@@ -67,7 +67,7 @@ const EastIndianChart: React.FC<EastIndianChartProps> = ({
 
   return (
     <div className="w-full flex justify-center items-center font-sans">
-      <svg 
+      <motion.svg initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 1.5, ease: 'easeOut' }}  
         viewBox={`0 0 ${size} ${size}`} 
         width={width} 
         height={height} 
