@@ -232,11 +232,11 @@ export default function BirthDetailsForm() {
                   
                   {/* Autocomplete Dropdown */}
                   {showDropdown && suggestions.length > 0 && (
-                    <div className="absolute top-full left-0 right-0 mt-1 bg-indigo-950/90 backdrop-blur-xl border border-indigo-500/30 rounded-lg shadow-2xl z-50 max-h-60 overflow-y-auto">
+                    <div className="absolute top-full left-0 right-0 mt-1 bg-[#0f172a] border border-[#1e293b] rounded-lg shadow-2xl z-50 max-h-60 overflow-y-auto">
                       {suggestions.map((place: any, index: number) => (
                         <div 
                           key={index} 
-                          className="px-4 py-3 hover:bg-indigo-600/30 cursor-pointer text-indigo-100 text-sm border-b border-indigo-500/10 last:border-0 transition-colors"
+                          className="px-4 py-3 hover:bg-[#1e293b] cursor-pointer text-indigo-100 text-sm border-b border-indigo-500/10 last:border-0 transition-colors"
                           onClick={() => {
                             form.setValue("pob", place.display_name);
                             setShowDropdown(false);
@@ -350,5 +350,7 @@ export default function BirthDetailsForm() {
     </Card>
   );
 }
+
+
 
 

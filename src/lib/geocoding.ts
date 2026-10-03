@@ -7,7 +7,7 @@ export async function getCoordinates(placeName: string) {
     }
 
     try {
-        const res = await fetch(`https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(placeName)}.json?access_token=${apiKey}&autocomplete=true&types=place,locality,neighborhood,address`);
+        const res = await fetch(`https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(placeName)}.json?access_token=${apiKey}&autocomplete=true&types=place,locality,neighborhood,address,postcode`);
         const data = await res.json();
         if (data.features && data.features.length > 0) {
             return data.features.map((f: any) => ({
