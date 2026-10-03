@@ -515,8 +515,11 @@ const planetaryPower: Record<string, {score: number, status: string}> = {};
     
         CRITICAL BREAKTHROUGHS FORMATTING (EXACTLY 6 EVENTS): 
     - You must output exactly 6 breakthroughs. 
-    - You MUST include at least one breakthrough from the immediate past (2024 or 2025) and at least one from the immediate present (2026 or 2027).
-    - Pick the absolute strongest peaks based on the provided KP House Significators. Do NOT force specific events; predict purely based on what the exact Pratyantardasha planet signifies in the user's chart.
+      - You MUST include at least one breakthrough from the immediate past (2024 or 2025) and at least one from the immediate present (2026 or 2027).
+      - UNIVERSAL BALANCING RULE (1000% ACCURACY): You MUST distribute the 6 breakthroughs across the user's major life aspects. 
+        1. At least ONE breakthrough MUST explicitly address their Career/Academic progression (based on their life stage).
+        2. At least ONE breakthrough MUST explicitly address their Relationship/Marriage progression (based on whether they are Single or Committed). Do not ignore this, even if career planets are stronger!
+        3. The remaining 4 breakthroughs should follow the absolute strongest peaks based on KP House Significators.
     - Each breakthrough MUST be structured in this EXACT order, with each item on a new line (no HTML tags):
       Exact Year: (e.g., 2026)
       Exact Month: (e.g., January to March)
