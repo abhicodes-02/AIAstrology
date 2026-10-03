@@ -3,6 +3,7 @@ export interface DashaPeriod {
   start: string; // ISO Date String
   end: string;
   duration: number; // Years
+  antardashas?: DashaPeriod[];
 }
 
 export interface AntardashaPeriod {
@@ -42,6 +43,30 @@ function addDaysToDate(date: Date, days: number): Date {
   return result;
 }
 
+
+function getAntardashas(mdPlanet: string, mdStartDate: Date, mdDuration: number): DashaPeriod[] {
+  const antardashas: DashaPeriod[] = [];
+  const startIndex = DASHA_ORDER.findIndex(d => d.planet === mdPlanet);
+  let currentStart = new Date(mdStartDate);
+  
+  for (let i = 0; i < 9; i++) {
+    const adPlanet = DASHA_ORDER[(startIndex + i) % 9];
+    const adYears = (mdDuration * adPlanet.years) / 120;
+    const adDays = adYears * 365.25;
+    const currentEnd = addDaysToDate(currentStart, adDays);
+    
+    antardashas.push({
+      planet: adPlanet.planet,
+      start: currentStart.toISOString().split('T')[0],
+      end: currentEnd.toISOString().split('T')[0],
+      duration: adYears
+    });
+    
+    currentStart = new Date(currentEnd);
+  }
+  return antardashas;
+}
+
 export function calculateVimshottariDasha(moonLongitude: number, birthDateStr: string): DashaData {
   // Nakshatra span is 13°20' = 13.3333... degrees
   const NAKSHATRA_SPAN = 13 + 20 / 60; 
@@ -76,7 +101,8 @@ export function calculateVimshottariDasha(moonLongitude: number, birthDateStr: s
     planet: firstDasha.planet,
     start: currentStartDate.toISOString().split('T')[0],
     end: firstDashaEndDate.toISOString().split('T')[0],
-    duration: firstDasha.years
+    duration: firstDasha.years,
+    antardashas: getAntardashas(firstDasha.planet, currentStartDate, firstDasha.years)
   });
 
   currentStartDate = new Date(firstDashaEndDate);
@@ -92,7 +118,8 @@ export function calculateVimshottariDasha(moonLongitude: number, birthDateStr: s
       planet: dasha.planet,
       start: currentStartDate.toISOString().split('T')[0],
       end: endDate.toISOString().split('T')[0],
-      duration: dasha.years
+      duration: dasha.years,
+      antardashas: getAntardashas(dasha.planet, currentStartDate, dasha.years)
     });
 
     currentStartDate = new Date(endDate);
