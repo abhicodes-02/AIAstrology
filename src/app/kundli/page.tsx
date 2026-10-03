@@ -15,10 +15,12 @@ export default async function KundliPage({
   const dob = typeof params.dob === 'string' ? params.dob : '2000-01-01';
   const tob = typeof params.tob === 'string' ? params.tob : '12:00';
   const pob = typeof params.pob === 'string' ? params.pob : 'New York';
+  const lifeStage = typeof params.lifeStage === 'string' ? params.lifeStage : 'student';
+  const relationshipStatus = typeof params.relationshipStatus === 'string' ? params.relationshipStatus : 'single';
 
   let chartData;
   try {
-    chartData = await fetchAIKundliData(name, dob, tob, pob);
+    chartData = await fetchAIKundliData(name, dob, tob, pob, lifeStage, relationshipStatus);
     // Ensure houses uses numbers
     const cleanHouses: Record<number, string[]> = {};
     for (let i = 1; i <= 12; i++) {

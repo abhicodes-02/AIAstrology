@@ -12,7 +12,7 @@ const withTimeout = <T>(promise: Promise<T>, ms: number, fallback: T): Promise<T
   ]);
 };
 
-export async function fetchAIKundliData(name: string, dob: string, tob: string, pob: string) {
+export async function fetchAIKundliData(name: string, dob: string, tob: string, pob: string, lifeStage: string = "student", relationshipStatus: string = "single") {
   // 1. Geocode the location
   let lat = 22.5726;
   let lon = 88.3639;
@@ -548,12 +548,12 @@ ${futureTimelineStr}` :
   
   CRITICAL RULES:
   CRITICAL REAL-WORLD CLARITY RULE (NO GENERIC ASTROLOGY FLUFF):
-    [WAY 1: CONTEXTUAL AGE PROFILING (MANDATORY)]: You MUST calculate the user's exact age during the predicted year (Predicted Year - Birth Year ${year}). 
-    - Age 0-22: They are a STUDENT. Any career/wealth peaks during this time MUST be predicted as Academic Success, passing competitive exams, or college admissions. NEVER predict corporate jobs, marriages, or real estate purchases here.
-    - Age 23-26: They are a FRESHER. A career peak here MUST be predicted as their "First Corporate Job" or early career struggle/breakthrough. NEVER predict "Senior Executive Promotion".
-    - Age 27-35: They are establishing themselves. Predict marriages, promotions, or first real estate.
-    - Age 35+: Predict senior leadership, major wealth, or business scale-up.
-    You will be heavily penalized if you predict a senior corporate promotion for a 20-year-old.
+    [WAY 1: EXPLICIT CONTEXTUAL PROFILING (MANDATORY)]: The user explicitly states they are currently a ${lifeStage.toUpperCase()} and ${relationshipStatus.toUpperCase()}.
+    - You MUST forcefully align all predictions to this reality.
+    - If they are a STUDENT, career peaks mean Academic Success/Exams. NEVER predict corporate promotions.
+    - If they are a FRESHER, career peaks mean First Job. NEVER predict senior leadership.
+    - If they are SINGLE, relationship peaks mean finding a partner.
+    - If they are MARRIED, relationship peaks mean marital milestones (childbirth, shared assets, harmony) or marital crisis (if afflicted).
   Do NOT give generic, philosophical, or purely psychological planetary traits (e.g., "The Moon makes you emotional", "Jupiter brings expansion", "You will feel a shift in energy"). 
   You MUST translate every single astrological placement into STRICT, CONCRETE, REAL-WORLD EVENTS. 
   - Instead of "intellectual growth", specify "securing a corporate job, publishing a paper, or passing a competitive exam."

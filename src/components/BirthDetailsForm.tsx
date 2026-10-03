@@ -24,6 +24,8 @@ const formSchema = z.object({
   dob: z.string().min(1, { message: "Date of birth is required." }),
   tob: z.string().min(1, { message: "Time of birth is required." }),
   pob: z.string().min(2, { message: "Place of birth is required." }),
+  lifeStage: z.string().min(1, { message: "Life stage is required." }),
+  relationshipStatus: z.string().min(1, { message: "Relationship status is required." }),
 });
 
 export default function BirthDetailsForm() {
@@ -43,6 +45,8 @@ export default function BirthDetailsForm() {
       dob: "",
       tob: "",
       pob: "",
+      lifeStage: "student",
+      relationshipStatus: "single",
     },
   });
 
