@@ -9,7 +9,7 @@ async function runTest() {
       "2002-01-09",
       "09:30",
       "Maheshtala, Kolkata",
-      "working professional",
+      "Fresher",
       "committed"
     );
 

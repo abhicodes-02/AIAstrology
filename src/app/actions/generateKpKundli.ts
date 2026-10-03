@@ -240,12 +240,13 @@ const planetaryPower: Record<string, {score: number, status: string}> = {};
 
   const { planetSignificators, houseSignificators } = buildKpSignificators(kpPlanets, cusps);
 
-    // PHASE 3: EXACT KP BOOLEAN PERMISSIONS
+    
+    // PHASE 3 (ADVANCED): KP BOOLEAN WITH NEGATION LOGIC
     const careerCSL = cusps[9]?.subLord;
     const marriageCSL = cusps[6]?.subLord;
     const propertyCSL = cusps[3]?.subLord;
     const foreignCSL = cusps[8]?.subLord;
-    const businessCSL = cusps[6]?.subLord; // 7th house for business
+    const businessCSL = cusps[6]?.subLord; 
     
     const careerSig = careerCSL ? (planetSignificators as any)[careerCSL] || [] : [];
     const marriageSig = marriageCSL ? (planetSignificators as any)[marriageCSL] || [] : [];
@@ -253,12 +254,21 @@ const planetaryPower: Record<string, {score: number, status: string}> = {};
     const foreignSig = foreignCSL ? (planetSignificators as any)[foreignCSL] || [] : [];
     const businessSig = businessCSL ? (planetSignificators as any)[businessCSL] || [] : [];
 
-    const booleanPermissions = {
-      isCareerPromising: careerSig.some((h: string) => ["2", "6", "10", "11"].includes(h)),
-      isMarriagePromising: marriageSig.some((h: string) => ["2", "7", "11"].includes(h)),
-      isRealEstatePromising: propertySig.some((h: string) => ["4", "11", "12"].includes(h)),
-      isForeignTravelPromising: foreignSig.some((h: string) => ["3", "9", "12"].includes(h)),
-      isBusinessPromising: businessSig.some((h: string) => ["2", "7", "10", "11"].includes(h)),
+    function evaluateKpStatus(sigs: string[], positive: string[], negative: string[]) {
+      const hasPos = sigs.some((h: string) => positive.includes(h));
+      const hasNeg = sigs.some((h: string) => negative.includes(h));
+      if (hasPos && !hasNeg) return "PROMISED_AND_STRONG";
+      if (hasPos && hasNeg) return "HAPPENS_BUT_WITH_STRUGGLES_AND_DELAYS";
+      if (!hasPos && hasNeg) return "STRICTLY_DENIED";
+      return "NEUTRAL_OR_DELAYED";
+    }
+
+    const kpPermissionsAdvanced = {
+      careerStatus: evaluateKpStatus(careerSig, ["2", "6", "10", "11"], ["1", "5", "9"]),
+      marriageStatus: evaluateKpStatus(marriageSig, ["2", "7", "11"], ["1", "6", "10"]),
+      realEstateStatus: evaluateKpStatus(propertySig, ["4", "11", "12"], ["3", "10"]),
+      foreignTravelStatus: evaluateKpStatus(foreignSig, ["3", "9", "12"], ["2", "8", "11"]),
+      businessStatus: evaluateKpStatus(businessSig, ["2", "7", "10", "11"], ["1", "6"])
     };
 
 
@@ -408,11 +418,11 @@ const planetaryPower: Record<string, {score: number, status: string}> = {};
     - 
     - EXACT KP BOOLEAN PERMISSIONS (PHASE 3 NO-HALLUCINATION FILTER):
       You MUST strictly obey these Boolean mathematical permissions. If an event is FALSE, it will NEVER happen, even if the user form says otherwise or a transit looks good.
-      ${JSON.stringify(booleanPermissions)}
-      - If 'isCareerPromising' is FALSE, NEVER predict a major corporate promotion. Frame it as "sustaining current role".
-      - If 'isMarriagePromising' is FALSE, NEVER predict marriage even if they are 'Committed'. Frame it as "delays in formalization".
-      - If 'isRealEstatePromising' is FALSE, NEVER predict buying a house/property.
-      - If 'isBusinessPromising' is FALSE, NEVER predict entrepreneurship or business success. Stick strictly to jobs.
+      ${JSON.stringify(kpPermissionsAdvanced)}
+      - If 'PROMISED_AND_STRONG': Predict the event confidently and highly successfully.
+      - If 'HAPPENS_BUT_WITH_STRUGGLES_AND_DELAYS': Predict the event, but explicitly state that it will come with significant obstacles, delays, or internal struggles.
+      - If 'STRICTLY_DENIED': NEVER predict this event. Frame it as "not supported in this phase of life."
+      - If 'NEUTRAL_OR_DELAYED': Frame it as a low-priority area right now.
 
     - EXACT EVENT MAGNITUDE (PHASE 2 POWER SCORING):
       You MUST read the exact power score of the planets before predicting an event: ${JSON.stringify(planetaryPower)}
@@ -426,6 +436,17 @@ const planetaryPower: Record<string, {score: number, status: string}> = {};
       D-10 Dasamsa (Exact Career Industry/Role specifics): ${JSON.stringify(d10Houses)}
       D-24 Chaturvimsamsa (Exact Education specifics): ${JSON.stringify(d24Houses)}
       If predicting a career event, look at the D-10 chart. If D-10's 10th house has Tech planets (Mars/Rahu), predict an exact IT/Tech job. If D-9 shows a strong Venus, predict a love marriage. Do not guess blindly, use these Vargas!
+
+    
+    [THE ULTIMATE OMNI-FUSION PROTOCOL (MANDATORY HOLISTIC CHECK)]:
+    You are strictly FORBIDDEN from making predictions based on just one factor (like just looking at a chart or just looking at a Dasha). 
+    Before writing ANY prediction, you MUST pass it through this 5-layer mathematical intersection:
+    1. LAYER 1 (USER INPUTS): Who is the user today? (Age, Life Stage, Relationship Status).
+    2. LAYER 2 (KP BOOLEAN PERMISSIONS): Is the event mathematically permitted (True/False)? If False, ABORT the prediction or frame it as delayed/denied.
+    3. LAYER 3 (VIMSHOTTARI & GOCHAR): When exactly is the timeline window and exact trigger date?
+    4. LAYER 4 (VARGA CHARTS - D10/D9): What is the specific industry or exact flavor of the event?
+    5. LAYER 5 (PLANETARY POWER): What is the magnitude? (Only exaggerate if score is 80+, downplay if score is <40).
+    Your final text MUST be the exact intersection of ALL 5 layers. If any layer contradicts (e.g., Transit is good but KP Permission is FALSE), the KP Permission OVERRULES the transit. NO GUESSWORK, NO EXAGGERATION.
 
     CRITICAL REAL-WORLD CLARITY RULES (MANDATORY FOR EVERY SECTION):
     
