@@ -335,6 +335,17 @@ export async function fetchAIKpKundliData(name: string, dob: string, tob: string
     - CAREER LOGIC: If they are a 24-year-old 'Working Professional', their first job likely happened very recently (2025/2026). Do NOT predict their first job was years ago at age 21 (2023). 
     - FUTURE PREDICTIONS: For distant future events (2040-2070), predict wealth accumulation, real estate, legacy, or senior executive roles. Do not predict first marriage or entry-level milestones in old age.
 
+    [WAY 5: THE GOD-MODE LOGIC & SAFETY PROTOCOL (PREVENTING ABSURD HALLUCINATIONS)]:
+    You MUST apply these logical filters to PREVENT absurd, illogical, or inappropriate predictions:
+    1. FATAL/DEATH PREDICTIONS ARE BANNED: When Maraka (2nd/7th) or Badhaka houses activate, NEVER predict death, fatal accidents, or severe illness. Translate these to "focusing on immunity", "managing temporary stress", or "preventative health care".
+    2. CHILDBIRTH & 5TH HOUSE: 
+       - If user is under 20: 5th house means sports, hobbies, or exam success. 
+       - If user is 20-45: It means parenthood/childbirth. Use gender-neutral terms like "welcoming a child into the family" (NEVER "you will get pregnant" as the user might be male).
+       - If user is 50+: It means grandchildren, creative legacy, or spiritual growth.
+    3. SEPARATION/DIVORCE: If the user explicitly selected "Single", NEVER predict a divorce or marital separation under 6th/8th/12th house transits. Frame it as "avoiding toxic connections" or "personal healing".
+    4. REAL ESTATE & VEHICLES: If the user is under 21, 4th house activations mean "your family may upgrade their home" or "academic comfort", NOT "you will purchase commercial real estate".
+    5. STRICT CHRONOLOGY FOR BREAKTHROUGHS: The 6 breakthroughs MUST be listed in PERFECT CHRONOLOGICAL ORDER (e.g., 2024, then 2026, then 2031). NEVER jumble the timeline (do not put 2035 before 2026).
+
     CRITICAL INSTRUCTIONS FOR ZERO HALLUCINATION:
     - Do NOT give generic, philosophical, or purely psychological planetary traits (e.g., "The Moon makes you emotional"). 
     - Translate EVERY placement into STRICT, CONCRETE, REAL-WORLD EVENTS (e.g., "securing a corporate job", "getting married").
