@@ -550,6 +550,8 @@ ${futureTimelineStr}` :
   CRITICAL REAL-WORLD CLARITY RULE (NO GENERIC ASTROLOGY FLUFF):
     [WAY 1: EXPLICIT CONTEXTUAL PROFILING (MANDATORY)]: The user explicitly states they are currently a ${lifeStage.toUpperCase()} and ${relationshipStatus.toUpperCase()}.
     - You MUST forcefully align all predictions to this reality.
+      - CRITICAL TIMING DISTINCTION: For all JSON sections ('career', 'relationships', 'wealth', etc.), you MUST provide a LIFELONG GENERAL OVERVIEW of the native's destiny based on their planetary strengths. 
+      - You must blend this overarching lifelong promise with a dynamic analysis of the recent past (Years ${new Date().getFullYear() - 3} to ${new Date().getFullYear()}) and the immediate future (Years ${new Date().getFullYear()} to ${new Date().getFullYear() + 3}). Ensure the reading flows naturally from past struggles to future milestones to ultimate lifelong destiny.
     - If they are a STUDENT, career peaks mean Academic Success/Exams. NEVER predict corporate promotions.
     - If they are a FRESHER, career peaks mean First Job. NEVER predict senior leadership.
     - If they are SINGLE, relationship peaks mean finding a partner.
