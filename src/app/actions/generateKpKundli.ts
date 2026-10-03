@@ -302,49 +302,52 @@ export async function fetchAIKpKundliData(name: string, dob: string, tob: string
   - 10th CSL (Career): ${cusps[9]?.subLord}
   - 7th CSL (Marriage): ${cusps[6]?.subLord}
   - 2nd/11th CSL (Wealth): ${cusps[1]?.subLord} / ${cusps[10]?.subLord}\n    
-    - KP HOUSE SIGNIFICATORS (CRITICAL FOR TIMING): ${JSON.stringify(houseSignificators)}
+        - KP HOUSE SIGNIFICATORS (CRITICAL FOR TIMING): ${JSON.stringify(houseSignificators)}
     - TRANSIT (GOCHAR) EXACT TRIGGERS:
       Career/Job Activation Dates (Every Year): ${careerHotDates}
       Wealth Activation Dates (Every Year): ${wealthHotDates}
       Marriage Activation Dates (Every Year): ${marriageHotDates}
   
-    CRITICAL RULES FOR ZERO VARIANCE:
-  CRITICAL REAL-WORLD CLARITY RULE (NO GENERIC ASTROLOGY FLUFF):
-    [WAY 3: IMMEDIATE TIMELINE RELEVANCE]: 
-    - The user is checking this in ${new Date().getFullYear()}.
-    - You MUST prioritize finding breakthroughs in the immediate present and near future (2025-2028). 
-    - Do not skip the present years. If the user is a Fresher, their First Job MUST happen in the immediate upcoming active Pratyantardasha (e.g. 2026 or 2027), do not delay it to 2030.
+    CRITICAL REAL-WORLD CLARITY RULES (MANDATORY FOR EVERY SECTION):
     
-    [WAY 2: SUN-TRIGGERED GOCHAR (EXACT DAY/WEEK PINPOINTING)]: 
-    - Within your predicted Pratyantardasha window (e.g. May 2026 to Sep 2026), you MUST find which of the "TRANSIT (GOCHAR) EXACT TRIGGERS" falls inside it.
-    - If you predict a career event, and one of the Career Hot Dates is 'Aug 12', you MUST forcefully declare: "This event will trigger exactly around the 2nd week of August." 
-    - NEVER give a broad 5-month window without pinpointing the exact week using these Hot Dates. This gives 2000% mathematical accuracy.
-    [WAY 1: EXPLICIT CONTEXTUAL PROFILING (MANDATORY)]: The user explicitly states they are currently a ${lifeStage.toUpperCase()} and ${relationshipStatus.toUpperCase()}.
-    - You MUST forcefully align all predictions to this reality.
+    [WAY 1: EXPLICIT CONTEXTUAL PROFILING]: The user explicitly states they are currently a ${lifeStage.toUpperCase()} and ${relationshipStatus.toUpperCase()}.
+    - You MUST forcefully align ALL predictions across ALL sections (Career, Wealth, Relationships, etc.) to this reality.
     - If they are a STUDENT, career peaks mean Academic Success/Exams. NEVER predict corporate promotions.
-    - If they are a FRESHER, career peaks mean First Job. NEVER predict senior leadership.
+    - If they are a FRESHER, career peaks mean First Job/Internship. NEVER predict senior leadership.
     - If they are SINGLE, relationship peaks mean finding a partner.
     - If they are MARRIED, relationship peaks mean marital milestones (childbirth, shared assets, harmony) or marital crisis (if afflicted).
-  Do NOT give generic, philosophical, or purely psychological planetary traits (e.g., "The Moon makes you emotional", "Jupiter brings expansion", "You will feel a shift in energy"). 
-  You MUST translate every single astrological placement into STRICT, CONCRETE, REAL-WORLD EVENTS. 
-  - Instead of "intellectual growth", specify "securing a corporate job, publishing a paper, or passing a competitive exam."
-  - Instead of "relationship harmony", specify "getting married, finding a high-value business partner, or resolving a legal dispute."
-  - Instead of "financial expansion", specify "buying real estate, getting a promotion, or starting a new business venture."
-  Every single user expects extreme clarity, practical life events, and absolute unvarnished truth. Anchor your entire reading in specific, real-world outcomes.
-  1. INDEPENDENT HOUSES: If a house is empty and its lord is untenanted, it is extremely powerful.
-  2. STRICT TIMING (PURE KP VIMSHOTTARI): Abandon planetary maturity ages. KP Astrology timing relies STRICTLY on Vimshottari Dasha.
-       You MUST find the EXACT date ranges from the "FULL LIFE PRATYANTARDASHA TIMELINE (BIRTH TO AGE 90)" provided above where the Pratyantardasha (PD) planet is the 10th CSL, 11th CSL, 2nd CSL, or 7th CSL, or a very strong significator (Level 1/2) of these houses.
-       Identify the 4 most powerful Pratyantardasha periods across the past and future (must include past/present events like education/first job) for career, wealth, or marriage.
-       CRITICAL: Use the exact short-term Month-Year format from the timeline for breakthroughs (e.g., "Jan 2025 to Mar 2025"). NEVER invent your own dates.
-    3. MANDATORY EXACT TIMING (ALL SECTIONS): You MUST use the "FULL LIFE PRATYANTARDASHA TIMELINE (BIRTH TO AGE 90)" to provide EXACT pinpoint dates for EVERY single prediction in the Career, Wealth, and Relationships sections. NEVER say "soon" or "in the future".
-    4. MASSIVE DETAIL & FORMATTING: Write at least 300 words for EVERY SINGLE FIELD. For breakthroughs, format strictly as a numbered list. You MUST NOT use any HTML tags like <br>. Use standard newline characters (
-) for line breaks so the UI renders it cleanly.
-       CRITICAL BREAKTHROUGHS FORMATTING: You must output exactly 6 breakthroughs spanning the user's ENTIRE life (childhood, past, present, and future). Pick the absolute strongest peaks based on the provided KP House Significators. Do NOT force specific events; predict purely based on what the exact Pratyantardasha planet signifies in the user's chart.
-       Each breakthrough MUST be structured in this EXACT order, with each item on a new line (no HTML tags):
-       Exact Year: (e.g., 2025)
-       Exact Month: (e.g., January to March)
-       Initial Topic of Breakthrough: (e.g., Major Career Promotion)
-       Description: (Detailed explanation of what will happen)`;
+
+    [WAY 2: SUN-TRIGGERED GOCHAR (EXACT DAY/WEEK PINPOINTING)]: 
+    - Within your predicted Pratyantardasha window (e.g., May 2026 to Sep 2026), you MUST find which of the "TRANSIT (GOCHAR) EXACT TRIGGERS" falls inside it.
+    - If you predict a career event, and one of the Career Hot Dates is 'Aug 12', you MUST forcefully declare: "This event will trigger exactly around the 2nd week of August." 
+    - NEVER give a broad 5-month window without pinpointing the exact week/day using these Hot Dates. This applies to EVERY section.
+
+    [WAY 3: K. BASKARAN SUB-SUB LORD (SSL) & IMMEDIATE RELEVANCE]: 
+    - The user is checking this in ${new Date().getFullYear()}.
+    - You MUST use the provided Sub-Sub Lord (SSL) for ultimate precision. 
+    - You MUST prioritize finding breakthroughs in the immediate present and near future (2025-2028). 
+    - Do not skip the present years. If the user is a Fresher, their First Job MUST happen in the immediate upcoming active Pratyantardasha (e.g. 2026 or 2027), do not delay it to 2030.
+
+    CRITICAL INSTRUCTIONS FOR ZERO HALLUCINATION:
+    - Do NOT give generic, philosophical, or purely psychological planetary traits (e.g., "The Moon makes you emotional"). 
+    - Translate EVERY placement into STRICT, CONCRETE, REAL-WORLD EVENTS (e.g., "securing a corporate job", "getting married").
+    - INDEPENDENT HOUSES: If a house is empty and its lord is untenanted, it is extremely powerful.
+    
+    MANDATORY EXACT TIMING (ALL SECTIONS): 
+    - You MUST use the "FULL LIFE PRATYANTARDASHA TIMELINE (BIRTH TO AGE 90)" to provide EXACT pinpoint dates for EVERY single prediction in the Education, Family, Career, Wealth, Health, and Relationships sections. NEVER say "soon" or "in the future".
+    
+    MASSIVE DETAIL & FORMATTING: 
+    - Write at least 300 words for EVERY SINGLE FIELD. 
+    - You MUST NOT use any HTML tags like <br>. Use standard newline characters for line breaks.
+    
+    CRITICAL BREAKTHROUGHS FORMATTING (EXACTLY 6 EVENTS): 
+    - You must output exactly 6 breakthroughs spanning the user's ENTIRE life (1 past, 2 immediate present/future, 3 distant future). 
+    - Pick the absolute strongest peaks based on the provided KP House Significators. Do NOT force specific events; predict purely based on what the exact Pratyantardasha planet signifies in the user's chart.
+    - Each breakthrough MUST be structured in this EXACT order, with each item on a new line (no HTML tags):
+      Exact Year: (e.g., 2026)
+      Exact Month: (e.g., January to March)
+      Initial Topic of Breakthrough: (e.g., Securing First Full-Time Job)
+      Description: (Detailed explanation pinpointed with exact Transit Gochar Date)`;
 
       const fallbackModels = [
           "gemini-3.5-flash-lite",
