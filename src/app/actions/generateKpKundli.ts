@@ -272,20 +272,12 @@ export async function fetchAIKpKundliData(name: string, dob: string, tob: string
   - Instead of "financial expansion", specify "buying real estate, getting a promotion, or starting a new business venture."
   Every single user expects extreme clarity, practical life events, and absolute unvarnished truth. Anchor your entire reading in specific, real-world outcomes.
   1. INDEPENDENT HOUSES: If a house is empty and its lord is untenanted, it is extremely powerful.
-  2. STRICT BREAKTHROUGHS MATHEMATICS: You MUST NOT perform any math or calculations yourself. Breakthroughs ONLY happen at the exact Vedic Planetary Maturity Age of the CSLs (Sub-Lords). 
-     You MUST use EXACTLY this pre-calculated table for the breakthrough years based on the birth year:
-     - Jupiter: Year ${year + 16} (Age 16)
-     - Sun: Year ${year + 22} (Age 22)
-     - Moon: Year ${year + 24} (Age 24)
-     - Venus: Year ${year + 25} (Age 25)
-     - Mars: Year ${year + 28} (Age 28)
-     - Mercury: Year ${year + 32} (Age 32)
-     - Saturn: Year ${year + 36} (Age 36)
-     - Rahu: Year ${year + 42} (Age 42)
-     - Ketu: Year ${year + 48} (Age 48)
-     CRITICAL: Just copy the Exact Year from the table above. Do not show your math.
-  3. SPECIFIC HOUSE MANIFESTATION (NO GENERIC READINGS): When describing a breakthrough, do NOT just give generic planetary traits (e.g., Moon = emotions, Mars = drive). You MUST explicitly connect the planet to the HOUSES it rules as a CSL in this exact chart! If a planet is the 10th CSL, 2nd CSL, 6th CSL, or 11th CSL, its maturity year MUST be explicitly described as a major CAREER, JOB, or FINANCIAL breakthrough (e.g., getting a first major job, corporate success, or huge wealth). 
-  4. MASSIVE DETAIL & FORMATTING: Write at least 300 words for EVERY SINGLE FIELD. For breakthroughs, format strictly as a bulleted or numbered list with double line breaks (
+  2. STRICT TIMING (PURE KP VIMSHOTTARI): Abandon planetary maturity ages. KP Astrology timing relies STRICTLY on Vimshottari Dasha.
+       You MUST find the EXACT date ranges from the "FUTURE 20-YEAR TIMELINE" provided above where the Antardasha planet is the 10th CSL, 11th CSL, 2nd CSL, or 7th CSL, or a very strong significator (Level 1/2) of these houses.
+       Identify the 3 most powerful future Antardasha periods for career, wealth, or marriage.
+       CRITICAL: Use the exact Year-Month format from the timeline for breakthroughs. NEVER invent your own dates.
+    3. MANDATORY EXACT TIMING (ALL SECTIONS): You MUST use the "FUTURE 20-YEAR TIMELINE" to provide EXACT YEAR-MONTH dates for EVERY single prediction in the Career, Wealth, and Relationships sections. NEVER say "soon" or "in the future".
+    4. MASSIVE DETAIL & FORMATTING: Write at least 300 words for EVERY SINGLE FIELD. For breakthroughs, format strictly as a bulleted or numbered list with double line breaks (
 
 ) between items. Clearly state the Exact Year, the Planetary Trigger, and provide a highly detailed, extensive explanation of what will happen in their career, wealth, and life.`;
 
