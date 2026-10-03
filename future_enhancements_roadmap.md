@@ -53,3 +53,24 @@ This document outlines the advanced features, algorithms, and UI/UX upgrades pla
 ### 💬 Conversational AI Astrologer (Chat Mode)
 - After the report is generated, allow the user to chat with the engine contextually.
 - "You mentioned a promotion in Sept 2026. Will it involve travel?" -> The AI uses the already loaded D10 and KP matrix to answer the follow-up question.
+
+---
+
+## 4. Hyper-Advanced Astrological Mathematics (For 100% God-Mode Precision)
+
+### ?? Ashtakavarga System (Vedic Point-Based Scoring)
+- **Concept:** Calculates the exact 'Bindu' (points) for each house.
+- **Why it matters:** Removes ambiguity. If a house scores 30+ points, success is mathematically guaranteed. If it scores below 25, struggle is certain. The AI can use these raw points to deliver absolute, black-and-white Vedic predictions.
+
+### ?? Shadbala (6-Fold Planetary Strength)
+- **Concept:** Instead of simple dignities (Exalted/Debilitated), calculate Positional, Directional, Temporal, Motional, and Natural strengths of planets.
+- **Why it matters:** Provides an exact percentage score (out of 100%) for planetary dominance, allowing the AI to know precisely which planet controls the native's life force.
+
+### ?? Cuspal Interlinks (CIL) & Sub-Sub-Lord Chain (KP)
+- **Concept:** Extends Phase 3 negation logic to the absolute microscopic level. Examines the full chain: Planet -> Star Lord -> Sub Lord -> Sub-Sub Lord.
+- **Why it matters:** Prevents "Last-Minute Failures" in predictions. If a Star Lord promises an event but the Sub Lord is placed in destructive houses (8, 12), the AI will accurately predict a cancellation or severe blockage at the last hurdle.
+
+### ?? Ruling Planets (RP) for Exact Daily Micro-Timing
+- **Concept:** Captures the current planetary transits at the exact second the user clicks the "Generate" button (Horary/Prashna technique) and maps them to the natal chart.
+- **Why it matters:** Narrows down prediction windows from "Months" (Sookshma) to precise "Days", giving the exact day of the week an event will occur.
+
