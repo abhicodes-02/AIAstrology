@@ -104,3 +104,4 @@ export function getPlanetaryDignityScore(planet: string, sign: number): { score:
     print("Injected Phase 2 (Power Scoring)!")
 
 inject_phase2('src/app/actions/generateKpKundli.ts')
+

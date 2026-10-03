@@ -10,3 +10,4 @@ if "const planetaryPower" not in content:
 with open('src/app/actions/generateKpKundli.ts', 'w', encoding='utf-8') as f:
     f.write(content)
 print("Fixed planetary power init")
+

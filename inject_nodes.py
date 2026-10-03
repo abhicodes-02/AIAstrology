@@ -71,3 +71,4 @@ def inject_nodes(filepath):
     print("Injected nodes successfully!")
 
 inject_nodes('src/app/actions/generateKpKundli.ts')
+
