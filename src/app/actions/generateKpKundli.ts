@@ -333,7 +333,7 @@ const planetaryPower: Record<string, {score: number, status: string}> = {};
               
               // Calculate Sookshma Dashas only for immediate years (Current Year - 2 to Current Year + 5)
               const currentYear = new Date().getFullYear();
-              const isImmediateYear = pdStartDate.getFullYear() >= (currentYear - 2) && pdEndDate.getFullYear() <= (currentYear + 5);
+              const isImmediateYear = pdStartDate.getFullYear() >= (currentYear - 4) && pdEndDate.getFullYear() <= (currentYear + 5);
               
               let sdTimelineStr = "";
               if (isImmediateYear) {
@@ -507,7 +507,7 @@ const planetaryPower: Record<string, {score: number, status: string}> = {};
       - NEVER violate this chronological locking. Map the mathematically closest Dasha window to the user's current context.
     
     MANDATORY EXACT TIMING (ALL SECTIONS): 
-    - You MUST use the "FULL LIFE PRATYANTARDASHA TIMELINE (BIRTH TO AGE 90)" to provide EXACT pinpoint dates for EVERY single prediction in the Education, Family, Career, Wealth, Health, and Relationships sections. NEVER say "soon" or "in the future".
+    - You MUST use the provided timeline to find EXACT pinpoint dates for EVERY prediction in the Education, Family, Career, Wealth, Health, and Relationships sections. Explicitly state the EXACT YEAR for past events (e.g. "In 2023, you...") and the EXACT MONTH and YEAR for future events (e.g. "In October 2026, you will..."). NEVER say "soon" or "in the past". You must extract the exact timing from the math, but hide the mathematical terms from the user.
     
     MASSIVE DETAIL & FORMATTING: 
     - Write at least 300 words for EVERY SINGLE FIELD. CRITICAL TIMING DISTINCTION: For the 'career', 'relationships', 'wealth', 'health', 'education', 'family', and 'fullLife' sections, you MUST provide a LIFELONG GENERAL OVERVIEW of the native's destiny. Describe their innate potential, lifelong trajectory, and overall promise based on their planetary strengths. You must blend the overarching lifelong promise with a dynamic analysis of the recent past (Years ${new Date().getFullYear() - 3} to ${new Date().getFullYear()}) and the immediate future (Years ${new Date().getFullYear()} to ${new Date().getFullYear() + 3}). Ensure the reading flows naturally from past struggles to future milestones to ultimate lifelong destiny. HOWEVER, for the 'breakthroughs' section ONLY, you MUST focus strictly on precise timing and extract exact dates for the immediate years (Past 3 years - Future 3 years dynamically). 
