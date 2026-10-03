@@ -30,57 +30,6 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/
 import { useRef, useState } from "react";
 
 
-const MahadashaCard = ({ md, isCurrent }: { md: any, isCurrent: boolean }) => {
-  const [isOpen, setIsOpen] = useState(false);
-  return (
-    <div className={`rounded-xl border ${isCurrent ? 'bg-indigo-500/20 border-indigo-500/50' : 'bg-white/5 border-white/5'} transition-all`}>
-      <div 
-        onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center justify-between p-4 cursor-pointer hover:bg-white/5 rounded-xl select-none"
-      >
-        <div className="flex items-center gap-4">
-          <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-lg ${isCurrent ? 'bg-indigo-500 text-white shadow-[0_0_15px_rgba(99,102,241,0.5)]' : 'bg-slate-800 text-slate-400'}`}>
-            {md.planet.substring(0, 2)}
-          </div>
-          <div>
-            <h5 className={`font-bold text-lg ${isCurrent ? 'text-indigo-200' : 'text-slate-200'}`}>{md.planet} Mahadasha</h5>
-            <p className="text-xs text-slate-400">{md.duration} Years</p>
-          </div>
-        </div>
-        <div className="flex items-center gap-4">
-          <div className="text-right">
-            <p className={`text-sm font-medium ${isCurrent ? 'text-indigo-300' : 'text-slate-300'}`} suppressHydrationWarning>
-              {new Date(md.start).getFullYear()} - {new Date(md.end).getFullYear()}
-            </p>
-            <p className="text-xs text-slate-500" suppressHydrationWarning>{new Date(md.start).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}</p>
-          </div>
-          <svg className={`w-5 h-5 text-slate-400 transition-transform ${isOpen ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-          </svg>
-        </div>
-      </div>
-      
-      {isOpen && md.antardashas && (
-        <div className="p-4 pt-0 grid gap-2 mt-2">
-          <div className="h-px w-full bg-white/10 mb-2"></div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-            {md.antardashas.map((ad: any, i: number) => (
-              <div key={i} className="flex justify-between items-center bg-black/20 hover:bg-white/5 border border-white/5 p-3 rounded-lg text-sm transition-colors">
-                <div className="flex items-center gap-2">
-                  <div className="w-2 h-2 rounded-full bg-indigo-500/50"></div>
-                  <span className="text-indigo-100 font-medium">{ad.planet} <span className="text-indigo-300/50 text-xs ml-1">AD</span></span>
-                </div>
-                <span className="text-slate-400 text-xs font-mono" suppressHydrationWarning>
-                  {new Date(ad.start).toLocaleDateString('en-US', { month: 'short', year: '2-digit' })} - {new Date(ad.end).toLocaleDateString('en-US', { month: 'short', year: '2-digit' })}
-                </span>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
-    </div>
-  );
-};
 
 export default function KpKundliDashboardView({
   chartData,
@@ -423,12 +372,54 @@ export default function KpKundliDashboardView({
                       </AccordionTrigger>
                       <AccordionContent>
                         <div className="pt-4 grid gap-3">
-                          {chartData.dashaData.mahadashas.map((md: any, idx: number) => {
-                            const isCurrent = chartData.dashaData.currentMahadasha?.planet === md.planet;
-                            return (
-                                <MahadashaCard key={idx} md={md} isCurrent={isCurrent} />
-                              );
-                          })}
+                          <Accordion type="single" collapsible className="w-full space-y-3">
+                              {chartData.dashaData.mahadashas.map((md: any, idx: number) => {
+                                const isCurrent = chartData.dashaData.currentMahadasha?.planet === md.planet;
+                                return (
+                                  <AccordionItem key={idx} value={`md-${idx}`} className={`border rounded-xl px-2 ${isCurrent ? 'bg-indigo-500/20 border-indigo-500/50' : 'bg-white/5 border-white/5'} transition-all`}>
+                                    <AccordionTrigger className="hover:no-underline py-4 px-2">
+                                      <div className="flex items-center justify-between w-full">
+                                        <div className="flex items-center gap-4">
+                                          <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-lg ${isCurrent ? 'bg-indigo-500 text-white shadow-[0_0_15px_rgba(99,102,241,0.5)]' : 'bg-slate-800 text-slate-400'}`}>
+                                            {md.planet.substring(0, 2)}
+                                          </div>
+                                          <div className="text-left">
+                                            <h5 className={`font-bold text-lg ${isCurrent ? 'text-indigo-200' : 'text-slate-200'}`}>{md.planet} Mahadasha</h5>
+                                            <p className="text-xs text-slate-400 font-normal">{md.duration} Years</p>
+                                          </div>
+                                        </div>
+                                        <div className="text-right mr-4">
+                                          <p className={`text-sm font-medium ${isCurrent ? 'text-indigo-300' : 'text-slate-300'}`} suppressHydrationWarning>
+                                            {new Date(md.start).getFullYear()} - {new Date(md.end).getFullYear()}
+                                          </p>
+                                          <p className="text-xs text-slate-500 font-normal" suppressHydrationWarning>{new Date(md.start).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}</p>
+                                        </div>
+                                      </div>
+                                    </AccordionTrigger>
+                                    <AccordionContent className="px-2 pb-4">
+                                      <div className="h-px w-full bg-white/10 mb-4 mt-2"></div>
+                                      {md.antardashas ? (
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                                          {md.antardashas.map((ad: any, i: number) => (
+                                            <div key={i} className="flex justify-between items-center bg-black/20 hover:bg-white/5 border border-white/5 p-3 rounded-lg text-sm transition-colors">
+                                              <div className="flex items-center gap-2">
+                                                <div className="w-2 h-2 rounded-full bg-indigo-500/50"></div>
+                                                <span className="text-indigo-100 font-medium">{ad.planet} <span className="text-indigo-300/50 text-xs ml-1">AD</span></span>
+                                              </div>
+                                              <span className="text-slate-400 text-xs font-mono" suppressHydrationWarning>
+                                                {new Date(ad.start).toLocaleDateString('en-US', { month: 'short', year: '2-digit' })} - {new Date(ad.end).toLocaleDateString('en-US', { month: 'short', year: '2-digit' })}
+                                              </span>
+                                            </div>
+                                          ))}
+                                        </div>
+                                      ) : (
+                                        <div className="text-xs text-rose-400 italic">Please refresh the page to load Antardasha data.</div>
+                                      )}
+                                    </AccordionContent>
+                                  </AccordionItem>
+                                );
+                              })}
+                            </Accordion>
                         </div>
                       </AccordionContent>
                     </AccordionItem>
