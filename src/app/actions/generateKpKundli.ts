@@ -1,7 +1,7 @@
 "use server";
 
 import * as celestine from "celestine";
-import { calculateVimshottariDasha } from "@/lib/dasha";
+import { calculateVimshottariDasha, DASHA_ORDER } from "@/lib/dasha";
 import { GoogleGenAI } from "@google/genai";
 import { getAccurateTimezone } from "@/lib/geoUtils";
 import {
@@ -174,8 +174,39 @@ export async function fetchAIKpKundliData(name: string, dob: string, tob: string
 
     // --- VIMSHOTTARI DASHA (KP DBA TIMING) ---
     const dashaData = calculateVimshottariDasha(siderealMoon, dob);
+    
+    // Generate Future Timeline for exactly 20 years from now
+    let futureTimelineStr = "";
+    const now = new Date();
+    const twentyYearsFromNow = new Date(now);
+    twentyYearsFromNow.setFullYear(now.getFullYear() + 20);
+
+    for (const md of dashaData.mahadashas) {
+      const mdStart = new Date(md.start);
+      const mdEnd = new Date(md.end);
+      if (mdEnd < now || mdStart > twentyYearsFromNow) continue;
+
+      const mdLordIndex = DASHA_ORDER.findIndex(d => d.planet === md.planet);
+      let adIndex = mdLordIndex;
+      let adStartDate = new Date(md.start);
+      
+      for (let i = 0; i < 9; i++) {
+        const adPlanet = DASHA_ORDER[adIndex];
+        const adDays = (md.duration * adPlanet.years * 365.25) / 120;
+        let adEndDate = new Date(adStartDate);
+        adEndDate.setDate(adEndDate.getDate() + adDays);
+
+        if (adEndDate >= now && adStartDate <= twentyYearsFromNow) {
+          futureTimelineStr += `- ${adStartDate.getFullYear()}-${(adStartDate.getMonth()+1).toString().padStart(2, '0')} to ${adEndDate.getFullYear()}-${(adEndDate.getMonth()+1).toString().padStart(2, '0')}: Antardasha ${adPlanet.planet} (under Mahadasha ${md.planet})\n`;
+        }
+
+        adStartDate = new Date(adEndDate);
+        adIndex = (adIndex + 1) % 9;
+      }
+    }
+
     const dashaContext = dashaData.currentMahadasha ? 
-      `Current Dasha (DBA): Mahadasha Lord is ${dashaData.currentMahadasha.planet}, Antardasha (Bhukti) Lord is ${dashaData.currentAntardasha?.planet}. Use these Dasha lords along with their KP significators to predict current events.` : 
+      `Current Dasha (DBA): Mahadasha Lord is ${dashaData.currentMahadasha.planet}, Antardasha (Bhukti) Lord is ${dashaData.currentAntardasha?.planet}. Use these Dasha lords along with their KP significators to predict current events.\n\nFUTURE 20-YEAR TIMELINE (VIMSHOTTARI DASHA):\n${futureTimelineStr}` : 
       'Dasha timeline completed.';
 
   const yogaIndex = Math.floor(yogaDeg / (360 / 27));

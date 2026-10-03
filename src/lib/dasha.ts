@@ -24,7 +24,7 @@ export interface DashaData {
   currentAntardasha: AntardashaPeriod | null;
 }
 
-const DASHA_ORDER = [
+export const DASHA_ORDER = [
   { planet: "Ketu", years: 7 },
   { planet: "Venus", years: 20 },
   { planet: "Sun", years: 6 },
