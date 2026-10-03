@@ -1,20 +1,20 @@
 export async function getCoordinates(placeName: string) {
-    const apiKey = process.env.GOOGLE_MAPS_API_KEY;
+    const apiKey = process.env.MAPBOX_API_KEY;
     
-    if (apiKey && apiKey !== "your_google_maps_api_key_here") {
+    if (apiKey && apiKey !== "your_mapbox_api_key_here") {
         try {
-            const res = await fetch(`https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(placeName)}&key=${apiKey}`);
+            const res = await fetch(`https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(placeName)}.json?access_token=${apiKey}&autocomplete=true&types=place,locality,neighborhood,address`);
             const data = await res.json();
-            if (data.results && data.results.length > 0) {
-                return data.results.map((r: any) => ({
-                    display_name: r.formatted_address,
-                    lat: r.geometry.location.lat.toString(),
-                    lon: r.geometry.location.lng.toString(),
-                    country_code: r.address_components.find((c: any) => c.types.includes("country"))?.short_name.toLowerCase() || "in"
+            if (data.features && data.features.length > 0) {
+                return data.features.map((f: any) => ({
+                    display_name: f.place_name,
+                    lat: f.center[1].toString(),
+                    lon: f.center[0].toString(),
+                    country_code: f.context?.find((c: any) => c.id.startsWith('country'))?.short_code?.toLowerCase() || "in"
                 }));
             }
         } catch (err) {
-            console.error("Google Geocoding failed, falling back to Nominatim", err);
+            console.error("Mapbox Geocoding failed, falling back to Nominatim", err);
         }
     }
 
