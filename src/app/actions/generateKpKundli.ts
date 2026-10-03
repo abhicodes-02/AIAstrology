@@ -299,7 +299,7 @@ export async function fetchAIKpKundliData(name: string, dob: string, tob: string
     3. MANDATORY EXACT TIMING (ALL SECTIONS): You MUST use the "PAST 10-YEAR AND FUTURE 10-YEAR PRATYANTARDASHA TIMELINE" to provide EXACT pinpoint dates for EVERY single prediction in the Career, Wealth, and Relationships sections. NEVER say "soon" or "in the future".
     4. MASSIVE DETAIL & FORMATTING: Write at least 300 words for EVERY SINGLE FIELD. For breakthroughs, format strictly as a numbered list. You MUST NOT use any HTML tags like <br>. Use standard newline characters (
 ) for line breaks so the UI renders it cleanly.
-       CRITICAL BREAKTHROUGHS FORMATTING: You must output exactly 4 breakthroughs. Breakthrough 1 MUST be a past/present event (between 2020 and 2026) such as education completion or first job. Breakthroughs 2, 3, and 4 must be future events.
+       CRITICAL BREAKTHROUGHS FORMATTING: You must output exactly 4 breakthroughs. At least 1 breakthrough MUST be from the past/present timeline (if applicable), and the rest from the future. Do NOT force specific events; predict purely based on what the exact Pratyantardasha planet signifies in the user's chart.
        Each breakthrough MUST be structured in this EXACT order, with each item on a new line (no HTML tags):
        Exact Year: (e.g., 2025)
        Exact Month: (e.g., January to March)
