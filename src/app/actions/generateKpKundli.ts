@@ -322,11 +322,11 @@ export async function fetchAIKpKundliData(name: string, dob: string, tob: string
     - If you predict a career event, and one of the Career Hot Dates is 'Aug 12', you MUST forcefully declare: "This event will trigger exactly around the 2nd week of August." 
     - NEVER give a broad 5-month window without pinpointing the exact week/day using these Hot Dates. This applies to EVERY section.
 
-    [WAY 3: K. BASKARAN SUB-SUB LORD (SSL) & IMMEDIATE RELEVANCE]: 
+        [WAY 3: K. BASKARAN SUB-SUB LORD (SSL) & IMMEDIATE RELEVANCE]: 
     - The user is checking this in ${new Date().getFullYear()}.
     - You MUST use the provided Sub-Sub Lord (SSL) for ultimate precision. 
-    - You MUST prioritize finding breakthroughs in the immediate present and near future (2025-2028). 
-    - Do not skip the present years. If the user is a Fresher, their First Job MUST happen in the immediate upcoming active Pratyantardasha (e.g. 2026 or 2027), do not delay it to 2030.
+    - You MUST heavily prioritize finding breakthroughs in the exact immediate years of 2024, 2025, 2026, and 2027. Do not skip these crucial years!
+    - If the user is a Fresher, their First Job MUST happen in the active Pratyantardasha of these immediate years.
 
     CRITICAL INSTRUCTIONS FOR ZERO HALLUCINATION:
     - Do NOT give generic, philosophical, or purely psychological planetary traits (e.g., "The Moon makes you emotional"). 
@@ -340,8 +340,9 @@ export async function fetchAIKpKundliData(name: string, dob: string, tob: string
     - Write at least 300 words for EVERY SINGLE FIELD. 
     - You MUST NOT use any HTML tags like <br>. Use standard newline characters for line breaks.
     
-    CRITICAL BREAKTHROUGHS FORMATTING (EXACTLY 6 EVENTS): 
-    - You must output exactly 6 breakthroughs spanning the user's ENTIRE life (1 past, 2 immediate present/future, 3 distant future). 
+        CRITICAL BREAKTHROUGHS FORMATTING (EXACTLY 6 EVENTS): 
+    - You must output exactly 6 breakthroughs. 
+    - You MUST include at least one breakthrough from the immediate past (2024 or 2025) and at least one from the immediate present (2026 or 2027).
     - Pick the absolute strongest peaks based on the provided KP House Significators. Do NOT force specific events; predict purely based on what the exact Pratyantardasha planet signifies in the user's chart.
     - Each breakthrough MUST be structured in this EXACT order, with each item on a new line (no HTML tags):
       Exact Year: (e.g., 2026)
