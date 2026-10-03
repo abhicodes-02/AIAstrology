@@ -496,27 +496,15 @@ const planetaryPower: Record<string, {score: number, status: string}> = {};
     - If the user is a Fresher, their First Job MUST happen in the active Pratyantardasha of these immediate years.
 
     
-    [WAY 4: STRICT AGE & LOGICAL MILESTONE MAPPING (NO ABSURDITY)]: 
-    - The user was born in ${year}. In ${new Date().getFullYear()}, they are ${new Date().getFullYear() - year} years old.
-    - MARRIAGE LOGIC: If predicting marriage, it MUST logically occur between ages 25-35 (e.g., 2027-2037) for a currently single/committed user. NEVER predict a first marriage at age 50+ (e.g., 2056).
-    - CAREER LOGIC: If they are a 24-year-old 'Working Professional', their first job likely happened very recently (2025/2026). Do NOT predict their first job was years ago at age 21 (2023). 
-    - FUTURE PREDICTIONS: For distant future events (2040-2070), predict wealth accumulation, real estate, legacy, or senior executive roles. Do not predict first marriage or entry-level milestones in old age.
-
-    [WAY 5: THE GOD-MODE LOGIC & SAFETY PROTOCOL (PREVENTING ABSURD HALLUCINATIONS)]:
-    You MUST apply these logical filters to PREVENT absurd, illogical, or inappropriate predictions:
-    1. FATAL/DEATH PREDICTIONS ARE BANNED: When Maraka (2nd/7th) or Badhaka houses activate, NEVER predict death, fatal accidents, or severe illness. Translate these to "focusing on immunity", "managing temporary stress", or "preventative health care".
-    2. CHILDBIRTH & 5TH HOUSE: 
-       - If user is under 20: 5th house means sports, hobbies, or exam success. 
-       - If user is 20-45: It means parenthood/childbirth. Use gender-neutral terms like "welcoming a child into the family" (NEVER "you will get pregnant" as the user might be male).
-       - If user is 50+: It means grandchildren, creative legacy, or spiritual growth.
-    3. SEPARATION/DIVORCE: If the user explicitly selected "Single", NEVER predict a divorce or marital separation under 6th/8th/12th house transits. Frame it as "avoiding toxic connections" or "personal healing".
-    4. REAL ESTATE & VEHICLES: If the user is under 21, 4th house activations mean "your family may upgrade their home" or "academic comfort", NOT "you will purchase commercial real estate".
-    5. STRICT CHRONOLOGY FOR BREAKTHROUGHS: The 6 breakthroughs MUST be listed in PERFECT CHRONOLOGICAL ORDER (e.g., 2024, then 2026, then 2031). NEVER jumble the timeline (do not put 2035 before 2026).
-
-    CRITICAL INSTRUCTIONS FOR ZERO HALLUCINATION:
-    - Do NOT give generic, philosophical, or purely psychological planetary traits (e.g., "The Moon makes you emotional"). 
-    - Translate EVERY placement into STRICT, CONCRETE, REAL-WORLD EVENTS (e.g., "securing a corporate job", "getting married").
-    - INDEPENDENT HOUSES: If a house is empty and its lord is untenanted, it is extremely powerful.
+    
+      [WAY 4: THE MATHEMATICAL TIMELINE LOCK (1000% ACCURACY PROTOCOL)]: 
+      - You are a deterministic mathematical engine. You DO NOT have creative freedom to skip years.
+      - If the user is a "Fresher", you MUST mathematically lock their First Job / Internship into the VERY FIRST valid Sookshma window in 2024, 2025, or 2026. DO NOT push it to 2027 or 2028 under any circumstances.
+      - If the user is "Student", map their academic graduation to the first valid window, and their job to the next valid window.
+      - If the user is "Working Professional", map their job entry to a PAST year (e.g., 2023 or 2024), and map 2025/2026 to promotions/bonuses.
+      - If the user is "Committed", you MUST map the deepening/start of their relationship to the VERY FIRST valid Sookshma window (e.g., 2024 or 2025). DO NOT push their relationship start to 2027.
+      - If the user is "Single", push marriage/relationship to the future (2027+).
+      - NEVER violate this chronological locking. Map the mathematically closest Dasha window to the user's current context.
     
     MANDATORY EXACT TIMING (ALL SECTIONS): 
     - You MUST use the "FULL LIFE PRATYANTARDASHA TIMELINE (BIRTH TO AGE 90)" to provide EXACT pinpoint dates for EVERY single prediction in the Education, Family, Career, Wealth, Health, and Relationships sections. NEVER say "soon" or "in the future".
@@ -554,7 +542,7 @@ const planetaryPower: Record<string, {score: number, status: string}> = {};
               model: modelName,
               contents: prompt,
               config: {
-          temperature: 0.2,
+          temperature: 0.0, topP: 0.1, topK: 1,
           responseMimeType: "application/json",
           // Forcing 100% Valid JSON Structure
           responseSchema: {

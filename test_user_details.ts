@@ -7,7 +7,7 @@ async function runTest() {
     const data = await fetchAIKpKundliData(
       "Abhimannyu Choudhury",
       "2002-01-09",
-      "09:30",
+      "09:35",
       "Maheshtala, Kolkata",
       "Fresher",
       "committed"

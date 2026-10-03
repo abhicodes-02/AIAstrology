@@ -602,7 +602,7 @@ ${futureTimelineStr}` :
               model: modelName,
               contents: prompt,
               config: { 
-          temperature: 0.2, 
+          temperature: 0.0, topP: 0.1, topK: 1, 
           responseMimeType: "application/json",
           // Forcing 100% Valid JSON Structure
           responseSchema: {
