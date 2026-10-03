@@ -104,7 +104,17 @@ export async function fetchAIKpKundliData(name: string, dob: string, tob: string
     Venus: "Ve", Saturn: "Sa", "North Node": "Ra", "South Node": "Ke"
   };
 
-  chart.planets.forEach((p: any) => {
+  
+  const d9Houses: Record<number, string[]> = { 1: [], 2: [], 3: [], 4: [], 5: [], 6: [], 7: [], 8: [], 9: [], 10: [], 11: [], 12: [] };
+  const d10Houses: Record<number, string[]> = { 1: [], 2: [], 3: [], 4: [], 5: [], 6: [], 7: [], 8: [], 9: [], 10: [], 11: [], 12: [] };
+  const d24Houses: Record<number, string[]> = { 1: [], 2: [], 3: [], 4: [], 5: [], 6: [], 7: [], 8: [], 9: [], 10: [], 11: [], 12: [] };
+  
+  const ascSidereal = getSidereal(chart.houses.cusps[0].longitude);
+  const ascNavamsaSign = Math.floor(ascSidereal / (30/9)) % 12;
+  const ascD10Sign = getDasamsaSign(ascSidereal);
+  const ascD24Sign = getD24Sign(ascSidereal);
+  
+chart.planets.forEach((p: any) => {
     if (planetNameMap[p.name]) {
       const siderealLon = getSidereal(p.longitude);
       const kpInfo = getKpDetailsForLongitude(siderealLon);
@@ -293,15 +303,6 @@ export async function fetchAIKpKundliData(name: string, dob: string, tob: string
 
   const bpHouses: Record<number, string[]> = { 1: [], 2: [], 3: [], 4: [], 5: [], 6: [], 7: [], 8: [], 9: [], 10: [], 11: [], 12: [] };
   const d1Houses: Record<number, string[]> = { 1: [], 2: [], 3: [], 4: [], 5: [], 6: [], 7: [], 8: [], 9: [], 10: [], 11: [], 12: [] };
-
-    const d9Houses: Record<number, string[]> = { 1: [], 2: [], 3: [], 4: [], 5: [], 6: [], 7: [], 8: [], 9: [], 10: [], 11: [], 12: [] };
-    const d10Houses: Record<number, string[]> = { 1: [], 2: [], 3: [], 4: [], 5: [], 6: [], 7: [], 8: [], 9: [], 10: [], 11: [], 12: [] };
-    const d24Houses: Record<number, string[]> = { 1: [], 2: [], 3: [], 4: [], 5: [], 6: [], 7: [], 8: [], 9: [], 10: [], 11: [], 12: [] };
-    
-    const ascSidereal = ascCusp.longitude;
-    const ascNavamsaSign = Math.floor(ascSidereal / (30/9)) % 12;
-    const ascD10Sign = getDasamsaSign(ascSidereal);
-    const ascD24Sign = getD24Sign(ascSidereal);
 
   
   const ascSign = ascCusp.signIndex;
