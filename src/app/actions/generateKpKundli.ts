@@ -178,13 +178,15 @@ export async function fetchAIKpKundliData(name: string, dob: string, tob: string
     // Generate Future Pratyantardasha (PD) Timeline for exactly 10 years from now for PINPOINT accuracy
     let futureTimelineStr = "";
     const now = new Date();
+    const tenYearsAgo = new Date(now);
+    tenYearsAgo.setFullYear(now.getFullYear() - 10);
     const tenYearsFromNow = new Date(now);
     tenYearsFromNow.setFullYear(now.getFullYear() + 10);
 
     for (const md of dashaData.mahadashas) {
       const mdStart = new Date(md.start);
       const mdEnd = new Date(md.end);
-      if (mdEnd < now || mdStart > tenYearsFromNow) continue;
+      if (mdEnd < tenYearsAgo || mdStart > tenYearsFromNow) continue;
 
       const mdLordIndex = DASHA_ORDER.findIndex(d => d.planet === md.planet);
       let adIndex = mdLordIndex;
@@ -224,7 +226,7 @@ export async function fetchAIKpKundliData(name: string, dob: string, tob: string
     }
 
     const dashaContext = dashaData.currentMahadasha ? 
-      `Current Dasha (DBA): Mahadasha Lord is ${dashaData.currentMahadasha.planet}, Antardasha (Bhukti) Lord is ${dashaData.currentAntardasha?.planet}. Use these Dasha lords along with their KP significators to predict current events.\n\nFUTURE 10-YEAR PRATYANTARDASHA TIMELINE (PINPOINT TIMING):\n${futureTimelineStr}` : 
+      `Current Dasha (DBA): Mahadasha Lord is ${dashaData.currentMahadasha.planet}, Antardasha (Bhukti) Lord is ${dashaData.currentAntardasha?.planet}. Use these Dasha lords along with their KP significators to predict current events.\n\nPAST 10-YEAR AND FUTURE 10-YEAR PRATYANTARDASHA TIMELINE (PINPOINT TIMING):\n${futureTimelineStr}` : 
       'Dasha timeline completed.';
 
   const yogaIndex = Math.floor(yogaDeg / (360 / 27));
@@ -291,16 +293,16 @@ export async function fetchAIKpKundliData(name: string, dob: string, tob: string
   Every single user expects extreme clarity, practical life events, and absolute unvarnished truth. Anchor your entire reading in specific, real-world outcomes.
   1. INDEPENDENT HOUSES: If a house is empty and its lord is untenanted, it is extremely powerful.
   2. STRICT TIMING (PURE KP VIMSHOTTARI): Abandon planetary maturity ages. KP Astrology timing relies STRICTLY on Vimshottari Dasha.
-       You MUST find the EXACT date ranges from the "FUTURE 10-YEAR PRATYANTARDASHA TIMELINE" provided above where the Pratyantardasha (PD) planet is the 10th CSL, 11th CSL, 2nd CSL, or 7th CSL, or a very strong significator (Level 1/2) of these houses.
-       Identify the 3 most powerful future Pratyantardasha periods for career, wealth, or marriage.
+       You MUST find the EXACT date ranges from the "PAST 10-YEAR AND FUTURE 10-YEAR PRATYANTARDASHA TIMELINE" provided above where the Pratyantardasha (PD) planet is the 10th CSL, 11th CSL, 2nd CSL, or 7th CSL, or a very strong significator (Level 1/2) of these houses.
+       Identify the 4 most powerful Pratyantardasha periods across the past and future (must include past/present events like education/first job) for career, wealth, or marriage.
        CRITICAL: Use the exact short-term Month-Year format from the timeline for breakthroughs (e.g., "Jan 2025 to Mar 2025"). NEVER invent your own dates.
-    3. MANDATORY EXACT TIMING (ALL SECTIONS): You MUST use the "FUTURE 10-YEAR PRATYANTARDASHA TIMELINE" to provide EXACT pinpoint dates for EVERY single prediction in the Career, Wealth, and Relationships sections. NEVER say "soon" or "in the future".
-    4. MASSIVE DETAIL & FORMATTING: Write at least 300 words for EVERY SINGLE FIELD. For breakthroughs, format strictly as a numbered list. DO NOT use any HTML tags like <br>. Use standard newlines.
+    3. MANDATORY EXACT TIMING (ALL SECTIONS): You MUST use the "PAST 10-YEAR AND FUTURE 10-YEAR PRATYANTARDASHA TIMELINE" to provide EXACT pinpoint dates for EVERY single prediction in the Career, Wealth, and Relationships sections. NEVER say "soon" or "in the future".
+    4. MASSIVE DETAIL & FORMATTING: Write at least 300 words for EVERY SINGLE FIELD. For breakthroughs, format strictly as a numbered list. You MUST use <br><br> tags for double line breaks between breakthroughs and <br> for single line breaks within a breakthrough so it renders cleanly on the UI.
        CRITICAL BREAKTHROUGHS FORMATTING: Each breakthrough MUST be structured in this EXACT order:
-       Exact Year: (e.g., 2025)
-       Exact Month: (e.g., January to March)
-       Initial Topic of Breakthrough: (e.g., Major Career Promotion)
-       Description: (Detailed explanation of what will happen)`;
+       Exact Year: (e.g., 2025) <br>
+       Exact Month: (e.g., January to March) <br>
+       Initial Topic of Breakthrough: (e.g., Major Career Promotion) <br>
+       Description: (Detailed explanation of what will happen) <br><br>`;
 
       const fallbackModels = [
           "gemini-3.5-flash-lite",
