@@ -3,7 +3,7 @@
 import * as celestine from "celestine";
 import { GoogleGenAI, Type } from "@google/genai";
 import { getAccurateTimezone } from "@/lib/geoUtils";
-import { calculateVimshottariDasha } from "@/lib/dasha";
+import { calculateVimshottariDasha, DASHA_ORDER } from "@/lib/dasha";
 
 const withTimeout = <T>(promise: Promise<T>, ms: number, fallback: T): Promise<T> => {
   return Promise.race([
@@ -427,9 +427,45 @@ export async function fetchAIKundliData(name: string, dob: string, tob: string, 
     };
   });
   
-    const dashaData = calculateVimshottariDasha(siderealMoon, dob);
+        const dashaData = calculateVimshottariDasha(siderealMoon, dob);
+    
+    // Generate Future Timeline for exactly 20 years from now
+    let futureTimelineStr = "";
+    const now = new Date();
+    const twentyYearsFromNow = new Date(now);
+    twentyYearsFromNow.setFullYear(now.getFullYear() + 20);
+
+    for (const md of dashaData.mahadashas) {
+      const mdStart = new Date(md.start);
+      const mdEnd = new Date(md.end);
+      if (mdEnd < now || mdStart > twentyYearsFromNow) continue;
+
+      const mdLordIndex = DASHA_ORDER.findIndex(d => d.planet === md.planet);
+      let adIndex = mdLordIndex;
+      let adStartDate = new Date(md.start);
+      
+      for (let i = 0; i < 9; i++) {
+        const adPlanet = DASHA_ORDER[adIndex];
+        const adDays = (md.duration * adPlanet.years * 365.25) / 120;
+        let adEndDate = new Date(adStartDate);
+        adEndDate.setDate(adEndDate.getDate() + adDays);
+
+        if (adEndDate >= now && adStartDate <= twentyYearsFromNow) {
+          futureTimelineStr += `- ${adStartDate.getFullYear()}-${(adStartDate.getMonth()+1).toString().padStart(2, '0')} to ${adEndDate.getFullYear()}-${(adEndDate.getMonth()+1).toString().padStart(2, '0')}: Antardasha ${adPlanet.planet} (under Mahadasha ${md.planet})
+`;
+        }
+
+        adStartDate = new Date(adEndDate);
+        adIndex = (adIndex + 1) % 9;
+      }
+    }
+
     const dashaContext = dashaData.currentMahadasha ? 
-      `Currently running Mahadasha: ${dashaData.currentMahadasha.planet} (Ends: ${dashaData.currentMahadasha.end}). Currently running Antardasha: ${dashaData.currentAntardasha?.planet} (Ends: ${dashaData.currentAntardasha?.end}).` : 
+      `Currently running Mahadasha: ${dashaData.currentMahadasha.planet} (Ends: ${dashaData.currentMahadasha.end}). 
+Currently running Antardasha: ${dashaData.currentAntardasha?.planet} (Ends: ${dashaData.currentAntardasha?.end}).
+
+FUTURE 20-YEAR TIMELINE (VIMSHOTTARI DASHA):
+${futureTimelineStr}` : 
       'Dasha timeline completed.';
       
     const chartData = {
