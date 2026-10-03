@@ -3,6 +3,7 @@
 import * as celestine from "celestine";
 import { GoogleGenAI, Type } from "@google/genai";
 import { getAccurateTimezone } from "@/lib/geoUtils";
+import { getCoordinates } from "@/lib/geocoding";
 import { calculateVimshottariDasha, DASHA_ORDER } from "@/lib/dasha";
 
 const withTimeout = <T>(promise: Promise<T>, ms: number, fallback: T): Promise<T> => {

@@ -1,10 +1,9 @@
-"use server";
+
 
 import * as celestine from "celestine";
 import { calculateVimshottariDasha, DASHA_ORDER } from "@/lib/dasha";
 import { GoogleGenAI } from "@google/genai";
 import { getAccurateTimezone } from "@/lib/geoUtils";
-import { getCoordinates } from "@/lib/geocoding";
 import {
   getKpAyanamsa,
   getKpDetailsForLongitude,

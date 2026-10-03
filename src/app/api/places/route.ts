@@ -1,4 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
+import { getCoordinates } from "@/lib/geocoding";
+
 export const dynamic = "force-dynamic";
 
 export async function GET(req: NextRequest) {
@@ -10,15 +12,7 @@ export async function GET(req: NextRequest) {
   }
 
   try {
-    const res = await fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(q)}&format=json&limit=5`, {
-      headers: { "User-Agent": "AIAstrology/1.0" }
-    });
-    
-    if (!res.ok) {
-      throw new Error(`Nominatim responded with ${res.status}`);
-    }
-    
-    const data = await res.json();
+    const data = await getCoordinates(q);
     return NextResponse.json(data);
   } catch (error) {
     console.error("Places API Error:", error);
