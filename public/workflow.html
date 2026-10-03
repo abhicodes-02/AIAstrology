@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Astrology Engine - Workflow</title>
+    <script type="module">
+        import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+        mermaid.initialize({ startOnLoad: true, theme: 'dark' });
+    </script>
+    <style>
+        body {
+            background-color: #0f172a;
+            color: #f8fafc;
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 2rem;
+            margin: 0;
+        }
+        h1 {
+            color: #fbbf24;
+            margin-bottom: 2rem;
+            font-size: 2.5rem;
+            text-align: center;
+        }
+        .mermaid-container {
+            width: 100%;
+            max-width: 1000px;
+            background: #1e293b;
+            padding: 2rem;
+            border-radius: 1rem;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+            border: 1px solid #334155;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>🔮 Deterministic KP Astrology Engine</h1>
+    
+    <div class="mermaid-container">
+        <div class="mermaid">
+            flowchart TD
+                %% User Input
+                A[User Form Submission] -->|Name, DOB, TOB, POB, LifeStage, Status| B(Frontend: BirthDetailsForm.tsx)
+                B -->|URL Params| C(Next.js App Router: /kp-kundli)
+                
+                %% Astro Math Engine
+                C --> D[Geocoding: Nominatim API]
+                D -->|Lat, Lon, Time| E[Celestine Core Engine]
+                E --> F[Calculate Julian Date & KP Ayanamsa]
+                
+                %% Core Calculations
+                F --> G{Core KP & Vedic Calculations}
+                G --> H[Placidus Cusp Longitudes]
+                G --> I[Planetary Longitudes & Dignity]
+                
+                %% Advanced KP
+                H & I --> J[Extract Star, Sub & Sub-Sub Lords]
+                J --> K[Build A, B, C, D Significators]
+                J --> L[Phase 3: CSL Negation Logic]
+                
+                %% Dasha & Transits
+                I --> M[Calculate Vimshottari Sookshma Dasha]
+                M --> N[Extract 2024-2027 Time Windows]
+                H --> O[Calculate Gochar / Transit Hot Dates]
+                I --> P[Calculate D-9, D-10, D-24 Vargas]
+                
+                %% Data Synthesis
+                K & L & N & O & P --> Q((The Omni-Fusion JSON Object))
+                
+                %% AI Processing
+                Q -->|Inject Context & Math| R[Google Gemini API]
+                R -->|Temp: 0.0, TopK: 1| S{Universal Balancing Rules}
+                S -->|Force Job & Relationship Milestones| T[JSON Generation]
+                
+                %% Output
+                T --> U[Frontend Render: Dashboard & Timeline]
+
+                classDef default fill:#0f172a,stroke:#475569,stroke-width:2px,color:#f8fafc;
+                classDef input fill:#4338ca,stroke:#6366f1,stroke-width:2px,color:#fff;
+                classDef engine fill:#b45309,stroke:#fbbf24,stroke-width:2px,color:#fff;
+                classDef ai fill:#0f766e,stroke:#14b8a6,stroke-width:2px,color:#fff;
+
+                class A,B,C input;
+                class D,E,F,G,H,I,J,K,L,M,N,O,P engine;
+                class Q,R,S,T,U ai;
+        </div>
+    </div>
+
+</body>
+</html>

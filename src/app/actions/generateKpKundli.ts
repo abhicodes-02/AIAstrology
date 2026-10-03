@@ -424,7 +424,7 @@ const planetaryPower: Record<string, {score: number, status: string}> = {};
   if (process.env.GEMINI_API_KEY && process.env.GEMINI_API_KEY !== "your_gemini_api_key_here") {
     try {
       const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
-      const prompt = `Act as a world-renowned Grand Master of Krishnamurti Paddhati (KP) Astrology.
+      const prompt = `Act as a world-renowned Grand Master of Krishnamurti Paddhati (KP) Astrology. CRITICAL RULE: DO NOT fill the output with astrological jargon. NEVER explicitly mention "D-10", "D-9", "CSL", "Pratyantardasha", "Sookshma", or specific planetary house placements in your text. You must use the math to calculate the exact timing internally, but your final output must be 100% human-friendly, plain English predictions. Sound like a wise, confident mentor giving direct answers (e.g. "In April 2026, you will secure a job"), NOT a math textbook.
   Analyze this exact KP Chart for ${name} born in ${year}:
     - USER CONTEXT: Currently a ${lifeStage} and is ${relationshipStatus}.
   - VIMSHOTTARI DBA TIMING (CURRENT): ${dashaContext}
