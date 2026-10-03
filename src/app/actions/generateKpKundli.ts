@@ -480,14 +480,14 @@ export async function fetchAIKpKundliData(name: string, dob: string, tob: string
 }
 
 
-export function getDasamsaSign(siderealLon: number): number {
+function getDasamsaSign(siderealLon: number): number {
   const sign = Math.floor(siderealLon / 30);
   const degree = siderealLon % 30;
   const dasamsaIdx = Math.floor(degree / 3);
   return sign % 2 === 0 ? (sign + dasamsaIdx) % 12 : (sign + 8 + dasamsaIdx) % 12;
 }
 
-export function getD24Sign(siderealLon: number): number {
+function getD24Sign(siderealLon: number): number {
   const sign = Math.floor(siderealLon / 30);
   const degree = siderealLon % 30;
   const d24Idx = Math.floor(degree / 1.25);
