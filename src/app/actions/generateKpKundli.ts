@@ -310,6 +310,11 @@ export async function fetchAIKpKundliData(name: string, dob: string, tob: string
   
     CRITICAL RULES FOR ZERO VARIANCE:
   CRITICAL REAL-WORLD CLARITY RULE (NO GENERIC ASTROLOGY FLUFF):
+    [WAY 3: IMMEDIATE TIMELINE RELEVANCE]: 
+    - The user is checking this in ${new Date().getFullYear()}.
+    - You MUST prioritize finding breakthroughs in the immediate present and near future (2025-2028). 
+    - Do not skip the present years. If the user is a Fresher, their First Job MUST happen in the immediate upcoming active Pratyantardasha (e.g. 2026 or 2027), do not delay it to 2030.
+    
     [WAY 2: SUN-TRIGGERED GOCHAR (EXACT DAY/WEEK PINPOINTING)]: 
     - Within your predicted Pratyantardasha window (e.g. May 2026 to Sep 2026), you MUST find which of the "TRANSIT (GOCHAR) EXACT TRIGGERS" falls inside it.
     - If you predict a career event, and one of the Career Hot Dates is 'Aug 12', you MUST forcefully declare: "This event will trigger exactly around the 2nd week of August." 
