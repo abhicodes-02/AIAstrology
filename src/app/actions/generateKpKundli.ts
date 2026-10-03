@@ -175,16 +175,16 @@ export async function fetchAIKpKundliData(name: string, dob: string, tob: string
     // --- VIMSHOTTARI DASHA (KP DBA TIMING) ---
     const dashaData = calculateVimshottariDasha(siderealMoon, dob);
     
-    // Generate Future Timeline for exactly 20 years from now
+    // Generate Future Pratyantardasha (PD) Timeline for exactly 10 years from now for PINPOINT accuracy
     let futureTimelineStr = "";
     const now = new Date();
-    const twentyYearsFromNow = new Date(now);
-    twentyYearsFromNow.setFullYear(now.getFullYear() + 20);
+    const tenYearsFromNow = new Date(now);
+    tenYearsFromNow.setFullYear(now.getFullYear() + 10);
 
     for (const md of dashaData.mahadashas) {
       const mdStart = new Date(md.start);
       const mdEnd = new Date(md.end);
-      if (mdEnd < now || mdStart > twentyYearsFromNow) continue;
+      if (mdEnd < now || mdStart > tenYearsFromNow) continue;
 
       const mdLordIndex = DASHA_ORDER.findIndex(d => d.planet === md.planet);
       let adIndex = mdLordIndex;
@@ -196,8 +196,26 @@ export async function fetchAIKpKundliData(name: string, dob: string, tob: string
         let adEndDate = new Date(adStartDate);
         adEndDate.setDate(adEndDate.getDate() + adDays);
 
-        if (adEndDate >= now && adStartDate <= twentyYearsFromNow) {
-          futureTimelineStr += `- ${adStartDate.getFullYear()}-${(adStartDate.getMonth()+1).toString().padStart(2, '0')} to ${adEndDate.getFullYear()}-${(adEndDate.getMonth()+1).toString().padStart(2, '0')}: Antardasha ${adPlanet.planet} (under Mahadasha ${md.planet})\n`;
+        if (adEndDate >= now && adStartDate <= tenYearsFromNow) {
+          // Calculate Pratyantardashas inside this AD
+          let pdIndex = adIndex;
+          let pdStartDate = new Date(adStartDate);
+          
+          for (let j = 0; j < 9; j++) {
+            const pdPlanet = DASHA_ORDER[pdIndex];
+            const pdDays = (md.duration * adPlanet.years * pdPlanet.years * 365.25) / (120 * 120);
+            let pdEndDate = new Date(pdStartDate);
+            pdEndDate.setDate(pdEndDate.getDate() + pdDays);
+            
+            if (pdEndDate >= now && pdStartDate <= tenYearsFromNow) {
+              const startMonthStr = pdStartDate.toLocaleString('default', { month: 'short' });
+              const endMonthStr = pdEndDate.toLocaleString('default', { month: 'short' });
+              futureTimelineStr += `- ${startMonthStr} ${pdStartDate.getFullYear()} to ${endMonthStr} ${pdEndDate.getFullYear()}: Pratyantardasha ${pdPlanet.planet} (under AD ${adPlanet.planet}, MD ${md.planet})\n`;
+            }
+            
+            pdStartDate = new Date(pdEndDate);
+            pdIndex = (pdIndex + 1) % 9;
+          }
         }
 
         adStartDate = new Date(adEndDate);
@@ -206,7 +224,7 @@ export async function fetchAIKpKundliData(name: string, dob: string, tob: string
     }
 
     const dashaContext = dashaData.currentMahadasha ? 
-      `Current Dasha (DBA): Mahadasha Lord is ${dashaData.currentMahadasha.planet}, Antardasha (Bhukti) Lord is ${dashaData.currentAntardasha?.planet}. Use these Dasha lords along with their KP significators to predict current events.\n\nFUTURE 20-YEAR TIMELINE (VIMSHOTTARI DASHA):\n${futureTimelineStr}` : 
+      `Current Dasha (DBA): Mahadasha Lord is ${dashaData.currentMahadasha.planet}, Antardasha (Bhukti) Lord is ${dashaData.currentAntardasha?.planet}. Use these Dasha lords along with their KP significators to predict current events.\n\nFUTURE 10-YEAR PRATYANTARDASHA TIMELINE (PINPOINT TIMING):\n${futureTimelineStr}` : 
       'Dasha timeline completed.';
 
   const yogaIndex = Math.floor(yogaDeg / (360 / 27));
