@@ -15,11 +15,13 @@ export default async function DailyInsightPage({
   const dob = typeof params.dob === "string" ? params.dob : "2000-01-01";
   const tob = typeof params.tob === "string" ? params.tob : "12:00";
   const pob = typeof params.pob === "string" ? params.pob : "Kolkata, India";
+  const lifeStage = typeof params.lifeStage === "string" ? params.lifeStage : "student";
+  const relationshipStatus = typeof params.relationshipStatus === "string" ? params.relationshipStatus : "single";
   const date = typeof params.date === "string" ? params.date : undefined;
 
   let dailyData;
   try {
-    dailyData = await fetchAIDailyInsightData(name, dob, tob, pob, date);
+    dailyData = await fetchAIDailyInsightData(name, dob, tob, pob, lifeStage, relationshipStatus, date);
   } catch (e) {
     console.error("Failed to load daily insight:", e);
     dailyData = {

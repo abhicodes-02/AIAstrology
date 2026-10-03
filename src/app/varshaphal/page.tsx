@@ -19,6 +19,8 @@ export default async function VarshaphalPage({
   const dob = typeof params.dob === 'string' ? params.dob : '2000-01-01';
   const tob = typeof params.tob === 'string' ? params.tob : '12:00';
   const pob = typeof params.pob === 'string' ? params.pob : 'New York';
+  const lifeStage = typeof params.lifeStage === 'string' ? params.lifeStage : 'student';
+  const relationshipStatus = typeof params.relationshipStatus === 'string' ? params.relationshipStatus : 'single';
   
   const currentYear = new Date().getFullYear();
   const targetYearStr = typeof params.targetYear === 'string' ? params.targetYear : String(currentYear);
@@ -26,7 +28,7 @@ export default async function VarshaphalPage({
 
   let data;
   try {
-    data = await fetchAIVarshaphalData(name, dob, tob, pob, targetYear);
+    data = await fetchAIVarshaphalData(name, dob, tob, pob, lifeStage, relationshipStatus, targetYear);
   } catch (error) {
     console.error("Failed to load varshaphal data:", error);
     data = {

@@ -11,13 +11,7 @@ const withTimeout = <T>(promise: Promise<T>, ms: number, fallback: T): Promise<T
   ]);
 };
 
-export async function fetchAIDailyInsightData(
-  name: string,
-  dob: string,
-  tob: string,
-  pob: string,
-  targetDateStr?: string
-) {
+export async function fetchAIDailyInsightData(name: string, dob: string, tob: string, pob: string, lifeStage: string = "student", relationshipStatus: string = "single", targetDateStr?: string) {
   // 1. Geocode location
   let lat = 22.5726;
   let lon = 88.3639;
@@ -172,6 +166,12 @@ Generate a deeply personalized daily reading explaining how this specific ${tran
   - Keep sentences short and direct.
   
   CRITICAL REAL-WORLD CLARITY RULE (NO GENERIC ASTROLOGY FLUFF):
+  [WAY 1: EXPLICIT CONTEXTUAL PROFILING (MANDATORY)]: The user explicitly states they are currently a ${lifeStage.toUpperCase()} and ${relationshipStatus.toUpperCase()}.
+  - You MUST forcefully align all predictions to this reality.
+  - If they are a STUDENT, career peaks mean Academic Success/Exams. NEVER predict corporate promotions.
+  - If they are a FRESHER, career peaks mean First Job. NEVER predict senior leadership.
+  - If they are SINGLE, relationship peaks mean finding a partner.
+  - If they are MARRIED, relationship peaks mean marital milestones or marital crisis.
   Do NOT give generic, philosophical, or purely psychological planetary traits (e.g., "The Moon makes you emotional", "Jupiter brings expansion", "You will feel a shift in energy"). 
   You MUST translate every single astrological placement into STRICT, CONCRETE, REAL-WORLD EVENTS. 
   - Instead of "intellectual growth", specify "securing a corporate job, publishing a paper, or passing a competitive exam."
