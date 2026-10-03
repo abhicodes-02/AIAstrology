@@ -92,7 +92,7 @@ export async function fetchAIKpKundliData(name: string, dob: string, tob: string
       degFormatted: kpInfo.degFormatted,
       nakshatraName: kpInfo.nakshatraName,
       starLord: kpInfo.starLord,
-      subLord: kpInfo.subLord
+      subLord: kpInfo.subLord, subSubLord: kpInfo.subSubLord
     });
   });
   cusps.sort((a, b) => a.houseNumber - b.houseNumber);
@@ -121,7 +121,7 @@ export async function fetchAIKpKundliData(name: string, dob: string, tob: string
         nakshatraName: kpInfo.nakshatraName,
         nakshatraPada: kpInfo.nakshatraPada,
         starLord: kpInfo.starLord,
-        subLord: kpInfo.subLord,
+        subLord: kpInfo.subLord, subSubLord: kpInfo.subSubLord,
         houseOccupied,
         isRetrograde: Boolean(p.isRetrograde)
       });
@@ -139,7 +139,7 @@ export async function fetchAIKpKundliData(name: string, dob: string, tob: string
         name: "Rahu", vedicName: "Ra", longitude: rahuLon, signIndex: rahuInfo.signIndex,
         signName: rahuInfo.signName, signLord: rahuInfo.signLord, degreeInSign: rahuInfo.degreeInSign,
         degFormatted: rahuInfo.degFormatted, nakshatraName: rahuInfo.nakshatraName,
-        nakshatraPada: rahuInfo.nakshatraPada, starLord: rahuInfo.starLord, subLord: rahuInfo.subLord,
+        nakshatraPada: rahuInfo.nakshatraPada, starLord: rahuInfo.starLord, subLord: rahuInfo.subLord, subSubLord: rahuInfo.subSubLord,
         houseOccupied: getHouseForLongitude(rahuLon, cusps), isRetrograde: true
       });
     }
@@ -150,7 +150,7 @@ export async function fetchAIKpKundliData(name: string, dob: string, tob: string
         name: "Ketu", vedicName: "Ke", longitude: ketuLon, signIndex: ketuInfo.signIndex,
         signName: ketuInfo.signName, signLord: ketuInfo.signLord, degreeInSign: ketuInfo.degreeInSign,
         degFormatted: ketuInfo.degFormatted, nakshatraName: ketuInfo.nakshatraName,
-        nakshatraPada: ketuInfo.nakshatraPada, starLord: ketuInfo.starLord, subLord: ketuInfo.subLord,
+        nakshatraPada: ketuInfo.nakshatraPada, starLord: ketuInfo.starLord, subLord: ketuInfo.subLord, subSubLord: ketuInfo.subSubLord,
         houseOccupied: getHouseForLongitude(ketuLon, cusps), isRetrograde: true
       });
     }

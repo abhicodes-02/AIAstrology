@@ -22,9 +22,9 @@ export interface KpSubLordInfo {
   nakshatraPada: number;
   starLord: string;
   subLord: string;
+  subSubLord?: string;
   isIndependent?: boolean;
   occupantCount?: number;
-  subSubLord?: string;
 }
 
 export interface KpCusp {
@@ -38,6 +38,7 @@ export interface KpCusp {
   nakshatraName: string;
   starLord: string;
   subLord: string;
+  subSubLord?: string;
   isIndependent?: boolean;
   occupantCount?: number;
 }
@@ -55,6 +56,7 @@ export interface KpPlanet {
   nakshatraPada: number;
   starLord: string;
   subLord: string;
+  subSubLord?: string;
   isIndependent?: boolean;
   occupantCount?: number;
   houseOccupied: number;
@@ -160,6 +162,7 @@ interface SubSegment {
   nakshatraIndex: number;
   starLord: string;
   subLord: string;
+  subSubLord?: string;
   isIndependent?: boolean;
   occupantCount?: number;
 }
@@ -223,9 +226,31 @@ export function getKpDetailsForLongitude(longitude: number): KpSubLordInfo {
   const table = build249SubTable();
   // Find sub-segment
   let subLord = starLord;
+  let subSubLord = starLord;
+  
   for (const seg of table) {
     if (lon >= seg.startLon - 1e-7 && lon < seg.endLon + 1e-7) {
       subLord = seg.subLord;
+      
+      // Calculate Sub-Sub Lord (K. Baskaran's Way 3)
+      // The Sub Lord span is divided among 9 planets in Vimshottari proportion, starting from the Sub Lord
+      const subSpan = seg.endLon - seg.startLon;
+      const subLordIdx = DASHA_ORDER.findIndex(d => d.lord === subLord);
+      let sslOffset = 0;
+      let lonOffsetInsideSub = lon - seg.startLon;
+      
+      for (let i = 0; i < 9; i++) {
+        const sslIdx = (subLordIdx + i) % 9;
+        const sslInfo = DASHA_ORDER[sslIdx];
+        const sslSpan = (subSpan * sslInfo.years) / 120;
+        
+        if (lonOffsetInsideSub >= sslOffset - 1e-7 && lonOffsetInsideSub < sslOffset + sslSpan + 1e-7) {
+          subSubLord = sslInfo.lord;
+          break;
+        }
+        sslOffset += sslSpan;
+      }
+      
       break;
     }
   }
