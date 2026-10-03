@@ -502,6 +502,9 @@ const planetaryPower: Record<string, {score: number, status: string}> = {};
       - If the user is a "Fresher", you MUST mathematically lock their First Job / Internship into the ABSOLUTE STRONGEST mathematically valid Sookshma window between 2024 and 2026 (ignoring weak blips). DO NOT push it to 2027 or 2028 under any circumstances.
       - If the user is "Student", map their academic graduation to the first valid window, and their job to the next valid window.
       - If the user is "Working Professional", map their job entry to a PAST year (e.g., 2023 or 2024), and map 2025/2026 to promotions/bonuses.
+      - If the user is "career_break_student" (Returned to Studies), map their past job exit to a past year, their current phase as academic focus/upskilling, and their professional re-entry to the strongest valid window in 2025-2027.
+      - If the user is "unemployed" (Lost Job), explicitly map a recent past year as a period of sudden career loss or instability, and pinpoint their career revival/new job to the strongest valid window in 2024-2026.
+      - If the user is "retired", do NOT predict new corporate jobs. Map breakthroughs to spiritual milestones, health recovery, family legacy, or post-retirement passive wealth/investments.
       - If the user is "Committed", you MUST map the deepening/start of their relationship to the ABSOLUTE STRONGEST relationship Sookshma window between 2024 and 2026. DO NOT push their relationship start to 2027.
       - If the user is "Single", push marriage/relationship to the future (2027+).
       - NEVER violate this chronological locking. Map the mathematically closest Dasha window to the user's current context.

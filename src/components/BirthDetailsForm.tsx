@@ -272,6 +272,9 @@ export default function BirthDetailsForm() {
                         <option value="fresher" className="bg-slate-900 text-indigo-100">Fresher / Job Seeker</option>
                         <option value="employed" className="bg-slate-900 text-indigo-100">Working Professional</option>
                         <option value="business" className="bg-slate-900 text-indigo-100">Business / Entrepreneur</option>
+                        <option value="career_break_student" className="bg-slate-900 text-indigo-100">Career Break (Returned to Studies)</option>
+                        <option value="unemployed" className="bg-slate-900 text-indigo-100">Career Break / Lost Job</option>
+                        <option value="retired" className="bg-slate-900 text-indigo-100">Retired</option>
                       </select>
                     </FormControl>
                     <FormMessage className="text-rose-400" />
@@ -347,4 +350,5 @@ export default function BirthDetailsForm() {
     </Card>
   );
 }
+
 

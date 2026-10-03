@@ -553,6 +553,9 @@ ${futureTimelineStr}` :
       - CRITICAL TIMING DISTINCTION: For all JSON sections ('career', 'relationships', 'wealth', etc.), you MUST provide a LIFELONG GENERAL OVERVIEW of the native's destiny based on their planetary strengths. 
       - You must blend this overarching lifelong promise with a dynamic analysis of the recent past (Years ${new Date().getFullYear() - 3} to ${new Date().getFullYear()}) and the immediate future (Years ${new Date().getFullYear()} to ${new Date().getFullYear() + 10}). Ensure the reading flows naturally from past struggles to future milestones to ultimate lifelong destiny.
     - If they are a STUDENT, career peaks mean Academic Success/Exams. NEVER predict corporate promotions.
+      - If they are CAREER_BREAK_STUDENT, address their bold decision to pause earning for learning, predicting a powerful professional comeback post-studies.
+      - If they are UNEMPLOYED, acknowledge the current karmic blockage or job loss honestly, but forecast their specific timeline for professional revival.
+      - If they are RETIRED, do NOT predict career climbs; reframe career/wealth peaks as legacy building, family asset management, or spiritual/dharmic fulfillment.
     - If they are a FRESHER, career peaks mean First Job. NEVER predict senior leadership.
     - If they are SINGLE, relationship peaks mean finding a partner.
     - If they are MARRIED, relationship peaks mean marital milestones (childbirth, shared assets, harmony) or marital crisis (if afflicted).
