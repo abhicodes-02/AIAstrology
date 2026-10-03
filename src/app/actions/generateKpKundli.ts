@@ -328,6 +328,13 @@ export async function fetchAIKpKundliData(name: string, dob: string, tob: string
     - You MUST heavily prioritize finding breakthroughs in the exact immediate years of 2024, 2025, 2026, and 2027. Do not skip these crucial years!
     - If the user is a Fresher, their First Job MUST happen in the active Pratyantardasha of these immediate years.
 
+    
+    [WAY 4: STRICT AGE & LOGICAL MILESTONE MAPPING (NO ABSURDITY)]: 
+    - The user was born in ${year}. In ${new Date().getFullYear()}, they are ${new Date().getFullYear() - year} years old.
+    - MARRIAGE LOGIC: If predicting marriage, it MUST logically occur between ages 25-35 (e.g., 2027-2037) for a currently single/committed user. NEVER predict a first marriage at age 50+ (e.g., 2056).
+    - CAREER LOGIC: If they are a 24-year-old 'Working Professional', their first job likely happened very recently (2025/2026). Do NOT predict their first job was years ago at age 21 (2023). 
+    - FUTURE PREDICTIONS: For distant future events (2040-2070), predict wealth accumulation, real estate, legacy, or senior executive roles. Do not predict first marriage or entry-level milestones in old age.
+
     CRITICAL INSTRUCTIONS FOR ZERO HALLUCINATION:
     - Do NOT give generic, philosophical, or purely psychological planetary traits (e.g., "The Moon makes you emotional"). 
     - Translate EVERY placement into STRICT, CONCRETE, REAL-WORLD EVENTS (e.g., "securing a corporate job", "getting married").
