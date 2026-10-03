@@ -313,7 +313,7 @@ export async function fetchAIKpKundliData(name: string, dob: string, tob: string
     [WAY 1: EXPLICIT CONTEXTUAL PROFILING]: The user explicitly states they are currently a ${lifeStage.toUpperCase()} and ${relationshipStatus.toUpperCase()}.
     - You MUST forcefully align ALL predictions across ALL sections (Career, Wealth, Relationships, etc.) to this reality.
     - If they are a STUDENT, career peaks mean Academic Success/Exams. NEVER predict corporate promotions.
-    - If they are a FRESHER, career peaks mean First Job/Internship. NEVER predict senior leadership.
+    - If they are a FRESHER, career peaks mean First Full-Time Job. NEVER predict senior leadership.
     - If they are SINGLE, relationship peaks mean finding a partner.
     - If they are MARRIED, relationship peaks mean marital milestones (childbirth, shared assets, harmony) or marital crisis (if afflicted).
 
