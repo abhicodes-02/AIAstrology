@@ -643,7 +643,7 @@ export default function KundliDashboardView({
                       </AccordionTrigger>
                       <AccordionContent>
                         <div className="pt-4 grid gap-3">
-                          <Accordion type="single" collapsible className="w-full space-y-3">
+                          <Accordion className="w-full space-y-3">
                               {chartData.dashaData.mahadashas.map((md: any, idx: number) => {
                                 const isCurrent = chartData.dashaData.currentMahadasha?.planet === md.planet;
                                 return (
