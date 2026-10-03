@@ -291,13 +291,13 @@ export async function fetchAIKpKundliData(name: string, dob: string, tob: string
   Every single user expects extreme clarity, practical life events, and absolute unvarnished truth. Anchor your entire reading in specific, real-world outcomes.
   1. INDEPENDENT HOUSES: If a house is empty and its lord is untenanted, it is extremely powerful.
   2. STRICT TIMING (PURE KP VIMSHOTTARI): Abandon planetary maturity ages. KP Astrology timing relies STRICTLY on Vimshottari Dasha.
-       You MUST find the EXACT date ranges from the "FUTURE 20-YEAR TIMELINE" provided above where the Antardasha planet is the 10th CSL, 11th CSL, 2nd CSL, or 7th CSL, or a very strong significator (Level 1/2) of these houses.
-       Identify the 3 most powerful future Antardasha periods for career, wealth, or marriage.
-       CRITICAL: Use the exact Year-Month format from the timeline for breakthroughs. NEVER invent your own dates.
-    3. MANDATORY EXACT TIMING (ALL SECTIONS): You MUST use the "FUTURE 20-YEAR TIMELINE" to provide EXACT YEAR-MONTH dates for EVERY single prediction in the Career, Wealth, and Relationships sections. NEVER say "soon" or "in the future".
-    4. MASSIVE DETAIL & FORMATTING: Write at least 300 words for EVERY SINGLE FIELD. For breakthroughs, format strictly as a bulleted or numbered list with double line breaks (
+       You MUST find the EXACT date ranges from the "FUTURE 10-YEAR PRATYANTARDASHA TIMELINE" provided above where the Pratyantardasha (PD) planet is the 10th CSL, 11th CSL, 2nd CSL, or 7th CSL, or a very strong significator (Level 1/2) of these houses.
+       Identify the 3 most powerful future Pratyantardasha periods for career, wealth, or marriage.
+       CRITICAL: Use the exact short-term Month-Year format from the timeline for breakthroughs (e.g., "Jan 2025 to Mar 2025"). NEVER invent your own dates.
+    3. MANDATORY EXACT TIMING (ALL SECTIONS): You MUST use the "FUTURE 10-YEAR PRATYANTARDASHA TIMELINE" to provide EXACT pinpoint dates for EVERY single prediction in the Career, Wealth, and Relationships sections. NEVER say "soon" or "in the future".
+    4. MASSIVE DETAIL & FORMATTING: Write at least 300 words for EVERY SINGLE FIELD. For breakthroughs, format strictly as a numbered list. You MUST use the exact literal characters `
 
-) between items. Clearly state the Exact Year, the Planetary Trigger, and provide a highly detailed, extensive explanation of what will happen in their career, wealth, and life.`;
+` (backslash n backslash n) for line breaks between items so they format correctly in JSON. DO NOT use HTML `<br>` tags.`;
 
       const fallbackModels = [
           "gemini-3.5-flash-lite",
