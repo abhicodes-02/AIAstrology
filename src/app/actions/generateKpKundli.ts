@@ -327,19 +327,45 @@ const planetaryPower: Record<string, {score: number, status: string}> = {};
           
           for (let j = 0; j < 9; j++) {
             const pdPlanet = DASHA_ORDER[pdIndex];
-            const pdDays = (md.duration * adPlanet.years * pdPlanet.years * 365.25) / (120 * 120);
-            let pdEndDate = new Date(pdStartDate);
-            pdEndDate.setDate(pdEndDate.getDate() + pdDays);
-            
-            if (pdEndDate >= dashaTimelineStart && pdStartDate <= dashaTimelineEnd) {
-              const startMonthStr = pdStartDate.toLocaleString('default', { month: 'short' });
-              const endMonthStr = pdEndDate.toLocaleString('default', { month: 'short' });
-              futureTimelineStr += `- ${startMonthStr} ${pdStartDate.getFullYear()} to ${endMonthStr} ${pdEndDate.getFullYear()}: Pratyantardasha ${pdPlanet.planet} (under AD ${adPlanet.planet}, MD ${md.planet})
+              const pdDays = (md.duration * adPlanet.years * pdPlanet.years * 365.25) / (120 * 120);
+              let pdEndDate = new Date(pdStartDate);
+              pdEndDate.setDate(pdEndDate.getDate() + pdDays);
+              
+              // Calculate Sookshma Dashas only for immediate years (Current Year - 2 to Current Year + 5)
+              const currentYear = new Date().getFullYear();
+              const isImmediateYear = pdStartDate.getFullYear() >= (currentYear - 2) && pdEndDate.getFullYear() <= (currentYear + 5);
+              
+              let sdTimelineStr = "";
+              if (isImmediateYear) {
+                let sdIndex = pdIndex;
+                let sdStartDate = new Date(pdStartDate);
+                for (let k = 0; k < 9; k++) {
+                  const sdPlanet = DASHA_ORDER[sdIndex];
+                  const sdDays = (pdDays * sdPlanet.years) / 120;
+                  const sdEndDate = new Date(sdStartDate.getTime() + sdDays * 24 * 60 * 60 * 1000);
+                  
+                  const sdStartStr = sdStartDate.toLocaleDateString('default', { month: 'short', day: 'numeric' });
+                  const sdEndStr = sdEndDate.toLocaleDateString('default', { month: 'short', day: 'numeric' });
+                  sdTimelineStr += `      * ${sdStartStr} to ${sdEndStr}: Sookshma ${sdPlanet.planet}
 `;
-            }
-            
-            pdStartDate = new Date(pdEndDate);
-            pdIndex = (pdIndex + 1) % 9;
+                  
+                  sdStartDate = new Date(sdEndDate);
+                  sdIndex = (sdIndex + 1) % 9;
+                }
+              }
+
+              if (pdEndDate >= dashaTimelineStart && pdStartDate <= dashaTimelineEnd) {
+                const startMonthStr = pdStartDate.toLocaleString('default', { month: 'short' });
+                const endMonthStr = pdEndDate.toLocaleString('default', { month: 'short' });
+                futureTimelineStr += `- ${startMonthStr} ${pdStartDate.getFullYear()} to ${endMonthStr} ${pdEndDate.getFullYear()}: Pratyantardasha ${pdPlanet.planet} (under AD ${adPlanet.planet}, MD ${md.planet})
+`;
+                if (isImmediateYear) {
+                   futureTimelineStr += sdTimelineStr;
+                }
+              }
+              
+              pdStartDate = new Date(pdEndDate);
+              pdIndex = (pdIndex + 1) % 9;
           }
         }
 
@@ -443,7 +469,8 @@ const planetaryPower: Record<string, {score: number, status: string}> = {};
     Before writing ANY prediction, you MUST pass it through this 5-layer mathematical intersection:
     1. LAYER 1 (USER INPUTS): Who is the user today? (Age, Life Stage, Relationship Status).
     2. LAYER 2 (KP BOOLEAN PERMISSIONS): Is the event mathematically permitted (True/False)? If False, ABORT the prediction or frame it as delayed/denied.
-    3. LAYER 3 (VIMSHOTTARI & GOCHAR): When exactly is the timeline window and exact trigger date?
+    
+    3. LAYER 3 (VIMSHOTTARI, SOOKSHMA & GOCHAR): When exactly is the timeline window? You MUST use the day-level Sookshma Dasha dates provided for the immediate years to pinpoint the EXACT WEEK of the event.
     4. LAYER 4 (VARGA CHARTS - D10/D9): What is the specific industry or exact flavor of the event?
     5. LAYER 5 (PLANETARY POWER): What is the magnitude? (Only exaggerate if score is 80+, downplay if score is <40).
     Your final text MUST be the exact intersection of ALL 5 layers. If any layer contradicts (e.g., Transit is good but KP Permission is FALSE), the KP Permission OVERRULES the transit. NO GUESSWORK, NO EXAGGERATION.
