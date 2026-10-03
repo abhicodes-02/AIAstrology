@@ -510,7 +510,7 @@ const planetaryPower: Record<string, {score: number, status: string}> = {};
     - You MUST use the "FULL LIFE PRATYANTARDASHA TIMELINE (BIRTH TO AGE 90)" to provide EXACT pinpoint dates for EVERY single prediction in the Education, Family, Career, Wealth, Health, and Relationships sections. NEVER say "soon" or "in the future".
     
     MASSIVE DETAIL & FORMATTING: 
-    - Write at least 300 words for EVERY SINGLE FIELD. 
+    - Write at least 300 words for EVERY SINGLE FIELD. CRITICAL TIMING DISTINCTION: For the `career`, `relationships`, `wealth`, `health`, `education`, `family`, and `fullLife` sections, you MUST provide a LIFELONG GENERAL OVERVIEW of the native's destiny. Describe their innate potential, lifelong trajectory, and overall promise based on their planetary strengths. Do NOT limit these sections to a specific year or short timeframe. HOWEVER, for the `breakthroughs` section ONLY, you MUST focus strictly on precise timing and extract exact dates for the immediate years (Past 3 years - Future 3 years dynamically). 
     - You MUST NOT use any HTML tags like <br>. Use standard newline characters for line breaks.
     
         CRITICAL BREAKTHROUGHS FORMATTING (EXACTLY 6 EVENTS): 
