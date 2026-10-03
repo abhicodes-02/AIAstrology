@@ -114,13 +114,18 @@ export async function fetchAIKpKundliData(name: string, dob: string, tob: string
   const ascD10Sign = getDasamsaSign(ascSidereal);
   const ascD24Sign = getD24Sign(ascSidereal);
   
-chart.planets.forEach((p: any) => {
+const planetaryPower: Record<string, {score: number, status: string}> = {};
+  chart.planets.forEach((p: any) => {
     if (planetNameMap[p.name]) {
       const siderealLon = getSidereal(p.longitude);
       const kpInfo = getKpDetailsForLongitude(siderealLon);
       const houseOccupied = getHouseForLongitude(siderealLon, cusps);
       
       const pSidereal = p.longitude;
+
+      const pSignIndex = Math.floor(pSidereal / 30);
+      planetaryPower[p.name] = getPlanetaryDignityScore(p.name, pSignIndex);
+
       const pNavamsaSign = Math.floor(pSidereal / (30/9)) % 12;
       let d9House = pNavamsaSign - ascNavamsaSign + 1;
       if (d9House <= 0) d9House += 12;
@@ -160,9 +165,29 @@ chart.planets.forEach((p: any) => {
     const southNode = chart.nodes.find((n: any) => n.name === "South Node") || chart.nodes[1];
 
     if (northNode) {
-      const rahuLon = getSidereal(northNode.longitude);
-      const rahuInfo = getKpDetailsForLongitude(rahuLon);
-      kpPlanets.push({
+        const pSidereal = northNode.longitude;
+        const rahuLon = getSidereal(pSidereal);
+        const rahuInfo = getKpDetailsForLongitude(rahuLon);
+
+        const pSignIndex = Math.floor(pSidereal / 30);
+        planetaryPower["Rahu"] = getPlanetaryDignityScore("Rahu", pSignIndex);
+
+        const pNavamsaSign = Math.floor(pSidereal / (30/9)) % 12;
+        let d9House = pNavamsaSign - ascNavamsaSign + 1;
+        if (d9House <= 0) d9House += 12;
+        d9Houses[d9House].push("Rahu");
+        
+        const pD10Sign = getDasamsaSign(pSidereal);
+        let d10House = pD10Sign - ascD10Sign + 1;
+        if (d10House <= 0) d10House += 12;
+        d10Houses[d10House].push("Rahu");
+
+        const pD24Sign = getD24Sign(pSidereal);
+        let d24House = pD24Sign - ascD24Sign + 1;
+        if (d24House <= 0) d24House += 12;
+        d24Houses[d24House].push("Rahu");
+
+        kpPlanets.push({
         name: "Rahu", vedicName: "Ra", longitude: rahuLon, signIndex: rahuInfo.signIndex,
         signName: rahuInfo.signName, signLord: rahuInfo.signLord, degreeInSign: rahuInfo.degreeInSign,
         degFormatted: rahuInfo.degFormatted, nakshatraName: rahuInfo.nakshatraName,
@@ -171,9 +196,29 @@ chart.planets.forEach((p: any) => {
       });
     }
     if (southNode) {
-      const ketuLon = getSidereal(southNode.longitude);
-      const ketuInfo = getKpDetailsForLongitude(ketuLon);
-      kpPlanets.push({
+        const pSidereal = southNode.longitude;
+        const ketuLon = getSidereal(pSidereal);
+        const ketuInfo = getKpDetailsForLongitude(ketuLon);
+
+        const pSignIndex = Math.floor(pSidereal / 30);
+        planetaryPower["Ketu"] = getPlanetaryDignityScore("Ketu", pSignIndex);
+
+        const pNavamsaSign = Math.floor(pSidereal / (30/9)) % 12;
+        let d9House = pNavamsaSign - ascNavamsaSign + 1;
+        if (d9House <= 0) d9House += 12;
+        d9Houses[d9House].push("Ketu");
+        
+        const pD10Sign = getDasamsaSign(pSidereal);
+        let d10House = pD10Sign - ascD10Sign + 1;
+        if (d10House <= 0) d10House += 12;
+        d10Houses[d10House].push("Ketu");
+
+        const pD24Sign = getD24Sign(pSidereal);
+        let d24House = pD24Sign - ascD24Sign + 1;
+        if (d24House <= 0) d24House += 12;
+        d24Houses[d24House].push("Ketu");
+
+        kpPlanets.push({
         name: "Ketu", vedicName: "Ke", longitude: ketuLon, signIndex: ketuInfo.signIndex,
         signName: ketuInfo.signName, signLord: ketuInfo.signLord, degreeInSign: ketuInfo.degreeInSign,
         degFormatted: ketuInfo.degFormatted, nakshatraName: ketuInfo.nakshatraName,
@@ -337,6 +382,13 @@ chart.planets.forEach((p: any) => {
       Marriage Activation Dates (Every Year): ${marriageHotDates}
   
     
+    - 
+    - EXACT EVENT MAGNITUDE (PHASE 2 POWER SCORING):
+      You MUST read the exact power score of the planets before predicting an event: ${JSON.stringify(planetaryPower)}
+      - If a planet's score is < 30 (Weak/Debilitated), NEVER predict a massive success (e.g., "Huge Promotion", "Grand Marriage"). Predict delays, minor milestones, or internal learning.
+      - If a planet's score is > 80 (Strong/Exalted), you MUST predict a massive, life-changing peak event (e.g., "Top Executive Role", "Massive Wealth Influx", "Grand Marital Union").
+      - Only predict what the math allows!
+
     - EXACT EVENT CONTEXT (PHASE 1 VARGAS):
       To deduce the exact *label* and *industry* of the events, use these Divisional Charts (Vargas):
       D-9 Navamsa (Exact Marriage/Spouse specifics): ${JSON.stringify(d9Houses)}
@@ -493,4 +545,68 @@ function getD24Sign(siderealLon: number): number {
   const degree = siderealLon % 30;
   const d24Idx = Math.floor(degree / 1.25);
   return sign % 2 === 0 ? (4 + d24Idx) % 12 : (3 + d24Idx) % 12;
+}
+
+
+function getPlanetaryDignityScore(planet: string, sign: number): { score: number, status: string } {
+  // Signs: 0=Aries, 1=Taurus, 2=Gemini, 3=Cancer, 4=Leo, 5=Virgo, 6=Libra, 7=Scorpio, 8=Sagittarius, 9=Capricorn, 10=Aquarius, 11=Pisces
+  if (planet === "Sun") {
+    if (sign === 0) return { score: 100, status: "Exalted (Massive Power)" };
+    if (sign === 4) return { score: 85, status: "Own Sign (Strong)" };
+    if (sign === 6) return { score: 10, status: "Debilitated (Very Weak)" };
+    if ([1,2,5,8,11].includes(sign)) return { score: 60, status: "Friendly Sign (Good)" };
+    return { score: 40, status: "Neutral/Enemy Sign (Average/Weak)" };
+  }
+  if (planet === "Moon") {
+    if (sign === 1) return { score: 100, status: "Exalted (Massive Power)" };
+    if (sign === 3) return { score: 85, status: "Own Sign (Strong)" };
+    if (sign === 7) return { score: 10, status: "Debilitated (Very Weak)" };
+    return { score: 50, status: "Neutral/Friendly (Average)" };
+  }
+  if (planet === "Mars") {
+    if (sign === 9) return { score: 100, status: "Exalted (Massive Power)" };
+    if (sign === 0 || sign === 7) return { score: 85, status: "Own Sign (Strong)" };
+    if (sign === 3) return { score: 10, status: "Debilitated (Very Weak)" };
+    if ([4,8,11].includes(sign)) return { score: 60, status: "Friendly Sign (Good)" };
+    return { score: 40, status: "Neutral/Enemy Sign (Average/Weak)" };
+  }
+  if (planet === "Mercury") {
+    if (sign === 5) return { score: 100, status: "Exalted (Massive Power)" };
+    if (sign === 2) return { score: 85, status: "Own Sign (Strong)" };
+    if (sign === 11) return { score: 10, status: "Debilitated (Very Weak)" };
+    if ([0,1,3,4,6].includes(sign)) return { score: 60, status: "Friendly Sign (Good)" };
+    return { score: 40, status: "Neutral/Enemy Sign (Average/Weak)" };
+  }
+  if (planet === "Jupiter") {
+    if (sign === 3) return { score: 100, status: "Exalted (Massive Power)" };
+    if (sign === 8 || sign === 11) return { score: 85, status: "Own Sign (Strong)" };
+    if (sign === 9) return { score: 10, status: "Debilitated (Very Weak)" };
+    if ([0,4,7].includes(sign)) return { score: 60, status: "Friendly Sign (Good)" };
+    return { score: 40, status: "Neutral/Enemy Sign (Average/Weak)" };
+  }
+  if (planet === "Venus") {
+    if (sign === 11) return { score: 100, status: "Exalted (Massive Power)" };
+    if (sign === 1 || sign === 6) return { score: 85, status: "Own Sign (Strong)" };
+    if (sign === 5) return { score: 10, status: "Debilitated (Very Weak)" };
+    if ([2,9,10].includes(sign)) return { score: 60, status: "Friendly Sign (Good)" };
+    return { score: 40, status: "Neutral/Enemy Sign (Average/Weak)" };
+  }
+  if (planet === "Saturn") {
+    if (sign === 6) return { score: 100, status: "Exalted (Massive Power)" };
+    if (sign === 9 || sign === 10) return { score: 85, status: "Own Sign (Strong)" };
+    if (sign === 0) return { score: 10, status: "Debilitated (Very Weak)" };
+    if ([1,2,5].includes(sign)) return { score: 60, status: "Friendly Sign (Good)" };
+    return { score: 40, status: "Neutral/Enemy Sign (Average/Weak)" };
+  }
+  if (planet === "Rahu" || planet === "North Node") {
+    if (sign === 1 || sign === 2) return { score: 100, status: "Exalted (Massive Power)" };
+    if (sign === 7 || sign === 8) return { score: 10, status: "Debilitated (Very Weak)" };
+    return { score: 50, status: "Neutral (Average)" };
+  }
+  if (planet === "Ketu" || planet === "South Node") {
+    if (sign === 7 || sign === 8) return { score: 100, status: "Exalted (Massive Power)" };
+    if (sign === 1 || sign === 2) return { score: 10, status: "Debilitated (Very Weak)" };
+    return { score: 50, status: "Neutral (Average)" };
+  }
+  return { score: 50, status: "Neutral" };
 }

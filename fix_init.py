@@ -36,3 +36,4 @@ content = content.replace(target, correct_block + target)
 with open('src/app/actions/generateKpKundli.ts', 'w', encoding='utf-8') as f:
     f.write(content)
 print("Moved initialization to before loop")
+

@@ -8,3 +8,4 @@ content = content.replace("const ascSidereal = ascCusp.longitude;", "const ascSi
 with open('src/app/actions/generateKpKundli.ts', 'w', encoding='utf-8') as f:
     f.write(content)
 print("Fixed ascCusp dependency")
+
