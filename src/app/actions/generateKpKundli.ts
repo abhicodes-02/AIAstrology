@@ -295,9 +295,12 @@ export async function fetchAIKpKundliData(name: string, dob: string, tob: string
        Identify the 3 most powerful future Pratyantardasha periods for career, wealth, or marriage.
        CRITICAL: Use the exact short-term Month-Year format from the timeline for breakthroughs (e.g., "Jan 2025 to Mar 2025"). NEVER invent your own dates.
     3. MANDATORY EXACT TIMING (ALL SECTIONS): You MUST use the "FUTURE 10-YEAR PRATYANTARDASHA TIMELINE" to provide EXACT pinpoint dates for EVERY single prediction in the Career, Wealth, and Relationships sections. NEVER say "soon" or "in the future".
-    4. MASSIVE DETAIL & FORMATTING: Write at least 300 words for EVERY SINGLE FIELD. For breakthroughs, format strictly as a numbered list. You MUST use the exact literal characters `
-
-` (backslash n backslash n) for line breaks between items so they format correctly in JSON. DO NOT use HTML `<br>` tags.`;
+    4. MASSIVE DETAIL & FORMATTING: Write at least 300 words for EVERY SINGLE FIELD. For breakthroughs, format strictly as a numbered list. DO NOT use any HTML tags like <br>. Use standard newlines.
+       CRITICAL BREAKTHROUGHS FORMATTING: Each breakthrough MUST be structured in this EXACT order:
+       Exact Year: (e.g., 2025)
+       Exact Month: (e.g., January to March)
+       Initial Topic of Breakthrough: (e.g., Major Career Promotion)
+       Description: (Detailed explanation of what will happen)`;
 
       const fallbackModels = [
           "gemini-3.5-flash-lite",
