@@ -429,18 +429,16 @@ export async function fetchAIKundliData(name: string, dob: string, tob: string, 
   
         const dashaData = calculateVimshottariDasha(siderealMoon, dob);
     
-        // Generate Past and Future Pratyantardasha (PD) Timeline
+            // Generate Full Life Pratyantardasha (PD) Timeline (Birth to Age 90)
     let futureTimelineStr = "";
-    const now = new Date();
-    const tenYearsAgo = new Date(now);
-    tenYearsAgo.setFullYear(now.getFullYear() - 10);
-    const tenYearsFromNow = new Date(now);
-    tenYearsFromNow.setFullYear(now.getFullYear() + 10);
+    const dashaTimelineStart = new Date(dob);
+    const dashaTimelineEnd = new Date(dob);
+    dashaTimelineEnd.setFullYear(dashaTimelineStart.getFullYear() + 90);
 
     for (const md of dashaData.mahadashas) {
       const mdStart = new Date(md.start);
       const mdEnd = new Date(md.end);
-      if (mdEnd < tenYearsAgo || mdStart > tenYearsFromNow) continue;
+      if (mdEnd < dashaTimelineStart || mdStart > dashaTimelineEnd) continue;
 
       const mdLordIndex = DASHA_ORDER.findIndex(d => d.planet === md.planet);
       let adIndex = mdLordIndex;
@@ -452,7 +450,8 @@ export async function fetchAIKundliData(name: string, dob: string, tob: string, 
         let adEndDate = new Date(adStartDate);
         adEndDate.setDate(adEndDate.getDate() + adDays);
 
-        if (adEndDate >= tenYearsAgo && adStartDate <= tenYearsFromNow) {
+        if (adEndDate >= dashaTimelineStart && adStartDate <= dashaTimelineEnd) {
+          // Calculate Pratyantardashas inside this AD
           let pdIndex = adIndex;
           let pdStartDate = new Date(adStartDate);
           
@@ -462,7 +461,7 @@ export async function fetchAIKundliData(name: string, dob: string, tob: string, 
             let pdEndDate = new Date(pdStartDate);
             pdEndDate.setDate(pdEndDate.getDate() + pdDays);
             
-            if (pdEndDate >= tenYearsAgo && pdStartDate <= tenYearsFromNow) {
+            if (pdEndDate >= dashaTimelineStart && pdStartDate <= dashaTimelineEnd) {
               const startMonthStr = pdStartDate.toLocaleString('default', { month: 'short' });
               const endMonthStr = pdEndDate.toLocaleString('default', { month: 'short' });
               futureTimelineStr += `- ${startMonthStr} ${pdStartDate.getFullYear()} to ${endMonthStr} ${pdEndDate.getFullYear()}: Pratyantardasha ${pdPlanet.planet} (under AD ${adPlanet.planet}, MD ${md.planet})
@@ -483,7 +482,7 @@ export async function fetchAIKundliData(name: string, dob: string, tob: string, 
       `Currently running Mahadasha: ${dashaData.currentMahadasha.planet} (Ends: ${dashaData.currentMahadasha.end}). 
 Currently running Antardasha: ${dashaData.currentAntardasha?.planet} (Ends: ${dashaData.currentAntardasha?.end}).
 
-PAST 10-YEAR AND FUTURE 10-YEAR PRATYANTARDASHA TIMELINE (PINPOINT TIMING):
+FULL LIFE PRATYANTARDASHA TIMELINE (BIRTH TO AGE 90) (PINPOINT TIMING):
 ${futureTimelineStr}` : 
       'Dasha timeline completed.';
       

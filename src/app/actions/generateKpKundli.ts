@@ -175,18 +175,16 @@ export async function fetchAIKpKundliData(name: string, dob: string, tob: string
     // --- VIMSHOTTARI DASHA (KP DBA TIMING) ---
     const dashaData = calculateVimshottariDasha(siderealMoon, dob);
     
-    // Generate Future Pratyantardasha (PD) Timeline for exactly 10 years from now for PINPOINT accuracy
+        // Generate Full Life Pratyantardasha (PD) Timeline (Birth to Age 90)
     let futureTimelineStr = "";
-    const now = new Date();
-    const tenYearsAgo = new Date(now);
-    tenYearsAgo.setFullYear(now.getFullYear() - 10);
-    const tenYearsFromNow = new Date(now);
-    tenYearsFromNow.setFullYear(now.getFullYear() + 10);
+    const dashaTimelineStart = new Date(dob);
+    const dashaTimelineEnd = new Date(dob);
+    dashaTimelineEnd.setFullYear(dashaTimelineStart.getFullYear() + 90);
 
     for (const md of dashaData.mahadashas) {
       const mdStart = new Date(md.start);
       const mdEnd = new Date(md.end);
-      if (mdEnd < tenYearsAgo || mdStart > tenYearsFromNow) continue;
+      if (mdEnd < dashaTimelineStart || mdStart > dashaTimelineEnd) continue;
 
       const mdLordIndex = DASHA_ORDER.findIndex(d => d.planet === md.planet);
       let adIndex = mdLordIndex;
@@ -198,7 +196,7 @@ export async function fetchAIKpKundliData(name: string, dob: string, tob: string
         let adEndDate = new Date(adStartDate);
         adEndDate.setDate(adEndDate.getDate() + adDays);
 
-        if (adEndDate >= now && adStartDate <= tenYearsFromNow) {
+        if (adEndDate >= dashaTimelineStart && adStartDate <= dashaTimelineEnd) {
           // Calculate Pratyantardashas inside this AD
           let pdIndex = adIndex;
           let pdStartDate = new Date(adStartDate);
@@ -209,10 +207,11 @@ export async function fetchAIKpKundliData(name: string, dob: string, tob: string
             let pdEndDate = new Date(pdStartDate);
             pdEndDate.setDate(pdEndDate.getDate() + pdDays);
             
-            if (pdEndDate >= now && pdStartDate <= tenYearsFromNow) {
+            if (pdEndDate >= dashaTimelineStart && pdStartDate <= dashaTimelineEnd) {
               const startMonthStr = pdStartDate.toLocaleString('default', { month: 'short' });
               const endMonthStr = pdEndDate.toLocaleString('default', { month: 'short' });
-              futureTimelineStr += `- ${startMonthStr} ${pdStartDate.getFullYear()} to ${endMonthStr} ${pdEndDate.getFullYear()}: Pratyantardasha ${pdPlanet.planet} (under AD ${adPlanet.planet}, MD ${md.planet})\n`;
+              futureTimelineStr += `- ${startMonthStr} ${pdStartDate.getFullYear()} to ${endMonthStr} ${pdEndDate.getFullYear()}: Pratyantardasha ${pdPlanet.planet} (under AD ${adPlanet.planet}, MD ${md.planet})
+`;
             }
             
             pdStartDate = new Date(pdEndDate);
@@ -226,7 +225,7 @@ export async function fetchAIKpKundliData(name: string, dob: string, tob: string
     }
 
     const dashaContext = dashaData.currentMahadasha ? 
-      `Current Dasha (DBA): Mahadasha Lord is ${dashaData.currentMahadasha.planet}, Antardasha (Bhukti) Lord is ${dashaData.currentAntardasha?.planet}. Use these Dasha lords along with their KP significators to predict current events.\n\nPAST 10-YEAR AND FUTURE 10-YEAR PRATYANTARDASHA TIMELINE (PINPOINT TIMING):\n${futureTimelineStr}` : 
+      `Current Dasha (DBA): Mahadasha Lord is ${dashaData.currentMahadasha.planet}, Antardasha (Bhukti) Lord is ${dashaData.currentAntardasha?.planet}. Use these Dasha lords along with their KP significators to predict current events.\n\nFULL LIFE PRATYANTARDASHA TIMELINE (BIRTH TO AGE 90) (PINPOINT TIMING):\n${futureTimelineStr}` : 
       'Dasha timeline completed.';
 
   const yogaIndex = Math.floor(yogaDeg / (360 / 27));
@@ -281,7 +280,7 @@ export async function fetchAIKpKundliData(name: string, dob: string, tob: string
   - Moon CSL: ${moonPlanet?.subLord}
   - 10th CSL (Career): ${cusps[9]?.subLord}
   - 7th CSL (Marriage): ${cusps[6]?.subLord}
-  - 2nd/11th CSL (Wealth): ${cusps[1]?.subLord} / ${cusps[10]?.subLord}
+  - 2nd/11th CSL (Wealth): ${cusps[1]?.subLord} / ${cusps[10]?.subLord}\n    - KP HOUSE SIGNIFICATORS (CRITICAL FOR TIMING): ${JSON.stringify(houseSignificators)}
   
     CRITICAL RULES FOR ZERO VARIANCE:
   CRITICAL REAL-WORLD CLARITY RULE (NO GENERIC ASTROLOGY FLUFF):
@@ -293,13 +292,13 @@ export async function fetchAIKpKundliData(name: string, dob: string, tob: string
   Every single user expects extreme clarity, practical life events, and absolute unvarnished truth. Anchor your entire reading in specific, real-world outcomes.
   1. INDEPENDENT HOUSES: If a house is empty and its lord is untenanted, it is extremely powerful.
   2. STRICT TIMING (PURE KP VIMSHOTTARI): Abandon planetary maturity ages. KP Astrology timing relies STRICTLY on Vimshottari Dasha.
-       You MUST find the EXACT date ranges from the "PAST 10-YEAR AND FUTURE 10-YEAR PRATYANTARDASHA TIMELINE" provided above where the Pratyantardasha (PD) planet is the 10th CSL, 11th CSL, 2nd CSL, or 7th CSL, or a very strong significator (Level 1/2) of these houses.
+       You MUST find the EXACT date ranges from the "FULL LIFE PRATYANTARDASHA TIMELINE (BIRTH TO AGE 90)" provided above where the Pratyantardasha (PD) planet is the 10th CSL, 11th CSL, 2nd CSL, or 7th CSL, or a very strong significator (Level 1/2) of these houses.
        Identify the 4 most powerful Pratyantardasha periods across the past and future (must include past/present events like education/first job) for career, wealth, or marriage.
        CRITICAL: Use the exact short-term Month-Year format from the timeline for breakthroughs (e.g., "Jan 2025 to Mar 2025"). NEVER invent your own dates.
-    3. MANDATORY EXACT TIMING (ALL SECTIONS): You MUST use the "PAST 10-YEAR AND FUTURE 10-YEAR PRATYANTARDASHA TIMELINE" to provide EXACT pinpoint dates for EVERY single prediction in the Career, Wealth, and Relationships sections. NEVER say "soon" or "in the future".
+    3. MANDATORY EXACT TIMING (ALL SECTIONS): You MUST use the "FULL LIFE PRATYANTARDASHA TIMELINE (BIRTH TO AGE 90)" to provide EXACT pinpoint dates for EVERY single prediction in the Career, Wealth, and Relationships sections. NEVER say "soon" or "in the future".
     4. MASSIVE DETAIL & FORMATTING: Write at least 300 words for EVERY SINGLE FIELD. For breakthroughs, format strictly as a numbered list. You MUST NOT use any HTML tags like <br>. Use standard newline characters (
 ) for line breaks so the UI renders it cleanly.
-       CRITICAL BREAKTHROUGHS FORMATTING: You must output exactly 4 breakthroughs. At least 1 breakthrough MUST be from the past/present timeline (if applicable), and the rest from the future. Do NOT force specific events; predict purely based on what the exact Pratyantardasha planet signifies in the user's chart.
+       CRITICAL BREAKTHROUGHS FORMATTING: You must output exactly 6 breakthroughs spanning the user's ENTIRE life (childhood, past, present, and future). Pick the absolute strongest peaks based on the provided KP House Significators. Do NOT force specific events; predict purely based on what the exact Pratyantardasha planet signifies in the user's chart.
        Each breakthrough MUST be structured in this EXACT order, with each item on a new line (no HTML tags):
        Exact Year: (e.g., 2025)
        Exact Month: (e.g., January to March)
