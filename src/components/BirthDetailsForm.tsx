@@ -122,7 +122,7 @@ export default function BirthDetailsForm() {
       name: values.name,
       dob: values.dob,
       tob: values.tob,
-      pob: values.pob
+      pob: values.pob, lifeStage: values.lifeStage, relationshipStatus: values.relationshipStatus
     });
 
     if (submitMode === "kp") {
